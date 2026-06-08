@@ -8,7 +8,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #eef3ea; font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif; color: #1a2a1c; line-height: 1.4; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
     .header { background: #1f3b2c; border-bottom: 3px solid #b5dfa3; padding: 18px 0; position: sticky; top: 0; z-index: 100; }
     .header-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
     .logo h1 { font-size: 28px; font-weight: 700; color: #f1ffe8; }
@@ -16,29 +16,26 @@
     .nav a { color: #edffe3; margin-left: 32px; text-decoration: none; font-weight: 500; cursor: pointer; }
     .nav a:hover { color: white; border-bottom: 2px solid #b3e29d; padding-bottom: 4px; }
     
-    /* Центральная колонка — фиксированная ширина, все блоки одинаковые */
-    .main-section {
-      flex: 1;
-      max-width: 550px;
-      min-width: 280px;
-    }
-    .team-section {
-      flex: 0 0 240px;
-    }
-    .top-row {
+    /* Основной контент — центрируем, правая колонка прилегает */
+    .content-layout {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
       gap: 40px;
       margin: 40px 0 30px;
       flex-wrap: wrap;
     }
-    .create-btn-wrapper {
-      flex: 0 0 auto;
-      margin-top: 8px;
+    .center-section {
+      flex: 0 1 600px;  /* Фиксированная ширина центрального блока */
+      min-width: 280px;
+    }
+    .right-side {
+      flex: 0 0 220px;  /* Ширина правой колонки */
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
     
-    /* Все блоки (Основной раздел, категории тем) — одинаковой ширины */
+    /* Все блоки (Основной раздел, категории тем) */
     .category-block {
       background: white;
       border-radius: 24px;
@@ -86,19 +83,20 @@
       border: none;
       color: white;
       font-weight: 600;
-      padding: 10px 24px;
+      padding: 12px 24px;
       border-radius: 40px;
       cursor: pointer;
       font-size: 14px;
-      white-space: nowrap;
+      width: 100%;
       transition: 0.2s;
+      text-align: center;
     }
     .btn-primary:hover {
       background: #1f5c34;
       transform: scale(0.97);
     }
     
-    /* Команда форума онлайн — фиксированная ширина */
+    /* Команда форума онлайн */
     .sidebar-card {
       background: white;
       border-radius: 24px;
@@ -195,14 +193,18 @@
       background: #fafef8;
       margin-top: 50px;
     }
-    @media (max-width: 900px) {
-      .top-row {
+    @media (max-width: 950px) {
+      .content-layout {
         flex-direction: column;
         align-items: center;
       }
-      .main-section, .team-section {
-        max-width: 100%;
+      .right-side {
+        flex-direction: row;
+        justify-content: center;
         width: 100%;
+      }
+      .btn-primary {
+        width: auto;
       }
     }
   </style>
@@ -249,30 +251,31 @@
     const topicCats = ["Общее","Ивенты","Постройки","PvP","Правила"];
     let nick = localStorage.getItem('vp_nick') || 'Vas1ks';
     
-    let html = `<div class="top-row">
-      <div class="main-section">
-        <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
-    mainLinks.forEach(link => { html += `<div class="category-link"><span><i class="far fa-folder"></i> ${link}</span></div>`; });
-    html += `</div></div>`;
+    let centerHtml = `<div class="center-section">
+      <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
+    mainLinks.forEach(link => { centerHtml += `<div class="category-link"><span><i class="far fa-folder"></i> ${link}</span></div>`; });
+    centerHtml += `</div></div>`;
     
     for(let cat of topicCats) {
       let filtered = topics.filter(t=>t.category===cat);
-      html += `<div class="category-block"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
-      if(!filtered.length) html += `<div class="category-link">— нет тем —</div>`;
+      centerHtml += `<div class="category-block"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
+      if(!filtered.length) centerHtml += `<div class="category-link">— нет тем —</div>`;
       else filtered.forEach(t=>{
         let cnt = comments.filter(c=>c.topic_id===t.id).length;
-        html += `<div class="topic-link" onclick="showTopic('${t.id}')"><span><i class="far fa-comment"></i> ${escapeHtml(t.title)}</span><span class="topic-stats">💬 ${cnt}</span></div>`;
+        centerHtml += `<div class="topic-link" onclick="showTopic('${t.id}')"><span><i class="far fa-comment"></i> ${escapeHtml(t.title)}</span><span class="topic-stats">💬 ${cnt}</span></div>`;
       });
-      html += `</div>`;
+      centerHtml += `</div>`;
     }
-    html += `</div>`;
+    centerHtml += `</div>`;
     
-    html += `<div class="create-btn-wrapper"><button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button></div>
-      <div class="team-section"><div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
+    let rightHtml = `<div class="right-side">
+      <button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button>
+      <div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
         <div class="user-online"><b>${escapeHtml(nick)}</b><br><span style="font-size:12px;">Команда проекта</span></div>
-      </div></div>
+      </div>
     </div>`;
-    document.getElementById('app').innerHTML = html;
+    
+    document.getElementById('app').innerHTML = `<div class="content-layout">${centerHtml}${rightHtml}</div>`;
   }
 
   function showCreateTopicForm() {
