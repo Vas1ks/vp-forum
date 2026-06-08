@@ -25,7 +25,6 @@
       padding: 0 24px;
     }
 
-    /* ШАПКА */
     .header {
       background: #1f3b2c;
       border-bottom: 3px solid #b5dfa3;
@@ -71,7 +70,6 @@
       padding-bottom: 4px;
     }
 
-    /* СЕТКА */
     .forum-grid {
       display: flex;
       gap: 32px;
@@ -89,7 +87,6 @@
       min-width: 240px;
     }
 
-    /* КАТЕГОРИИ */
     .category-block {
       background: white;
       border-radius: 24px;
@@ -129,7 +126,6 @@
       color: #7baa6b;
     }
 
-    /* КАРТОЧКА ТЕМЫ */
     .topic-item {
       background: white;
       border-radius: 20px;
@@ -187,7 +183,6 @@
       font-weight: 500;
     }
 
-    /* САЙДБАР — только команда (ты) */
     .sidebar-card {
       background: white;
       border-radius: 24px;
@@ -212,15 +207,6 @@
       border-bottom: 1px solid #edf4e9;
     }
 
-    .green-dot {
-      width: 10px;
-      height: 10px;
-      background: #4caf50;
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    /* СТРАНИЦА ТЕМЫ */
     .thread-container {
       background: white;
       border-radius: 28px;
@@ -370,6 +356,8 @@
       const [tRes, cRes] = await Promise.all([fetch(TOPICS_CSV), fetch(COMMENTS_CSV)]);
       topics = parseCSV(await tRes.text());
       comments = parseCSV(await cRes.text());
+      // Сортировка тем: новые (с большим id) — сверху
+      topics.sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
       showMainPage();
     } catch(e) {
       document.getElementById('app').innerHTML = '<div style="padding:40px;text-align:center;">⚠️ Ошибка загрузки. Проверьте таблицы.</div>';
@@ -389,18 +377,15 @@
   }
 
   function showMainPage() {
-    // Основной раздел (как на примере)
     const mainCategories = [
       { name: "Основной раздел", links: ["Новости и информация", "Технический раздел", "Донат услуги", "Мероприятия и ивенты", "Предложения по улучшению проекта", "Сообщество в Discord", "Группа ВКонтакте"] }
     ];
-    
-    // Категории с темами из таблицы
     const topicCategories = ["Общее", "Ивенты", "Постройки", "PvP", "Правила"];
 
     let html = `<div class="forum-grid">
       <div class="main-col">`;
 
-    // Отрисовка Основного раздела
+    // Основной раздел
     for (let cat of mainCategories) {
       html += `<div class="category-block"><div class="category-header"><h3>${cat.name}</h3></div><div class="category-links">`;
       cat.links.forEach(link => {
@@ -409,7 +394,10 @@
       html += `</div></div>`;
     }
 
-    // Отрисовка категорий с темами
+    // Кнопка создания темы (теперь сверху)
+    html += `<div style="margin: 10px 0 20px 0;"><button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button></div>`;
+
+    // Категории с реальными темами из таблицы
     for (let cat of topicCategories) {
       const filtered = topics.filter(t => t.category === cat);
       html += `<div class="category-block"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
@@ -433,13 +421,14 @@
       }
       html += `</div>`;
     }
-    
-    html += `<button class="btn-primary" onclick="showCreateTopicForm()" style="margin:10px 0 20px;">+ Создать тему</button></div>`;
+    html += `</div>`;
 
-    // Сайдбар — только ты
+    // Сайдбар (только ты)
+    const myNick = localStorage.getItem('vp_nick') || 'Vas1ks';
+    const myLetter = myNick.charAt(0).toUpperCase();
     html += `<div class="sidebar-col">
       <div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
-        <div class="user-online"><div class="avatar" style="width:36px;height:36px;font-size:14px;">${escapeHtml(localStorage.getItem('vp_nick') || 'V')}</div><div><b>${escapeHtml(localStorage.getItem('vp_nick') || 'Vas1ks')}</b><br><span style="font-size:12px;">Администратор</span></div></div>
+        <div class="user-online"><div class="avatar" style="width:36px;height:36px;font-size:14px;">${escapeHtml(myLetter)}</div><div><b>${escapeHtml(myNick)}</b><br><span style="font-size:12px;">Администратор</span></div></div>
       </div>
     </div></div>`;
 
