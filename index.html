@@ -12,18 +12,16 @@
     }
 
     body {
-      font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #eef2f5;
-      color: #1a2a1a;
+      color: #1e2a2e;
     }
 
-    /* Шапка */
     .header {
-      background: #2c5e2c;
+      background: #2c3e2f;
       color: white;
       padding: 20px 0;
-      border-bottom: 3px solid #a3d893;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-bottom: 4px solid #a3c293;
     }
 
     .container {
@@ -32,167 +30,101 @@
       padding: 0 20px;
     }
 
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
     .logo h1 {
       font-size: 28px;
-      letter-spacing: -0.5px;
     }
 
     .logo p {
-      font-size: 13px;
-      color: #cfebcf;
+      font-size: 14px;
+      color: #cfd8cf;
+    }
+
+    .nav {
+      margin-top: 12px;
     }
 
     .nav a {
-      color: #f0fae8;
+      color: #f0f7e6;
       text-decoration: none;
-      margin-left: 28px;
+      margin-right: 20px;
       font-weight: 500;
       cursor: pointer;
-      transition: 0.2s;
     }
 
-    .nav a:hover {
-      color: #ffffff;
-      border-bottom: 2px solid #b5e3a5;
-    }
-
-    /* Статистика */
     .stats {
-      display: flex;
-      gap: 24px;
-      justify-content: center;
-      margin: 35px 0 40px;
-      flex-wrap: wrap;
-    }
-
-    .stat-card {
       background: white;
-      border-radius: 20px;
-      padding: 20px 36px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      min-width: 140px;
-      transition: 0.2s;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 25px 0;
+      display: flex;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
-    .stat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    .stat-item {
+      text-align: center;
     }
 
     .stat-number {
-      font-size: 36px;
-      font-weight: 800;
+      font-size: 28px;
+      font-weight: bold;
       color: #2c6e2f;
     }
 
-    .stat-label {
-      font-size: 14px;
-      color: #5a7a5a;
-      margin-top: 8px;
-    }
-
-    /* Категории */
-    .category-header {
-      margin: 40px 0 16px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      border-bottom: 2px solid #cde2cd;
-      padding-bottom: 8px;
-    }
-
-    .category-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: #2c5e2c;
-    }
-
-    .category-count {
-      font-size: 13px;
-      color: #6e8e6e;
-    }
-
-    /* Карточка темы */
-    .topic-row {
+    .topics-header, .topic-row {
       background: white;
-      border-radius: 16px;
-      padding: 18px 24px;
-      margin-bottom: 12px;
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: 0.2s;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      cursor: pointer;
-      border: 1px solid #e0ecd8;
     }
 
-    .topic-row:hover {
-      background: #f8fff4;
-      transform: translateX(4px);
-      border-color: #9acd8a;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    .topics-header {
+      font-weight: bold;
+      color: #5a6e5a;
+      background: #e9f0e6;
     }
 
     .topic-title {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 600;
       color: #1e4620;
+      text-decoration: none;
+      cursor: pointer;
     }
 
     .topic-meta {
-      font-size: 12px;
-      color: #7c967c;
-      margin-top: 6px;
+      font-size: 13px;
+      color: #6a7c6a;
+      margin-top: 5px;
     }
 
     .topic-stats {
-      background: #f0f7ec;
-      padding: 6px 16px;
-      border-radius: 40px;
-      font-size: 13px;
-      font-weight: 500;
-      color: #2c6e2f;
-    }
-
-    /* Кнопки */
-    .btn {
-      background: #3c803c;
-      border: none;
-      color: white;
-      font-weight: 600;
-      padding: 12px 28px;
-      border-radius: 40px;
-      cursor: pointer;
+      text-align: right;
       font-size: 14px;
-      transition: 0.2s;
-      margin: 30px 0 20px;
+    }
+
+    .btn {
+      background: #4a7c4a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 20px 0;
       display: inline-block;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    .btn:hover {
-      background: #2c662c;
-      transform: scale(0.98);
-    }
-
-    /* Карточка темы (внутренняя) */
     .topic-card {
       background: white;
-      border-radius: 24px;
-      padding: 28px;
-      margin: 20px 0;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-      border: 1px solid #deecdc;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
     .topic-card h2 {
@@ -200,78 +132,70 @@
       margin-bottom: 10px;
     }
 
-    /* Комментарии */
     .comment {
-      background: #fafef7;
-      border-radius: 18px;
-      padding: 16px 20px;
-      margin-bottom: 14px;
-      border-left: 4px solid #7dbd6a;
+      background: #f9fbf7;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border-left: 4px solid #7da06e;
+    }
+
+    .comment-author {
+      font-weight: bold;
+      color: #2c5e2c;
     }
 
     .reply-form {
-      background: #f6fbf3;
-      border-radius: 20px;
-      padding: 22px;
-      margin-top: 28px;
+      margin-top: 20px;
+      background: #f3f7f0;
+      padding: 20px;
+      border-radius: 12px;
     }
 
-    input, textarea, select {
-      background: white;
-      border: 1px solid #cde0cd;
-      color: #1e2a1e;
-      border-radius: 28px;
-      padding: 12px 18px;
+    textarea, input, select {
       width: 100%;
-      margin-bottom: 14px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
       font-family: inherit;
-      transition: 0.2s;
     }
 
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: #5fad5f;
-      box-shadow: 0 0 0 2px rgba(60,128,60,0.1);
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #2c6e2f;
+      text-decoration: none;
+      cursor: pointer;
     }
 
     footer {
       text-align: center;
-      padding: 28px 0;
-      margin-top: 50px;
-      border-top: 1px solid #d6e5d3;
-      color: #6e8e6e;
-      font-size: 13px;
-      background: #f5faf3;
+      padding: 20px;
+      margin-top: 30px;
+      color: #6e7c6e;
     }
 
-    .back-link {
-      color: #3c803c;
-      cursor: pointer;
-      margin-bottom: 20px;
-      display: inline-block;
-      font-weight: 500;
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 18px;
+      color: #5a7c5a;
+    }
+
+    .category-title {
+      margin: 30px 0 10px 0;
+      font-weight: bold;
+      font-size: 22px;
+      padding-left: 5px;
+      border-left: 4px solid #4a7c4a;
     }
 
     @media (max-width: 700px) {
-      .header-content {
-        flex-direction: column;
-        text-align: center;
-      }
-      .topic-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-      .stats {
-        gap: 12px;
-      }
-      .stat-card {
-        padding: 14px 20px;
-        min-width: 100px;
-      }
-      .stat-number {
-        font-size: 28px;
-      }
+      .stats { flex-direction: column; gap: 10px; }
+      .topic-row { flex-direction: column; text-align: center; gap: 10px; }
+      .header .container { text-align: center; }
+      .nav { margin-top: 10px; }
     }
   </style>
 </head>
@@ -279,22 +203,19 @@
 
 <div class="header">
   <div class="container">
-    <div class="header-content">
-      <div class="logo">
-        <h1>🌿 ВП | Выживание с Подписчиками</h1>
-        <p>официальный форум проекта</p>
-      </div>
-      <div class="nav">
-        <a onclick="showMainPage()">Главная</a>
-        <a onclick="showCreateTopicForm()">Создать тему</a>
-        <a href="#">Правила</a>
-      </div>
+    <div class="logo">
+      <h1>🌿 ВП | Выживание с Подписчиками</h1>
+      <p>Форум проекта — общение, обсуждения, помощь</p>
+    </div>
+    <div class="nav">
+      <a onclick="showMainPage()">Главная</a>
+      <a onclick="showCreateTopicForm()">Создать тему</a>
     </div>
   </div>
 </div>
 
 <div class="container" id="app">
-  <div style="text-align:center; padding:60px;">📡 загрузка форума...</div>
+  <div class="loading">📡 Загрузка форума...</div>
 </div>
 
 <footer>
@@ -302,52 +223,40 @@
 </footer>
 
 <script>
-  // ================ ТВОИ ССЫЛКИ (ВСЁ РАБОТАЕТ) =================
-  const TOPICS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vST0Y9NxgyjLMkYCFNUsdgEU6SIW9COeKHkXj_hMzZ82o1IavIQe2TFfh-png4OXskm9XJNnH4n_Dom/pub?gid=0&single=true&output=csv";
-  const COMMENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHN_UbqimIiO0tlEKDGimWb57bIy_RpTMJb6-GCSPOMl3LrwjivM3gyxJGLw2fXLvt9XyORLOKNxJh/pub?gid=0&single=true&output=csv";
-  
-  const ADD_TOPIC_API = "https://script.google.com/macros/s/AKfycbyIdgZAFDucB8ZLBVCE-GsH8IZ_rBV7RyfWu1W0WhOU5c-LJqAbxuwH5DmVxi6Q21Tw/exec";
-  const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbzHK5QQp-2kSqynU8xZa51ATjhGizkkHqARkqC1lGT1udXv3A_M3kbQJB6O3S924qkQgQ/exec";
-  // ==============================================================
+  // ========== ТВОИ ССЫЛКИ (ВСЁ ПОДКЛЮЧЕНО) ==========
+  const TOPICS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7w_qakiVZNa26pZXY9_-qZ2peGlKga-J3VlMfE8WtYt_skMjgYyiECDfOGzgxmDn7ZdyFJd_7q_CP/pub?output=csv";
+  const COMMENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRhLuXUXT8TU26BTL6j5ih5BlvNQ_RFweSK8yYHgycnK2bObZINPWi9pUUeNtE-5FNQYvmpihg-EWYV/pub?output=csv";
+  const ADD_TOPIC_API = "https://script.google.com/macros/s/AKfycbzMqzTrs4Q51_PDGXsAD6-JxoXFkfLH3hwByYoc6fgv6zK08df6tvzYKaOVHy1buVn6Zw/exec";
+  const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbxiPAvFOVOGBXayfweiAUJAReTXYfFSvdKcVuiZv2i8O5qj2g04kjHUkJT7FsN2ga8/exec";
+  // =================================================
 
   let topics = [];
   let comments = [];
 
   async function loadData() {
     try {
-      const [topicsRes, commentsRes] = await Promise.all([
-        fetch(TOPICS_CSV),
-        fetch(COMMENTS_CSV)
-      ]);
-      
+      const [topicsRes, commentsRes] = await Promise.all([fetch(TOPICS_CSV), fetch(COMMENTS_CSV)]);
       const topicsText = await topicsRes.text();
       const commentsText = await commentsRes.text();
-      
       topics = parseCSV(topicsText);
       comments = parseCSV(commentsText);
-      
       showMainPage();
     } catch (e) {
+      document.getElementById('app').innerHTML = '<div class="loading">⚠️ Ошибка загрузки. Проверьте ссылки CSV.</div>';
       console.error(e);
-      document.getElementById('app').innerHTML = '<div style="padding:40px;text-align:center;">⚠️ Ошибка загрузки. Проверь таблицы.</div>';
     }
   }
 
   function parseCSV(text) {
     const rows = text.split('\n').filter(r => r.trim());
     if (rows.length < 2) return [];
-    
     const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
     const result = [];
-    
     for (let i = 1; i < rows.length; i++) {
       const cols = rows[i].split(',');
       if (cols.length < 2) continue;
-      
       let obj = {};
-      headers.forEach((h, idx) => {
-        obj[h] = cols[idx] ? cols[idx].trim() : '';
-      });
+      headers.forEach((h, idx) => obj[h] = cols[idx] ? cols[idx].trim() : '');
       result.push(obj);
     }
     return result;
@@ -357,76 +266,55 @@
     const categories = ["Общее", "Ивенты", "Постройки", "PvP", "Правила"];
     const totalTopics = topics.length;
     const totalComments = comments.length;
-    const uniqueAuthors = new Set([
-      ...topics.map(t => t.author),
-      ...comments.map(c => c.author)
-    ]);
+    const uniqueAuthors = new Set([...topics.map(t => t.author), ...comments.map(c => c.author)]);
     
     let html = `
       <div class="stats">
-        <div class="stat-card">
-          <div class="stat-number">${totalTopics}</div>
-          <div class="stat-label">тем</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">${totalComments}</div>
-          <div class="stat-label">сообщений</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">${uniqueAuthors.size}</div>
-          <div class="stat-label">авторов</div>
-        </div>
+        <div class="stat-item"><div class="stat-number">${totalTopics}</div><div>Тем</div></div>
+        <div class="stat-item"><div class="stat-number">${totalComments}</div><div>Сообщений</div></div>
+        <div class="stat-item"><div class="stat-number">${uniqueAuthors.size}</div><div>Авторов</div></div>
       </div>
     `;
 
     for (let cat of categories) {
       const filtered = topics.filter(t => t.category === cat);
-      const count = filtered.length;
-      
-      html += `
-        <div class="category-header">
-          <div class="category-title">📁 ${cat}</div>
-          <div class="category-count">${count} тем</div>
-        </div>
-      `;
-      
+      html += `<div class="category-title">📁 ${cat}</div>`;
       if (filtered.length === 0) {
-        html += `<div class="topic-row" style="justify-content:center; cursor:default;">— пока нет тем —</div>`;
+        html += `<div class="topic-row" style="justify-content:center;">Пока нет тем в этой категории</div>`;
       } else {
         for (let t of filtered) {
           const commentCount = comments.filter(c => c.topic_id === t.id).length;
           html += `
-            <div class="topic-row" onclick="showTopic('${t.id}')">
+            <div class="topic-row">
               <div>
-                <div class="topic-title">📌 ${escapeHtml(t.title)}</div>
-                <div class="topic-meta">автор: ${escapeHtml(t.author)} | ${t.date}</div>
+                <div class="topic-title" onclick="showTopic('${t.id}')">${escapeHtml(t.title)}</div>
+                <div class="topic-meta">Автор: ${escapeHtml(t.author)} | ${t.date}</div>
               </div>
-              <div class="topic-stats">💬 ${commentCount}</div>
+              <div class="topic-stats">💬 ${commentCount} ответов</div>
             </div>
           `;
         }
       }
     }
-    
-    html += `<button class="btn" onclick="showCreateTopicForm()">+ Создать тему</button>`;
+    html += `<button class="btn" onclick="showCreateTopicForm()">+ Создать новую тему</button>`;
     document.getElementById('app').innerHTML = html;
   }
 
   function showCreateTopicForm() {
     document.getElementById('app').innerHTML = `
-      <div class="back-link" onclick="showMainPage()">← назад</div>
+      <div class="back-link" onclick="showMainPage()">← Назад к списку тем</div>
       <div class="topic-card">
-        <h2>📝 Новая тема</h2>
+        <h2>➕ Новая тема</h2>
         <input type="text" id="newTitle" placeholder="Название темы">
         <select id="newCategory">
-          <option>Общее</option>
-          <option>Ивенты</option>
-          <option>Постройки</option>
-          <option>PvP</option>
-          <option>Правила</option>
+          <option value="Общее">Общее</option>
+          <option value="Ивенты">Ивенты</option>
+          <option value="Постройки">Постройки</option>
+          <option value="PvP">PvP</option>
+          <option value="Правила">Правила</option>
         </select>
         <input type="text" id="newAuthor" placeholder="Ваш игровой ник">
-        <button class="btn" id="sendTopicBtn">📢 Опубликовать</button>
+        <button class="btn" id="sendTopicBtn">📢 Опубликовать тему</button>
       </div>
     `;
     document.getElementById('sendTopicBtn').onclick = createTopic;
@@ -436,56 +324,52 @@
     const title = document.getElementById('newTitle').value.trim();
     const author = document.getElementById('newAuthor').value.trim();
     const category = document.getElementById('newCategory').value;
-    
     if (!title || !author) {
       alert("Заполните название темы и ваш ник!");
       return;
     }
-    
-    const date = new Date().toLocaleDateString();
+    const now = new Date();
+    const date = `${now.getDate()}.${now.getMonth()+1}.${now.getFullYear()}`;
     const btn = document.getElementById('sendTopicBtn');
     btn.disabled = true;
     btn.textContent = "Публикация...";
     
     try {
-      const response = await fetch(ADD_TOPIC_API, {
+      await fetch(ADD_TOPIC_API, {
         method: 'POST',
         mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, author, date, category })
       });
-      
       alert("✅ Тема создана! Обновите страницу (F5)");
-      await loadData();
+      loadData();
     } catch (e) {
       alert("❌ Ошибка при создании темы");
       console.error(e);
     }
-    
     btn.disabled = false;
-    btn.textContent = "📢 Опубликовать";
+    btn.textContent = "📢 Опубликовать тему";
   }
 
   async function addComment(topicId) {
     const author = document.getElementById('replyAuthor').value.trim();
     const text = document.getElementById('replyText').value.trim();
-    
     if (!author || !text) {
       alert("Введите ник и текст ответа");
       return;
     }
-    
-    const date = new Date().toLocaleDateString();
+    const now = new Date();
+    const date = `${now.getDate()}.${now.getMonth()+1}.${now.getFullYear()}`;
     
     try {
       await fetch(ADD_COMMENT_API, {
         method: 'POST',
         mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic_id: topicId, author, text, date })
       });
-      
       alert("✅ Комментарий добавлен! Обновите страницу");
-      await loadData();
-      showTopic(topicId);
+      loadData().then(() => showTopic(topicId));
     } catch (e) {
       alert("❌ Ошибка при отправке комментария");
       console.error(e);
@@ -495,37 +379,35 @@
   function showTopic(id) {
     const topic = topics.find(t => t.id === id);
     if (!topic) return;
-    
     const topicComments = comments.filter(c => c.topic_id === id);
-    
     let commentsHtml = '';
     if (topicComments.length === 0) {
-      commentsHtml = '<div style="padding:14px;">пока ответов нет. будьте первым!</div>';
+      commentsHtml = '<div style="padding:15px;">Пока нет ответов. Будьте первым!</div>';
     } else {
-      for (let c of topicComments) {
+      topicComments.forEach(c => {
         commentsHtml += `
           <div class="comment">
-            <div style="font-weight:bold; color:#2c6e2f;">${escapeHtml(c.author)}</div>
-            <div style="margin:8px 0;">${escapeHtml(c.text)}</div>
-            <div style="font-size:11px; color:#7c967c;">${c.date}</div>
+            <div class="comment-author">${escapeHtml(c.author)}</div>
+            <div style="margin-top:8px;">${escapeHtml(c.text)}</div>
+            <div style="font-size:11px; margin-top:6px; color:#8a9a8a;">${c.date}</div>
           </div>
         `;
-      }
+      });
     }
     
     const html = `
-      <div class="back-link" onclick="showMainPage()">← к списку тем</div>
+      <div class="back-link" onclick="showMainPage()">← К списку тем</div>
       <div class="topic-card">
         <h2>${escapeHtml(topic.title)}</h2>
-        <div class="topic-meta" style="margin-bottom:20px;">автор: ${escapeHtml(topic.author)} | ${topic.date} | категория: ${topic.category}</div>
-        <div class="comments-section">
-          <h3 style="margin-bottom:16px;">💬 Ответы (${topicComments.length})</h3>
+        <div class="topic-meta">Автор: ${escapeHtml(topic.author)} | ${topic.date} | Категория: ${topic.category}</div>
+        <div class="comments-section" style="margin-top:25px;">
+          <h3>💬 Ответы (${topicComments.length})</h3>
           ${commentsHtml}
           <div class="reply-form">
-            <h4 style="margin-bottom:12px;">✏️ Ваш ответ</h4>
-            <input type="text" id="replyAuthor" placeholder="Ваш ник">
-            <textarea id="replyText" rows="2" placeholder="Текст сообщения..."></textarea>
-            <button class="btn" onclick="addComment('${id}')">Отправить</button>
+            <h4>📝 Ваш ответ</h4>
+            <input type="text" id="replyAuthor" placeholder="Ваш игровой ник">
+            <textarea id="replyText" rows="3" placeholder="Напишите ответ..."></textarea>
+            <button class="btn" onclick="addComment('${id}')">✉️ Отправить ответ</button>
           </div>
         </div>
       </div>
@@ -535,7 +417,7 @@
 
   function escapeHtml(str) {
     if (!str) return '';
-    return String(str).replace(/[&<>]/g, function(m) {
+    return str.replace(/[&<>]/g, function(m) {
       if (m === '&') return '&amp;';
       if (m === '<') return '&lt;';
       if (m === '>') return '&gt;';
