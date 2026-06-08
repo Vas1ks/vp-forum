@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ВП | Выживание с Подписчиками — Форум проекта</title>
+  <title>ВП | Выживание с Подписчиками — Форум</title>
   <style>
     * {
       margin: 0;
@@ -12,7 +12,7 @@
     }
 
     body {
-      font-family: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
       background: radial-gradient(circle at 20% 30%, #0e2a1a, #051007);
       color: #eef5ec;
       min-height: 100vh;
@@ -20,7 +20,6 @@
       flex-direction: column;
     }
 
-    /* Текстура блоков (лёгкая) */
     body::before {
       content: "";
       position: fixed;
@@ -38,7 +37,6 @@
       z-index: 2;
     }
 
-    /* Шапка */
     .header {
       background: rgba(10, 22, 12, 0.9);
       backdrop-filter: blur(10px);
@@ -85,7 +83,6 @@
       text-decoration: none;
       margin-left: 28px;
       font-weight: 500;
-      font-size: 15px;
       cursor: pointer;
       transition: 0.2s;
     }
@@ -95,7 +92,6 @@
       border-bottom: 1px solid #7dba5e;
     }
 
-    /* Статистика */
     .stats {
       display: flex;
       gap: 20px;
@@ -126,7 +122,6 @@
       margin-top: 6px;
     }
 
-    /* Категория */
     .category-title {
       margin: 40px 0 14px 8px;
       font-size: 20px;
@@ -135,7 +130,6 @@
       padding-left: 16px;
     }
 
-    /* Карточка темы */
     .topic-row {
       background: rgba(20, 32, 20, 0.7);
       backdrop-filter: blur(4px);
@@ -147,6 +141,7 @@
       align-items: center;
       transition: 0.2s;
       border: 1px solid #457037;
+      cursor: pointer;
     }
 
     .topic-row:hover {
@@ -159,7 +154,6 @@
       font-size: 17px;
       font-weight: 600;
       color: #e3ffd1;
-      cursor: pointer;
     }
 
     .topic-meta {
@@ -175,7 +169,6 @@
       font-size: 13px;
     }
 
-    /* Кнопки */
     .btn {
       background: #468c34;
       border: none;
@@ -186,7 +179,7 @@
       cursor: pointer;
       font-size: 14px;
       transition: 0.2s;
-      margin: 20px 0 20px;
+      margin: 20px 0;
       display: inline-block;
     }
 
@@ -195,7 +188,6 @@
       transform: scale(0.97);
     }
 
-    /* Карточка одной темы */
     .topic-card {
       background: rgba(18, 30, 18, 0.9);
       backdrop-filter: blur(12px);
@@ -205,7 +197,6 @@
       border: 1px solid #588a46;
     }
 
-    /* Комментарии */
     .comment {
       background: #1f2f1c;
       border-radius: 20px;
@@ -249,9 +240,18 @@
     }
 
     @media (max-width: 700px) {
-      .header-content { flex-direction: column; text-align: center; }
-      .topic-row { flex-direction: column; align-items: flex-start; gap: 10px; }
-      .stats { gap: 12px; }
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      .topic-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .stats {
+        gap: 12px;
+      }
     }
   </style>
 </head>
@@ -280,39 +280,52 @@
 </footer>
 
 <script>
-  // ================ ВАШИ ССЫЛКИ (НЕ МЕНЯЙТЕ, ОНИ РАБОЧИЕ) =================
+  // ================ ВАШИ ССЫЛКИ (уже вставлены) =================
   const TOPICS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vST0Y9NxgyjLMkYCFNUsdgEU6SIW9COeKHkXj_hMzZ82o1IavIQe2TFfh-png4OXskm9XJNnH4n_Dom/pub?gid=0&single=true&output=csv";
-  const COMMENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vST0Y9NxgyjLMkYCFNUsdgEU6SIW9COeKHkXj_hMzZ82o1IavIQe2TFfh-png4OXskm9XJNnH4n_Dom/pub?gid=1157264192&single=true&output=csv";
-  const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbzxnUFg_5XYX1-vZ6XFAG7A4j1yJGnHE27cLyle0oi5vk16mUQ8SA9QIUbvxQJ9D0Eq/exec";
-  const ADD_TOPIC_API = "https://script.google.com/macros/s/AKfycbzcws06pWqn5TZkYDNbNw_m3z-xDlUfa1Ih4nywKdo8BDCBYdLJn0LmyjnwJM7uY6lk/exec";
-  // =================================================================
+  const COMMENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHN_UbqimIiO0tlEKDGimWb57bIy_RpTMJb6-GCSPOMl3LrwjivM3gyxJGLw2fXLvt9XyORLOKNxJh/pub?gid=0&single=true&output=csv";
+  
+  const ADD_TOPIC_API = "https://script.google.com/macros/s/AKfycbyoxFGa1lCwaFQ20cphXl41rd-oxf3MyQwshdsY9T8OyCf7Y8dV1fuPFUNTEaA8b1lo/exec";
+  const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbzHK5QQp-2kSqynU8xZa51ATjhGizkkHqARkqC1lGT1udXv3A_M3kbQJB6O3S924qkQgQ/exec";
+  // ==============================================================
 
-  let topics = [], comments = [];
+  let topics = [];
+  let comments = [];
 
   async function loadData() {
     try {
-      const [topicsRes, commentsRes] = await Promise.all([fetch(TOPICS_CSV), fetch(COMMENTS_CSV)]);
+      const [topicsRes, commentsRes] = await Promise.all([
+        fetch(TOPICS_CSV),
+        fetch(COMMENTS_CSV)
+      ]);
+      
       const topicsText = await topicsRes.text();
       const commentsText = await commentsRes.text();
+      
       topics = parseCSV(topicsText);
       comments = parseCSV(commentsText);
+      
       showMainPage();
-    } catch(e) {
-      document.getElementById('app').innerHTML = '<div style="padding:40px;text-align:center;">⚠️ ошибка загрузки. проверьте CSV ссылки в коде</div>';
+    } catch (e) {
       console.error(e);
+      document.getElementById('app').innerHTML = '<div style="padding:40px;text-align:center;">⚠️ Ошибка загрузки данных. Проверьте таблицы.</div>';
     }
   }
 
   function parseCSV(text) {
     const rows = text.split('\n').filter(r => r.trim());
-    if(rows.length < 2) return [];
+    if (rows.length < 2) return [];
+    
     const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
     const result = [];
-    for(let i = 1; i < rows.length; i++) {
+    
+    for (let i = 1; i < rows.length; i++) {
       const cols = rows[i].split(',');
-      if(cols.length < 2) continue;
+      if (cols.length < 2) continue;
+      
       let obj = {};
-      headers.forEach((h, idx) => obj[h] = cols[idx] ? cols[idx].trim() : '');
+      headers.forEach((h, idx) => {
+        obj[h] = cols[idx] ? cols[idx].trim() : '';
+      });
       result.push(obj);
     }
     return result;
@@ -322,26 +335,41 @@
     const categories = ["Общее", "Ивенты", "Постройки", "PvP", "Правила"];
     const totalTopics = topics.length;
     const totalComments = comments.length;
-    const uniqueAuthors = new Set([...topics.map(t => t.author), ...comments.map(c => c.author)]);
+    const uniqueAuthors = new Set([
+      ...topics.map(t => t.author),
+      ...comments.map(c => c.author)
+    ]);
     
-    let html = `<div class="stats">
-      <div class="stat-card"><div class="stat-number">${totalTopics}</div><div class="stat-label">тем</div></div>
-      <div class="stat-card"><div class="stat-number">${totalComments}</div><div class="stat-label">сообщений</div></div>
-      <div class="stat-card"><div class="stat-number">${uniqueAuthors.size}</div><div class="stat-label">авторов</div></div>
-    </div>`;
+    let html = `
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-number">${totalTopics}</div>
+          <div class="stat-label">тем</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${totalComments}</div>
+          <div class="stat-label">сообщений</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${uniqueAuthors.size}</div>
+          <div class="stat-label">авторов</div>
+        </div>
+      </div>
+    `;
 
-    for(let cat of categories) {
+    for (let cat of categories) {
       const filtered = topics.filter(t => t.category === cat);
       html += `<div class="category-title">📁 ${cat}</div>`;
-      if(filtered.length === 0) {
-        html += `<div class="topic-row" style="justify-content:center;">— пока нет тем —</div>`;
+      
+      if (filtered.length === 0) {
+        html += `<div class="topic-row" style="justify-content:center; cursor:default;">— пока нет тем —</div>`;
       } else {
-        for(let t of filtered) {
+        for (let t of filtered) {
           const commentCount = comments.filter(c => c.topic_id === t.id).length;
           html += `
-            <div class="topic-row">
+            <div class="topic-row" onclick="showTopic('${t.id}')">
               <div>
-                <div class="topic-title" onclick="showTopic('${t.id}')">${escapeHtml(t.title)}</div>
+                <div class="topic-title">${escapeHtml(t.title)}</div>
                 <div class="topic-meta">автор: ${escapeHtml(t.author)} | ${t.date}</div>
               </div>
               <div class="topic-stats">💬 ${commentCount}</div>
@@ -350,6 +378,7 @@
         }
       }
     }
+    
     html += `<button class="btn" onclick="showCreateTopicForm()">+ создать тему</button>`;
     document.getElementById('app').innerHTML = html;
   }
@@ -359,11 +388,15 @@
       <div class="back-link" onclick="showMainPage()">← назад</div>
       <div class="topic-card">
         <h2>📝 новая тема</h2>
-        <input id="newTitle" placeholder="название темы">
+        <input type="text" id="newTitle" placeholder="название темы">
         <select id="newCategory">
-          <option>Общее</option><option>Ивенты</option><option>Постройки</option><option>PvP</option><option>Правила</option>
+          <option>Общее</option>
+          <option>Ивенты</option>
+          <option>Постройки</option>
+          <option>PvP</option>
+          <option>Правила</option>
         </select>
-        <input id="newAuthor" placeholder="ваш игровой ник">
+        <input type="text" id="newAuthor" placeholder="ваш игровой ник">
         <button class="btn" id="sendTopicBtn">📢 опубликовать</button>
       </div>
     `;
@@ -374,53 +407,94 @@
     const title = document.getElementById('newTitle').value.trim();
     const author = document.getElementById('newAuthor').value.trim();
     const category = document.getElementById('newCategory').value;
-    if(!title || !author) return alert("заполните все поля");
+    
+    if (!title || !author) {
+      alert("Заполните название темы и ваш ник!");
+      return;
+    }
+    
     const date = new Date().toLocaleDateString();
     const btn = document.getElementById('sendTopicBtn');
     btn.disabled = true;
+    btn.textContent = "Публикация...";
+    
     try {
-      await fetch(ADD_TOPIC_API, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ title, author, date, category }) });
-      alert("✅ тема создана! обновите страницу (F5)");
-      loadData();
-    } catch(e) { alert("ошибка при создании темы"); }
+      await fetch(ADD_TOPIC_API, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ title, author, date, category })
+      });
+      
+      alert("✅ Тема создана! Обновите страницу (F5)");
+      await loadData();
+    } catch (e) {
+      alert("❌ Ошибка при создании темы");
+      console.error(e);
+    }
+    
     btn.disabled = false;
+    btn.textContent = "📢 опубликовать";
   }
 
   async function addComment(topicId) {
     const author = document.getElementById('replyAuthor').value.trim();
     const text = document.getElementById('replyText').value.trim();
-    if(!author || !text) return alert("введите ник и текст");
+    
+    if (!author || !text) {
+      alert("Введите ник и текст ответа");
+      return;
+    }
+    
     const date = new Date().toLocaleDateString();
+    
     try {
-      await fetch(ADD_COMMENT_API, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ topic_id: topicId, author, text, date }) });
-      alert("✅ комментарий добавлен! обновите страницу");
-      loadData().then(() => showTopic(topicId));
-    } catch(e) { alert("ошибка при отправке комментария"); }
+      await fetch(ADD_COMMENT_API, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ topic_id: topicId, author, text, date })
+      });
+      
+      alert("✅ Комментарий добавлен! Обновите страницу");
+      await loadData();
+      showTopic(topicId);
+    } catch (e) {
+      alert("❌ Ошибка при отправке комментария");
+      console.error(e);
+    }
   }
 
   function showTopic(id) {
     const topic = topics.find(t => t.id === id);
-    if(!topic) return;
+    if (!topic) return;
+    
     const topicComments = comments.filter(c => c.topic_id === id);
-    let commentsHtml = topicComments.length ? topicComments.map(c => `
-      <div class="comment">
-        <div class="topic-meta" style="font-weight:bold; color:#c8ffb0;">${escapeHtml(c.author)}</div>
-        <div style="margin:8px 0;">${escapeHtml(c.text)}</div>
-        <div class="topic-meta">${c.date}</div>
-      </div>
-    `).join('') : '<div style="padding:14px;">пока ответов нет. будьте первым!</div>';
+    
+    let commentsHtml = '';
+    if (topicComments.length === 0) {
+      commentsHtml = '<div style="padding:14px;">пока ответов нет. будьте первым!</div>';
+    } else {
+      for (let c of topicComments) {
+        commentsHtml += `
+          <div class="comment">
+            <div class="topic-meta" style="font-weight:bold; color:#c8ffb0;">${escapeHtml(c.author)}</div>
+            <div style="margin:8px 0;">${escapeHtml(c.text)}</div>
+            <div class="topic-meta">${c.date}</div>
+          </div>
+        `;
+      }
+    }
     
     const html = `
       <div class="back-link" onclick="showMainPage()">← к списку тем</div>
       <div class="topic-card">
         <h2>${escapeHtml(topic.title)}</h2>
         <div class="topic-meta">автор: ${escapeHtml(topic.author)} | ${topic.date} | категория: ${topic.category}</div>
-        <div class="comments-section" style="margin-top: 28px;">
-          <h3 style="margin-bottom: 12px;">💬 ответы (${topicComments.length})</h3>
+        <div class="comments-section" style="margin-top:28px;">
+          <h3 style="margin-bottom:12px;">💬 ответы (${topicComments.length})</h3>
           ${commentsHtml}
           <div class="reply-form">
             <h4>✏️ ваш ответ</h4>
-            <input id="replyAuthor" placeholder="ваш ник">
+            <input type="text" id="replyAuthor" placeholder="ваш ник">
             <textarea id="replyText" rows="2" placeholder="текст сообщения..."></textarea>
             <button class="btn" onclick="addComment('${id}')">отправить</button>
           </div>
@@ -431,14 +505,16 @@
   }
 
   function escapeHtml(str) {
+    if (!str) return '';
     return String(str).replace(/[&<>]/g, function(m) {
-      if(m === '&') return '&amp;';
-      if(m === '<') return '&lt;';
-      if(m === '>') return '&gt;';
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
       return m;
     });
   }
 
+  // Запуск
   loadData();
 </script>
 </body>
