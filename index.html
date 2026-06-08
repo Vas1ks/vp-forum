@@ -37,10 +37,11 @@
       min-width: 200px;
     }
     
-    /* Основной раздел (категория) */
+    /* Категории (основной раздел и темы) */
     .category-block {
       background: white;
       border-radius: 24px;
+      margin-bottom: 24px;
       border: 1px solid #e6f0e2;
       overflow: hidden;
     }
@@ -129,7 +130,7 @@
       border-bottom: 1px solid #edf4e9;
     }
     
-    /* Остальное (комментарии, формы) */
+    /* Комментарии и формы */
     .thread-container {
       background: white;
       border-radius: 28px;
@@ -260,7 +261,6 @@
     const topicCats = ["Общее","Ивенты","Постройки","PvP","Правила"];
     let nick = localStorage.getItem('vp_nick') || 'Vas1ks';
     
-    // Верхняя строка: основной раздел | кнопка | команда
     let html = `<div class="top-row">
       <div class="main-section">
         <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
@@ -272,10 +272,9 @@
       </div></div>
     </div>`;
     
-    // Ниже — категории с темами
     for(let cat of topicCats) {
       let filtered = topics.filter(t=>t.category===cat);
-      html += `<div class="category-block" style="margin-top: 24px;"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
+      html += `<div class="category-block"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
       if(!filtered.length) html += `<div class="category-link">— нет тем —</div>`;
       else filtered.forEach(t=>{
         let cnt = comments.filter(c=>c.topic_id===t.id).length;
