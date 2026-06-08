@@ -14,6 +14,8 @@
             background: linear-gradient(135deg, #0e2a1a 0%, #0a1f12 100%);
             color: #e0e0e0;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         body::before {
             content: "";
@@ -66,6 +68,7 @@
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1.5rem;
+            flex: 1;
         }
         .welcome-card {
             background: rgba(20, 25, 18, 0.85);
@@ -144,13 +147,6 @@
             color: #8a9a7a;
             margin-top: 4px;
         }
-        .topic-category {
-            background: #2a4a2a;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            margin-left: 10px;
-        }
         .modal {
             display: none;
             position: fixed;
@@ -171,7 +167,7 @@
             max-width: 500px;
             border: 2px solid #6aae5a;
         }
-        .modal-content input, .modal-content select, .modal-content textarea {
+        .modal-content input, .modal-content select {
             width: 100%;
             margin: 0.8rem 0;
             padding: 0.8rem;
@@ -271,10 +267,10 @@
 </div>
 
 <script>
-    // ========== ВАШИ ССЫЛКИ (УЖЕ ВСТАВЛЕНЫ) ==========
+    // ========== ВАШИ ССЫЛКИ ==========
     const CSV_URL = "https://docs.google.com/spreadsheets/d/1rDZgDa-fOp2pLueEqKNRcwyV9pduGvZm41571eM_OKc/export?format=csv";
     const API_URL = "https://script.google.com/macros/s/AKfycbzYUfWYqJiHcmohcX9PGkfu2tNbJnY6v7S5vfYOI31Wiwh2saucxhedQyLV8hov2TnF/exec";
-    // ==================================================
+    // ==================================
 
     let allTopics = [];
 
@@ -324,7 +320,6 @@
 
         for (let cat of categories) {
             const catTopics = allTopics.filter(t => t.category === cat);
-            if (catTopics.length === 0 && cat !== "Общее") continue;
             
             let catName = "💬 ";
             if (cat === "Ивенты") catName = "🎉 ";
@@ -408,7 +403,6 @@
         });
     }
 
-    // Модальное окно
     const modal = document.getElementById('topicModal');
     const openBtn = document.getElementById('openModalBtn');
     const closeBtn = document.getElementById('closeModalBtn');
