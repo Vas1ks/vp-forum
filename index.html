@@ -1,758 +1,480 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>ВП | Выживание с Подписчиками — Форум проекта</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ВП | Выживание с Подписчиками — Форум проекта</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', 'Courier New', monospace;
-            background: linear-gradient(135deg, #0e2a1a 0%, #0a1f12 100%);
-            color: #e0e0e0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #eef2f5;
+      color: #1e2a2e;
+    }
 
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-image: repeating-linear-gradient(45deg, rgba(70,50,35,0.1) 0px, rgba(70,50,35,0.1) 2px, transparent 2px, transparent 12px);
-            pointer-events: none;
-        }
+    /* Шапка */
+    .header {
+      background: #2c3e2f;
+      color: white;
+      padding: 20px 0;
+      border-bottom: 4px solid #a3c293;
+    }
 
-        .header {
-            background: rgba(20, 35, 22, 0.95);
-            backdrop-filter: blur(8px);
-            border-bottom: 4px solid #5a9a4a;
-            padding: 1rem 2rem;
-        }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
 
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
+    .logo h1 {
+      font-size: 28px;
+    }
 
-        .logo h1 {
-            font-size: 1.8rem;
-            color: #aaffaa;
-            text-shadow: 3px 3px 0 #2a5a2a;
-        }
+    .logo p {
+      font-size: 14px;
+      color: #cfd8cf;
+    }
 
-        .logo p {
-            font-size: 0.8rem;
-            color: #8aae8a;
-        }
+    .nav {
+      margin-top: 12px;
+    }
 
-        .nav a {
-            color: #ddd;
-            text-decoration: none;
-            margin-left: 1.5rem;
-            padding: 0.5rem 0;
-            transition: 0.3s;
-            border-bottom: 2px solid transparent;
-        }
+    .nav a {
+      color: #f0f7e6;
+      text-decoration: none;
+      margin-right: 20px;
+      font-weight: 500;
+      cursor: pointer;
+    }
 
-        .nav a:hover {
-            color: #aaffaa;
-            border-bottom-color: #6aae5a;
-        }
+    /* Статистика */
+    .stats {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 25px 0;
+      display: flex;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            flex: 1;
-        }
+    .stat-item {
+      text-align: center;
+    }
 
-        /* Карточка статистики (как на GTA форуме) */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
+    .stat-number {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2c6e2f;
+    }
 
-        .stat-card {
-            background: rgba(20, 25, 18, 0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 20px;
-            padding: 1.5rem;
-            text-align: center;
-            border-bottom: 3px solid #6aae5a;
-        }
+    /* Список тем */
+    .topics-header, .topic-row {
+      background: white;
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
 
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #aaffaa;
-        }
+    .topics-header {
+      font-weight: bold;
+      color: #5a6e5a;
+      background: #e9f0e6;
+    }
 
-        .stat-label {
-            font-size: 0.9rem;
-            color: #bbb;
-            margin-top: 0.5rem;
-        }
+    .topic-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1e4620;
+      text-decoration: none;
+      cursor: pointer;
+    }
 
-        .welcome-card {
-            background: rgba(20, 25, 18, 0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 20px;
-            padding: 1.8rem;
-            margin-bottom: 2rem;
-            border-left: 8px solid #6aae5a;
-        }
+    .topic-meta {
+      font-size: 13px;
+      color: #6a7c6a;
+      margin-top: 5px;
+    }
 
-        .welcome-card h2 {
-            color: #ccffaa;
-            margin-bottom: 0.5rem;
-        }
+    .topic-stats {
+      text-align: right;
+      font-size: 14px;
+    }
 
-        .new-topic-btn {
-            background: #4a6e3e;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 2rem;
-            transition: 0.2s;
-            box-shadow: 0 4px 0 #2a3a1a;
-        }
+    .btn {
+      background: #4a7c4a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 20px 0;
+      display: inline-block;
+      font-size: 14px;
+    }
 
-        .new-topic-btn:hover {
-            background: #6a9e5a;
-            transform: translateY(-2px);
-        }
+    .btn-small {
+      padding: 6px 14px;
+      font-size: 12px;
+      margin: 0 0 0 10px;
+    }
 
-        .forum-category {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 16px;
-            margin-bottom: 1.8rem;
-            overflow: hidden;
-        }
+    /* Карточка темы */
+    .topic-card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
 
-        .category-header {
-            background: #2a3a2a;
-            padding: 0.8rem 1.5rem;
-            font-size: 1.3rem;
-            font-weight: bold;
-            border-bottom: 2px solid #5a8a4a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .topic-card h2 {
+      color: #2c5e2c;
+      margin-bottom: 10px;
+    }
 
-        .topic-list {
-            list-style: none;
-        }
+    .comments-section {
+      margin-top: 30px;
+    }
 
-        .topic-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #2a3a2a;
-            background: rgba(10, 15, 8, 0.7);
-            transition: 0.2s;
-        }
+    .comment {
+      background: #f9fbf7;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border-left: 4px solid #7da06e;
+    }
 
-        .topic-item:hover {
-            background: rgba(60, 80, 50, 0.5);
-        }
+    .comment-author {
+      font-weight: bold;
+      color: #2c5e2c;
+    }
 
-        .topic-info {
-            flex: 2;
-        }
+    .comment-text {
+      margin-top: 6px;
+    }
 
-        .topic-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #ccffaa;
-            text-decoration: none;
-        }
+    .comment-date {
+      font-size: 11px;
+      color: #8a9a8a;
+      margin-top: 6px;
+    }
 
-        .topic-title:hover {
-            text-decoration: underline;
-        }
+    .reply-form {
+      margin-top: 20px;
+      background: #f3f7f0;
+      padding: 20px;
+      border-radius: 12px;
+    }
 
-        .topic-meta {
-            font-size: 0.7rem;
-            margin-top: 4px;
-        }
+    textarea, input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-family: inherit;
+    }
 
-        .author-name {
-            font-weight: bold;
-        }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #2c6e2f;
+      text-decoration: none;
+      cursor: pointer;
+    }
 
-        .topic-stats {
-            text-align: right;
-            min-width: 120px;
-        }
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      padding: 25px;
+      color: #6e7c6e;
+    }
 
-        .replies {
-            font-size: 0.9rem;
-            color: #ddd;
-        }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 18px;
+      color: #5a7c5a;
+    }
 
-        .last-post {
-            font-size: 0.7rem;
-            color: #7a8a6a;
-        }
-
-        .delete-btn {
-            background: #8a3a2a;
-            color: white;
-            border: none;
-            padding: 4px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-left: 15px;
-            font-size: 0.7rem;
-            transition: 0.2s;
-        }
-
-        .delete-btn:hover {
-            background: #c44a2a;
-        }
-
-        .admin-panel-btn {
-            background: #3a6a9e;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 0.8rem;
-        }
-
-        /* Модальные окна */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: #1e2a1e;
-            padding: 2rem;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            border: 2px solid #6aae5a;
-        }
-
-        .modal-content input, .modal-content select {
-            width: 100%;
-            margin: 0.8rem 0;
-            padding: 0.8rem;
-            background: #2a3a2a;
-            border: 1px solid #5a7a4a;
-            color: white;
-            border-radius: 12px;
-        }
-
-        .modal-content button {
-            background: #5a8a4a;
-            padding: 0.8rem;
-            border: none;
-            color: white;
-            border-radius: 30px;
-            width: 100%;
-            cursor: pointer;
-        }
-
-        .close-modal {
-            float: right;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: #ffaa88;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(10,15,8,0.9);
-            margin-top: 3rem;
-            border-top: 2px solid #3a5a2a;
-            font-size: 0.8rem;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            font-size: 1.2rem;
-            color: #aaffaa;
-        }
-
-        @media (max-width: 768px) {
-            .header-content { flex-direction: column; text-align: center; }
-            .topic-item { flex-direction: column; text-align: center; gap: 8px; }
-            .topic-stats { text-align: center; }
-            .delete-btn { margin-left: 0; margin-top: 8px; }
-        }
-    </style>
+    .category-title {
+      margin: 30px 0 10px 0;
+      font-weight: bold;
+      font-size: 22px;
+      padding-left: 5px;
+      border-left: 4px solid #4a7c4a;
+    }
+  </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="header-content">
-        <div class="logo">
-            <h1>🌿 ВП | Выживание с Подписчиками</h1>
-            <p>Официальный форум проекта — только для наших!</p>
-        </div>
-        <div class="nav">
-            <a href="#">Главная</a>
-            <a href="#">Новости</a>
-            <a href="#">Ивенты</a>
-            <a href="#">Постройки</a>
-            <a href="#">Правила</a>
-            <button class="admin-panel-btn" id="adminPanelBtn">⚙️ Админ-панель</button>
-        </div>
+  <div class="container">
+    <div class="logo">
+      <h1>🌿 ВП | Выживание с Подписчиками</h1>
+      <p>Форум проекта — общение, обсуждения, помощь</p>
     </div>
+    <div class="nav">
+      <a onclick="showMainPage()">Главная</a>
+      <a href="#" onclick="showCreateTopicForm()">Создать тему</a>
+      <a href="#">Правила</a>
+      <a href="#">О проекте</a>
+    </div>
+  </div>
 </div>
 
-<div class="container">
-    <!-- Статистика как на GTA форуме -->
-    <div class="stats-grid" id="statsGrid">
-        <div class="stat-card">
-            <div class="stat-number" id="totalTopics">0</div>
-            <div class="stat-label">Тем</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" id="totalMessages">0</div>
-            <div class="stat-label">Сообщений</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" id="totalUsers">0</div>
-            <div class="stat-label">Пользователей</div>
-        </div>
-    </div>
-
-    <div class="welcome-card">
-        <h2>🌲 Добро пожаловать на форум "Выживание с Подписчиками"!</h2>
-        <p>Обсуждаем только наш проект: ивенты, постройки, PvP и жизнь на сервере. Все темы сохраняются в облаке и видны всем игрокам.</p>
-    </div>
-
-    <button class="new-topic-btn" id="openModalBtn">+ Создать новую тему</button>
-
-    <div id="forumContainer">
-        <div class="loading">📡 Загружаем темы из облака...</div>
-    </div>
+<div class="container" id="app">
+  <div class="loading">📡 Загрузка форума...</div>
 </div>
 
-<div class="footer">
-    <p>© 2026 ВП | Выживание с Подписчиками — Форум проекта</p>
-</div>
-
-<!-- Модальное окно создания темы -->
-<div id="topicModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" id="closeModalBtn">&times;</span>
-        <h3 style="color:#aaffaa;">➕ Новая тема</h3>
-        <input type="text" id="topicTitle" placeholder="Название темы">
-        <select id="topicCategory">
-            <option value="Общее">💬 Общее</option>
-            <option value="Ивенты">🎉 Ивенты</option>
-            <option value="Постройки">🏠 Постройки</option>
-            <option value="PvP">⚔️ PvP и кланы</option>
-            <option value="Правила">📜 Правила и заявки</option>
-        </select>
-        <input type="text" id="topicAuthor" placeholder="Ваш игровой ник" value="Игрок">
-        <button id="createTopicBtn">📢 Опубликовать тему</button>
-    </div>
-</div>
-
-<!-- Админ-панель -->
-<div id="adminModal" class="modal">
-    <div class="modal-content" style="max-width: 600px;">
-        <span class="close-modal" id="closeAdminBtn">&times;</span>
-        <h3 style="color:#aaffaa;">👑 Админ-панель</h3>
-        <p style="margin-bottom: 15px;">Управление пользователями форума</p>
-        
-        <h4>Список пользователей</h4>
-        <div id="usersList" style="max-height: 300px; overflow-y: auto; margin: 15px 0;">
-            Загрузка...
-        </div>
-        
-        <h4>Изменить ник и цвет</h4>
-        <input type="text" id="adminEditNick" placeholder="Текущий ник пользователя" style="width: 100%;">
-        <input type="text" id="adminNewNick" placeholder="Новый ник" style="width: 100%; margin-top: 8px;">
-        <select id="adminColorSelect" style="width: 100%; margin-top: 8px;">
-            <option value="#e0e0e0">Обычный (серый)</option>
-            <option value="#aaffaa">Зелёный</option>
-            <option value="#ffaa66">Оранжевый</option>
-            <option value="#66aaff">Синий</option>
-            <option value="#ff66aa">Розовый</option>
-            <option value="#ffaa44">Золотой (админ)</option>
-        </select>
-        <button id="adminUpdateUserBtn" style="margin-top: 10px;">✏️ Применить</button>
-        
-        <p style="margin-top: 15px; font-size: 0.8rem; color: #aaa;">💡 Чтобы удалить тему — нажмите красную кнопку рядом с темой на форуме.</p>
-    </div>
-</div>
+<footer>
+  © 2026 ВП | Выживание с Подписчиками — Форум проекта
+</footer>
 
 <script>
-    // ========== ВАШИ ССЫЛКИ ==========
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTOY9NxgyjLMkYCFNUsdgEU6SIW9COeKHkXj_hMzZ8_2o1lavlQe2TFFh-png4OXskm9XJNnH4n_Dom/pub?output=csv";
-    const API_URL = "https://script.google.com/macros/s/AKfycbzYUfWYqJiHcmohcX9PGkfu2tNbJnY6v7S5vfYOI31Wiwh2saucxhedQyLV8hov2TnF/exec";
-    // ==================================
+  // ========== ВАШИ ССЫЛКИ ==========
+  // Ссылка на лист "Темы" (gid=0)
+  const TOPICS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vST0Y9NxgyjLMkYCFNUsdgEU6SIW9COeKHkXj_hMzZ82o1IavIQe2TFfh-png4OXskm9XJNnH4n_Dom/pub?gid=0&single=true&output=csv";
+  
+  // Ссылка на лист "Комментарии" (gid=1157264192)
+  const COMMENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vST0Y9NxgyjLMkYCFNUsdgEU6SIW9COeKHkXj_hMzZ82o1IavIQe2TFfh-png4OXskm9XJNnH4n_Dom/pub?gid=1157264192&single=true&output=csv";
+  
+  // API для добавления комментариев (ваш скрипт)
+  const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbzxnUFg_5XYX1-vZ6XFAG7A4j1yJGnHE27cLyle0oi5vk16mUQ8SA9QIUbvxQJ9D0Eq/exec";
+  
+  // API для добавления тем (нужно создать такой же скрипт для листа "Темы")
+  // Пока темы добавляем через ссылку на таблицу (вручную или позже сделаем API)
+  // ==================================
 
-    // Администратор (тот, кто может удалять темы и менять ники)
-    // Укажите свой ник или несколько через запятую
-    const ADMIN_NICKS = ["Vas1ks", "Админ", "admin"];  // ← добавьте свой ник сюда!
+  let topics = [];
+  let comments = [];
 
-    // Хранилище данных пользователей (ники + цвета)
-    let userData = {};
-
-    // Загрузка пользовательских данных из localStorage
-    function loadUserData() {
-        const saved = localStorage.getItem("vp_forum_users");
-        if (saved) {
-            userData = JSON.parse(saved);
-        } else {
-            userData = {};
-        }
+  // Загрузка данных
+  async function loadData() {
+    try {
+      document.getElementById('app').innerHTML = '<div class="loading">📡 Загрузка форума...</div>';
+      
+      const topicsRes = await fetch(TOPICS_CSV);
+      const topicsText = await topicsRes.text();
+      topics = parseCSV(topicsText);
+      
+      const commentsRes = await fetch(COMMENTS_CSV);
+      const commentsText = await commentsRes.text();
+      comments = parseCSV(commentsText);
+      
+      showMainPage();
+    } catch (err) {
+      console.error(err);
+      document.getElementById('app').innerHTML = '<div class="loading">⚠️ Ошибка загрузки данных. Проверьте ссылки CSV.</div>';
     }
+  }
 
-    // Сохранение пользовательских данных
-    function saveUserData() {
-        localStorage.setItem("vp_forum_users", JSON.stringify(userData));
+  function parseCSV(text) {
+    const rows = text.split('\n').filter(r => r.trim());
+    if (rows.length < 2) return [];
+    const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
+    const result = [];
+    for (let i = 1; i < rows.length; i++) {
+      const cols = rows[i].split(',');
+      if (cols.length < 2) continue;
+      let obj = {};
+      headers.forEach((h, idx) => {
+        obj[h] = cols[idx] ? cols[idx].trim() : '';
+      });
+      result.push(obj);
     }
+    return result;
+  }
 
-    // Получить цвет пользователя
-    function getUserColor(nick) {
-        if (userData[nick] && userData[nick].color) {
-            return userData[nick].color;
-        }
-        // Если админ
-        if (ADMIN_NICKS.includes(nick)) {
-            return "#ffaa44";
-        }
-        return "#e0e0e0";
-    }
-
-    // Получить отображаемый ник (с учётом изменений)
-    function getDisplayName(originalNick) {
-        if (userData[originalNick] && userData[originalNick].newName) {
-            return userData[originalNick].newName;
-        }
-        return originalNick;
-    }
-
-    let allTopics = [];
-
-    async function loadTopics() {
-        try {
-            const response = await fetch(CSV_URL);
-            const csvText = await response.text();
-            
-            const rows = csvText.split('\n').filter(row => row.trim());
-            if (rows.length < 2) {
-                document.getElementById('forumContainer').innerHTML = '<div class="loading">📭 Пока нет тем. Создайте первую!</div>';
-                updateStats([]);
-                allTopics = [];
-                return;
-            }
-
-            const headers = rows[0].split(',');
-            const titleIdx = headers.findIndex(h => h === 'title');
-            const authorIdx = headers.findIndex(h => h === 'author');
-            const dateIdx = headers.findIndex(h => h === 'date');
-            const categoryIdx = headers.findIndex(h => h === 'category');
-
-            allTopics = [];
-            for (let i = 1; i < rows.length; i++) {
-                const cols = rows[i].split(',');
-                if (cols.length < 2) continue;
-                allTopics.push({
-                    id: i,
-                    title: cols[titleIdx] || "Без названия",
-                    author: cols[authorIdx] || "Неизвестен",
-                    date: cols[dateIdx] || "недавно",
-                    category: cols[categoryIdx] || "Общее"
-                });
-            }
-
-            renderForum();
-            updateStats(allTopics);
-
-        } catch (error) {
-            console.error("Ошибка загрузки:", error);
-            document.getElementById('forumContainer').innerHTML = '<div class="loading">⚠️ Не удалось загрузить темы. Проверьте ссылку CSV.</div>';
-        }
-    }
-
-    function updateStats(topics) {
-        const totalTopics = topics.length;
-        const totalMessages = topics.length; // пока темы = сообщения, потом добавим комментарии
-        const uniqueUsers = [...new Set(topics.map(t => t.author))];
-        const totalUsers = uniqueUsers.length;
-        
-        document.getElementById('totalTopics').textContent = totalTopics;
-        document.getElementById('totalMessages').textContent = totalMessages;
-        document.getElementById('totalUsers').textContent = totalUsers;
-    }
-
-    function renderForum() {
-        const categories = ["Общее", "Ивенты", "Постройки", "PvP", "Правила"];
-        let html = '';
-
-        for (let cat of categories) {
-            const catTopics = allTopics.filter(t => t.category === cat);
-            
-            let catName = "💬 ";
-            if (cat === "Ивенты") catName = "🎉 ";
-            if (cat === "Постройки") catName = "🏠 ";
-            if (cat === "PvP") catName = "⚔️ ";
-            if (cat === "Правила") catName = "📜 ";
-            
-            html += `
-                <div class="forum-category">
-                    <div class="category-header">
-                        <span>${catName}${cat.toUpperCase()}</span>
-                        <span style="font-size: 0.8rem;">📌 ${catTopics.length} тем</span>
-                    </div>
-                    <ul class="topic-list">
-            `;
-            
-            if (catTopics.length === 0) {
-                html += `<li class="topic-item"><div class="topic-info"><span style="color:#8a9a7a;">Пока нет тем в этой категории</span></div></li>`;
-            } else {
-                catTopics.forEach(topic => {
-                    const authorColor = getUserColor(topic.author);
-                    const displayName = getDisplayName(topic.author);
-                    const isAdmin = ADMIN_NICKS.includes(topic.author);
-                    
-                    html += `
-                        <li class="topic-item" data-topic-id="${topic.id}" data-author="${topic.author}">
-                            <div class="topic-info">
-                                <a href="#" class="topic-title">📌 ${escapeHtml(topic.title)}</a>
-                                <div class="topic-meta">
-                                    Автор: <span class="author-name" style="color: ${authorColor};">${escapeHtml(displayName)}</span> | ${topic.date}
-                                    ${isAdmin ? ' <span style="color:#ffaa44;">👑</span>' : ''}
-                                </div>
-                            </div>
-                            <div class="topic-stats">
-                                <div class="replies">💬 0 ответов</div>
-                                <div class="last-post">${topic.date}</div>
-                            </div>
-                            ${canDeleteTopic(topic.author) ? `<button class="delete-btn" onclick="deleteTopic(${topic.id})">🗑️ Удалить</button>` : ''}
-                        </li>
-                    `;
-                });
-            }
-            html += `</ul></div>`;
-        }
-        
-        document.getElementById('forumContainer').innerHTML = html;
-    }
-
-    function canDeleteTopic(author) {
-        // Проверяем, является ли текущий пользователь администратором
-        // Пока используем простой способ: спрашиваем ник при загрузке страницы
-        const currentUser = localStorage.getItem("vp_current_user") || "";
-        return ADMIN_NICKS.includes(currentUser) || ADMIN_NICKS.includes(author);
-    }
-
-    async function deleteTopic(topicId) {
-        if (!confirm("Удалить эту тему? Это действие нельзя отменить.")) return;
-        
-        // Получаем актуальные данные
-        const response = await fetch(CSV_URL);
-        const csvText = await response.text();
-        const rows = csvText.split('\n');
-        
-        // Удаляем строку с индексом topicId
-        rows.splice(topicId, 1);
-        
-        // Пересобираем CSV
-        const newCsv = rows.join('\n');
-        
-        // Отправляем обновлённую таблицу через Apps Script
-        try {
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: "update", data: newCsv })
-            });
-            alert("✅ Тема удалена!");
-            loadTopics();
-        } catch (error) {
-            alert("❌ Ошибка при удалении. Удалите тему вручную в Google Sheets.");
-        }
-    }
-
-    async function createTopic(title, author, category) {
-        const now = new Date();
-        const dateStr = `${now.getDate()}.${now.getMonth()+1}.${now.getFullYear()}`;
-        
-        const topicData = {
-            title: title,
-            author: author,
-            date: dateStr,
-            category: category
-        };
-        
-        try {
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(topicData)
-            });
-            
-            alert(`✅ Тема "${title}" создана! Обновите страницу (F5), чтобы увидеть её.`);
-            return true;
-        } catch (error) {
-            alert(`❌ Ошибка: ${error.message}. Проверьте URL скрипта.`);
-            return false;
-        }
-    }
-
-    // Админ-панель: управление пользователями
-    function renderUsersList() {
-        const users = [...new Set(allTopics.map(t => t.author))];
-        let html = '<div style="font-size: 0.8rem;">';
-        users.forEach(user => {
-            const color = getUserColor(user);
-            const displayName = getDisplayName(user);
-            html += `<div style="padding: 5px; border-bottom: 1px solid #3a5a3a;">
-                        <span style="color: ${color};">${escapeHtml(displayName)}</span> (ориг: ${escapeHtml(user)})
-                    </div>`;
-        });
-        html += '</div>';
-        document.getElementById("usersList").innerHTML = html;
-    }
-
-    function updateUser() {
-        const oldNick = document.getElementById("adminEditNick").value.trim();
-        const newNick = document.getElementById("adminNewNick").value.trim();
-        const newColor = document.getElementById("adminColorSelect").value;
-        
-        if (!oldNick) {
-            alert("Введите текущий ник пользователя");
-            return;
-        }
-        
-        if (!userData[oldNick]) {
-            userData[oldNick] = {};
-        }
-        
-        if (newNick) {
-            userData[oldNick].newName = newNick;
-        }
-        
-        userData[oldNick].color = newColor;
-        
-        saveUserData();
-        alert(`✅ Данные пользователя ${oldNick} обновлены! Обновите страницу (F5).`);
-        
-        document.getElementById("adminEditNick").value = "";
-        document.getElementById("adminNewNick").value = "";
-        renderUsersList();
-        loadTopics();
-    }
-
-    // Запрос ника текущего пользователя (упрощённая авторизация перед админкой)
-    let currentUserNick = "";
-
-    function checkAdminAccess() {
-        currentUserNick = prompt("Введите ваш игровой ник для доступа к админ-панели:");
-        if (currentUserNick && ADMIN_NICKS.includes(currentUserNick)) {
-            localStorage.setItem("vp_current_user", currentUserNick);
-            renderUsersList();
-            return true;
-        } else {
-            alert("У вас нет прав администратора!");
-            return false;
-        }
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    // Инициализация
-    loadUserData();
+  // Главная страница
+  function showMainPage() {
+    const categories = ["Общее", "Ивенты", "Постройки", "PvP", "Правила"];
+    const totalTopics = topics.length;
+    const totalComments = comments.length;
+    const uniqueAuthors = new Set([...topics.map(t => t.author), ...comments.map(c => c.author)]);
     
-    // Модальные окна
-    const topicModal = document.getElementById('topicModal');
-    const adminModal = document.getElementById('adminModal');
-    const openTopicBtn = document.getElementById('openModalBtn');
-    const closeTopicBtn = document.getElementById('closeModalBtn');
-    const createTopicBtn = document.getElementById('createTopicBtn');
-    const openAdminBtn = document.getElementById('adminPanelBtn');
-    const closeAdminBtn = document.getElementById('closeAdminBtn');
-    const adminUpdateBtn = document.getElementById('adminUpdateUserBtn');
+    let html = `
+      <div class="stats">
+        <div class="stat-item"><div class="stat-number">${totalTopics}</div><div>Тем</div></div>
+        <div class="stat-item"><div class="stat-number">${totalComments}</div><div>Сообщений</div></div>
+        <div class="stat-item"><div class="stat-number">${uniqueAuthors.size}</div><div>Авторов</div></div>
+      </div>
+    `;
 
-    openTopicBtn.onclick = () => topicModal.style.display = 'flex';
-    closeTopicBtn.onclick = () => topicModal.style.display = 'none';
-    window.onclick = (e) => {
-        if (e.target === topicModal) topicModal.style.display = 'none';
-        if (e.target === adminModal) adminModal.style.display = 'none';
-    };
-
-    openAdminBtn.onclick = () => {
-        if (checkAdminAccess()) {
-            renderUsersList();
-            adminModal.style.display = 'flex';
+    for (let cat of categories) {
+      const filtered = topics.filter(t => t.category === cat);
+      html += `<div class="category-title">📁 ${cat}</div>`;
+      
+      if (filtered.length === 0) {
+        html += `<div class="topics-header" style="justify-content:center;">Пока нет тем в этой категории</div>`;
+      } else {
+        for (let topic of filtered) {
+          const commentCount = comments.filter(c => c.topic_id === topic.id).length;
+          html += `
+            <div class="topic-row">
+              <div>
+                <div class="topic-title" onclick="showTopic('${topic.id}')">${escapeHtml(topic.title)}</div>
+                <div class="topic-meta">Автор: ${escapeHtml(topic.author)} | ${topic.date}</div>
+              </div>
+              <div class="topic-stats">
+                💬 ${commentCount} ответов
+              </div>
+            </div>
+          `;
         }
-    };
-    closeAdminBtn.onclick = () => adminModal.style.display = 'none';
-    adminUpdateBtn.onclick = updateUser;
+      }
+    }
+    
+    html += `<button class="btn" onclick="showCreateTopicForm()">+ Создать новую тему</button>`;
+    document.getElementById('app').innerHTML = html;
+  }
 
-    createTopicBtn.onclick = async () => {
-        const title = document.getElementById('topicTitle').value.trim();
-        const author = document.getElementById('topicAuthor').value.trim() || "Игрок";
-        const category = document.getElementById('topicCategory').value;
-        
-        if (title === "") {
-            alert("Введите название темы!");
-            return;
-        }
-        
-        await createTopic(title, author, category);
-        
-        document.getElementById('topicTitle').value = '';
-        topicModal.style.display = 'none';
-        setTimeout(() => loadTopics(), 2000);
-    };
+  // Форма создания темы
+  function showCreateTopicForm() {
+    const html = `
+      <div class="back-link" onclick="showMainPage()">← Назад к списку тем</div>
+      <div class="topic-card">
+        <h2>➕ Создать новую тему</h2>
+        <input type="text" id="newTitle" placeholder="Название темы">
+        <select id="newCategory">
+          <option value="Общее">Общее</option>
+          <option value="Ивенты">Ивенты</option>
+          <option value="Постройки">Постройки</option>
+          <option value="PvP">PvP</option>
+          <option value="Правила">Правила</option>
+        </select>
+        <input type="text" id="newAuthor" placeholder="Ваш игровой ник">
+        <button class="btn" onclick="createTopic()">📢 Опубликовать тему</button>
+      </div>
+    `;
+    document.getElementById('app').innerHTML = html;
+  }
 
-    // Загружаем темы при старте
-    loadTopics();
+  // Создание темы (временно — открывает Google Sheets)
+  async function createTopic() {
+    const title = document.getElementById('newTitle').value.trim();
+    const author = document.getElementById('newAuthor').value.trim();
+    const category = document.getElementById('newCategory').value;
+    
+    if (!title || !author) {
+      alert("Заполните название темы и ваш ник!");
+      return;
+    }
+    
+    // Открываем Google Sheets для добавления строки вручную
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/1rDZgDa-fOp2pLueEqKNRcwyV9pduGvZm41571eM_OKc/edit#gid=0";
+    alert(`✅ Тема "${title}" будет добавлена!\n\n👉 Открой таблицу и добавь строку:\n${sheetUrl}\n\nСтолбцы: id, title, author, date, category\n\nПосле добавления обнови страницу (F5).`);
+    
+    // В будущем можно сделать API для автоматического добавления
+    window.open(sheetUrl, '_blank');
+  }
+
+  // Просмотр темы с комментариями
+  function showTopic(topicId) {
+    const topic = topics.find(t => t.id === topicId);
+    if (!topic) return;
+    
+    const topicComments = comments.filter(c => c.topic_id === topicId);
+    
+    let commentsHtml = '';
+    if (topicComments.length === 0) {
+      commentsHtml = '<div style="color:#8a9a8a; padding:15px;">Пока нет ответов. Будь первым!</div>';
+    } else {
+      for (let c of topicComments) {
+        commentsHtml += `
+          <div class="comment">
+            <div class="comment-author">${escapeHtml(c.author)}</div>
+            <div class="comment-text">${escapeHtml(c.text)}</div>
+            <div class="comment-date">${c.date}</div>
+          </div>
+        `;
+      }
+    }
+    
+    const html = `
+      <div class="back-link" onclick="showMainPage()">← Назад к списку тем</div>
+      <div class="topic-card">
+        <h2>${escapeHtml(topic.title)}</h2>
+        <div class="topic-meta">Автор: ${escapeHtml(topic.author)} | ${topic.date} | Категория: ${topic.category}</div>
+        <div style="margin-top: 20px;"></div>
+        
+        <div class="comments-section">
+          <h3>💬 Ответы (${topicComments.length})</h3>
+          ${commentsHtml}
+          
+          <div class="reply-form">
+            <h4>📝 Ваш ответ</h4>
+            <input type="text" id="replyAuthor" placeholder="Ваш игровой ник">
+            <textarea id="replyText" rows="3" placeholder="Напишите ответ..."></textarea>
+            <button class="btn" onclick="addComment('${topicId}')">✉️ Отправить ответ</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById('app').innerHTML = html;
+  }
+
+  // Добавление комментария
+  async function addComment(topicId) {
+    const author = document.getElementById('replyAuthor').value.trim();
+    const text = document.getElementById('replyText').value.trim();
+    
+    if (!author || !text) {
+      alert("Введите ник и текст ответа");
+      return;
+    }
+    
+    const now = new Date();
+    const dateStr = `${now.getDate()}.${now.getMonth()+1}.${now.getFullYear()}`;
+    
+    const commentData = {
+      topic_id: topicId,
+      author: author,
+      text: text,
+      date: dateStr
+    };
+    
+    try {
+      await fetch(ADD_COMMENT_API, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(commentData)
+      });
+      
+      alert("✅ Комментарий добавлен! Обновите страницу (F5)");
+      // Перезагружаем данные и показываем тему снова
+      await loadData();
+      showTopic(topicId);
+    } catch (err) {
+      alert("❌ Ошибка при добавлении комментария. Проверьте API.");
+      console.error(err);
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  // Запуск
+  loadData();
 </script>
 </body>
 </html>
