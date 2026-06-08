@@ -16,71 +16,61 @@
     .nav a { color: #edffe3; margin-left: 32px; text-decoration: none; font-weight: 500; cursor: pointer; }
     .nav a:hover { color: white; border-bottom: 2px solid #b3e29d; padding-bottom: 4px; }
     
-    /* Три колонки: основной раздел | кнопка | команда */
+    /* Центральная колонка — фиксированная ширина, все блоки одинаковые */
+    .main-section {
+      flex: 1;
+      max-width: 550px;
+      min-width: 280px;
+    }
+    .team-section {
+      flex: 0 0 240px;
+    }
     .top-row {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 32px;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
       margin: 40px 0 30px;
       flex-wrap: wrap;
     }
-    .main-section {
-      flex: 2;
-      min-width: 260px;
-    }
     .create-btn-wrapper {
       flex: 0 0 auto;
-    }
-    .team-section {
-      flex: 1;
-      min-width: 200px;
+      margin-top: 8px;
     }
     
-    /* Категории (основной раздел и темы) */
+    /* Все блоки (Основной раздел, категории тем) — одинаковой ширины */
     .category-block {
       background: white;
       border-radius: 24px;
       margin-bottom: 24px;
       border: 1px solid #e6f0e2;
       overflow: hidden;
+      width: 100%;
     }
     .category-header {
       background: #f6fbf3;
-      padding: 16px 20px;
+      padding: 14px 20px;
       border-bottom: 1px solid #e0ecda;
     }
     .category-header h3 {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       color: #1e582c;
     }
-    .category-links {
-      padding: 8px 0;
+    .category-links, .topic-list {
+      padding: 4px 0;
     }
-    .category-link {
+    .category-link, .topic-link {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 20px;
+      padding: 10px 20px;
       border-bottom: 1px solid #f0f6ec;
       color: #2e6b3e;
+      font-size: 14px;
     }
-    .category-link span:first-child i {
-      width: 24px;
-      color: #7baa6b;
-    }
-    
-    /* Стиль тем (как ссылки) */
     .topic-link {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      border-bottom: 1px solid #f0f6ec;
-      color: #2e6b3e;
       cursor: pointer;
-      transition: 0.1s;
     }
     .topic-link:hover {
       background: #f9fef6;
@@ -96,10 +86,10 @@
       border: none;
       color: white;
       font-weight: 600;
-      padding: 12px 28px;
+      padding: 10px 24px;
       border-radius: 40px;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
       white-space: nowrap;
       transition: 0.2s;
     }
@@ -108,60 +98,57 @@
       transform: scale(0.97);
     }
     
-    /* Команда форума онлайн */
+    /* Команда форума онлайн — фиксированная ширина */
     .sidebar-card {
       background: white;
       border-radius: 24px;
-      padding: 20px;
+      padding: 18px;
       border: 1px solid #e0ecda;
+      width: 100%;
     }
     .sidebar-card h4 {
-      font-size: 17px;
-      margin-bottom: 14px;
+      font-size: 16px;
+      margin-bottom: 12px;
       color: #205e32;
       border-left: 4px solid #7dbd68;
       padding-left: 12px;
     }
     .user-online {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid #edf4e9;
+      padding: 6px 0;
     }
     
     /* Комментарии и формы */
     .thread-container {
       background: white;
       border-radius: 28px;
-      padding: 28px;
+      padding: 24px;
       margin: 24px 0;
       border: 1px solid #e3efdd;
     }
     .comment {
       background: #fafef7;
-      border-radius: 24px;
-      padding: 18px;
-      margin-bottom: 20px;
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 16px;
       border-left: 4px solid #9ad685;
     }
     .comment-photo {
       max-width: 100%;
-      margin-top: 12px;
+      margin-top: 10px;
       border-radius: 16px;
-      max-height: 300px;
+      max-height: 260px;
     }
     .reply-form {
       background: #f4faf0;
-      border-radius: 28px;
-      padding: 24px;
-      margin-top: 32px;
+      border-radius: 24px;
+      padding: 20px;
+      margin-top: 28px;
     }
     .reply-form textarea {
       width: 100%;
       border: 1px solid #d0e2c8;
-      border-radius: 24px;
-      padding: 14px 18px;
+      border-radius: 20px;
+      padding: 12px 16px;
       font-family: inherit;
       resize: vertical;
       background: white;
@@ -170,25 +157,25 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      margin: 16px 0;
+      margin: 14px 0;
       flex-wrap: wrap;
     }
     .image-preview {
-      max-width: 100px;
-      max-height: 100px;
-      border-radius: 16px;
+      max-width: 80px;
+      max-height: 80px;
+      border-radius: 14px;
       border: 1px solid #cce0c2;
     }
     .btn-icon {
       background: #eef6ea;
       border: 1px solid #cde0c4;
-      padding: 8px 16px;
+      padding: 6px 14px;
       border-radius: 40px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       color: #2c6b3e;
     }
     .back-link {
@@ -208,13 +195,14 @@
       background: #fafef8;
       margin-top: 50px;
     }
-    @media (max-width: 800px) {
+    @media (max-width: 900px) {
       .top-row {
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
       }
-      .create-btn-wrapper {
-        text-align: center;
+      .main-section, .team-section {
+        max-width: 100%;
+        width: 100%;
       }
     }
   </style>
@@ -265,12 +253,7 @@
       <div class="main-section">
         <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
     mainLinks.forEach(link => { html += `<div class="category-link"><span><i class="far fa-folder"></i> ${link}</span></div>`; });
-    html += `</div></div></div>
-      <div class="create-btn-wrapper"><button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button></div>
-      <div class="team-section"><div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
-        <div class="user-online"><div><b>${escapeHtml(nick)}</b><br><span style="font-size:12px;">Команда проекта</span></div></div>
-      </div></div>
-    </div>`;
+    html += `</div></div>`;
     
     for(let cat of topicCats) {
       let filtered = topics.filter(t=>t.category===cat);
@@ -282,6 +265,13 @@
       });
       html += `</div>`;
     }
+    html += `</div>`;
+    
+    html += `<div class="create-btn-wrapper"><button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button></div>
+      <div class="team-section"><div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
+        <div class="user-online"><b>${escapeHtml(nick)}</b><br><span style="font-size:12px;">Команда проекта</span></div>
+      </div></div>
+    </div>`;
     document.getElementById('app').innerHTML = html;
   }
 
