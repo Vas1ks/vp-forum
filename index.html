@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>ВП | Выживание с Подписчиками — Форум проекта</title>
   <style>
     * {
@@ -12,230 +12,272 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #eef2f5;
-      color: #1e2a2e;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: radial-gradient(circle at 10% 20%, #0b1a12, #07100b);
+      color: #eef5ec;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Лёгкая текстура блоков поверх фона */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: repeating-linear-gradient(45deg, rgba(70, 90, 60, 0.08) 0px, rgba(70, 90, 60, 0.08) 2px, transparent 2px, transparent 12px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container, .header, footer {
+      position: relative;
+      z-index: 2;
     }
 
     /* Шапка */
     .header {
-      background: #2c3e2f;
-      color: white;
-      padding: 20px 0;
-      border-bottom: 4px solid #a3c293;
+      background: rgba(10, 20, 12, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(80, 130, 70, 0.6);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .container {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 24px;
+      flex: 1;
     }
 
-    .logo h1 {
-      font-size: 28px;
-    }
-
-    .logo p {
-      font-size: 14px;
-      color: #cfd8cf;
-    }
-
-    .nav {
-      margin-top: 12px;
-    }
-
-    .nav a {
-      color: #f0f7e6;
-      text-decoration: none;
-      margin-right: 20px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    /* Статистика */
-    .stats {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 25px 0;
-      display: flex;
-      justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 28px;
-      font-weight: bold;
-      color: #2c6e2f;
-    }
-
-    /* Список тем */
-    .topics-header, .topic-row {
-      background: white;
-      border-radius: 12px;
-      padding: 15px 20px;
-      margin-bottom: 10px;
+    .header-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .topics-header {
-      font-weight: bold;
-      color: #5a6e5a;
-      background: #e9f0e6;
+    .logo h1 {
+      font-size: 26px;
+      background: linear-gradient(135deg, #c6ffb0, #6f9e5f);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+
+    .logo p {
+      font-size: 12px;
+      color: #9bbb8a;
+    }
+
+    .nav a {
+      color: #d4ecd0;
+      text-decoration: none;
+      margin-left: 28px;
+      font-weight: 500;
+      font-size: 15px;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .nav a:hover {
+      color: #b3ff9b;
+      border-bottom: 1px solid #7dba65;
+    }
+
+    /* Статистика (стеклянные карточки) */
+    .stats {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin: 40px 0 32px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: rgba(25, 40, 25, 0.65);
+      backdrop-filter: blur(8px);
+      border-radius: 36px;
+      padding: 20px 32px;
+      text-align: center;
+      border: 1px solid rgba(100, 160, 80, 0.4);
+      min-width: 130px;
+      transition: 0.2s;
+    }
+
+    .stat-number {
+      font-size: 38px;
+      font-weight: 800;
+      color: #bef5a6;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #bcddae;
+      margin-top: 8px;
+    }
+
+    /* Категории */
+    .category-title {
+      margin: 40px 0 16px 8px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      border-left: 4px solid #79b85e;
+      padding-left: 16px;
+    }
+
+    /* Карточка темы */
+    .topic-row {
+      background: rgba(18, 28, 20, 0.7);
+      backdrop-filter: blur(4px);
+      border-radius: 24px;
+      padding: 16px 24px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: 0.2s;
+      border: 1px solid rgba(90, 140, 70, 0.3);
+    }
+
+    .topic-row:hover {
+      background: rgba(35, 55, 35, 0.8);
+      transform: translateX(4px);
+      border-color: #6baa4e;
     }
 
     .topic-title {
       font-size: 18px;
       font-weight: 600;
-      color: #1e4620;
-      text-decoration: none;
+      color: #deffcd;
       cursor: pointer;
+      display: inline-block;
     }
 
     .topic-meta {
-      font-size: 13px;
-      color: #6a7c6a;
-      margin-top: 5px;
+      font-size: 12px;
+      color: #93b383;
+      margin-top: 6px;
     }
 
     .topic-stats {
-      text-align: right;
       font-size: 14px;
-    }
-
-    .btn {
-      background: #4a7c4a;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: bold;
-      margin: 20px 0;
-      display: inline-block;
-      font-size: 14px;
-    }
-
-    .btn-small {
+      background: #1e2e1c;
       padding: 6px 14px;
-      font-size: 12px;
-      margin: 0 0 0 10px;
+      border-radius: 60px;
     }
 
-    /* Карточка темы */
+    /* Кнопка */
+    .btn {
+      background: #417c34;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 12px 28px;
+      border-radius: 44px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      margin: 32px 0 24px;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background: #5d9e4a;
+      transform: scale(0.98);
+    }
+
+    /* Карточка темы внутри */
     .topic-card {
-      background: white;
-      border-radius: 16px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .topic-card h2 {
-      color: #2c5e2c;
-      margin-bottom: 10px;
-    }
-
-    .comments-section {
-      margin-top: 30px;
+      background: rgba(15, 25, 18, 0.85);
+      backdrop-filter: blur(12px);
+      border-radius: 32px;
+      padding: 28px;
+      margin: 20px 0;
+      border: 1px solid #4a7540;
     }
 
     .comment {
-      background: #f9fbf7;
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      border-left: 4px solid #7da06e;
-    }
-
-    .comment-author {
-      font-weight: bold;
-      color: #2c5e2c;
-    }
-
-    .comment-text {
-      margin-top: 6px;
-    }
-
-    .comment-date {
-      font-size: 11px;
-      color: #8a9a8a;
-      margin-top: 6px;
+      background: #1d2a1b;
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border-left: 4px solid #6dad51;
     }
 
     .reply-form {
-      margin-top: 20px;
-      background: #f3f7f0;
+      background: #121e10;
+      border-radius: 24px;
       padding: 20px;
-      border-radius: 12px;
+      margin-top: 24px;
     }
 
-    textarea, input, select {
+    input, textarea, select {
+      background: #1c2b18;
+      border: 1px solid #4c6e40;
+      color: #f0ffea;
+      border-radius: 28px;
+      padding: 12px 18px;
       width: 100%;
-      padding: 12px;
-      margin-bottom: 12px;
-      border-radius: 12px;
-      border: 1px solid #ccc;
+      margin-bottom: 14px;
       font-family: inherit;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-bottom: 20px;
-      color: #2c6e2f;
-      text-decoration: none;
-      cursor: pointer;
     }
 
     footer {
       text-align: center;
-      margin-top: 50px;
-      padding: 25px;
-      color: #6e7c6e;
+      padding: 28px 0;
+      margin-top: 60px;
+      border-top: 1px solid #2a4522;
+      color: #8bae7a;
+      font-size: 13px;
     }
 
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 18px;
-      color: #5a7c5a;
+    .back-link {
+      color: #bbeea2;
+      cursor: pointer;
+      margin-bottom: 24px;
+      display: inline-block;
     }
 
-    .category-title {
-      margin: 30px 0 10px 0;
-      font-weight: bold;
-      font-size: 22px;
-      padding-left: 5px;
-      border-left: 4px solid #4a7c4a;
+    @media (max-width: 700px) {
+      .header-content { flex-direction: column; text-align: center; }
+      .topic-row { flex-direction: column; gap: 12px; align-items: flex-start; }
+      .stats { gap: 12px; }
     }
   </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="container">
+  <div class="header-content">
     <div class="logo">
       <h1>🌿 ВП | Выживание с Подписчиками</h1>
-      <p>Форум проекта — общение, обсуждения, помощь</p>
+      <p>официальный форум проекта</p>
     </div>
     <div class="nav">
       <a onclick="showMainPage()">Главная</a>
-      <a href="#" onclick="showCreateTopicForm()">Создать тему</a>
+      <a onclick="showCreateTopicForm()">Создать тему</a>
       <a href="#">Правила</a>
-      <a href="#">О проекте</a>
     </div>
   </div>
 </div>
 
 <div class="container" id="app">
-  <div class="loading">📡 Загрузка форума...</div>
+  <div class="loading" style="text-align:center; padding:60px;">📡 загрузка форума...</div>
 </div>
 
 <footer>
@@ -243,237 +285,127 @@
 </footer>
 
 <script>
-  // ========== ВАШИ ССЫЛКИ ==========
-  // Ссылка на лист "Темы" (gid=0)
+  // ================ ⚙️ ТВОИ ССЫЛКИ =================
   const TOPICS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vST0Y9NxgyjLMkYCFNUsdgEU6SIW9COeKHkXj_hMzZ82o1IavIQe2TFfh-png4OXskm9XJNnH4n_Dom/pub?gid=0&single=true&output=csv";
-  
-  // Ссылка на лист "Комментарии" (gid=1157264192)
   const COMMENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vST0Y9NxgyjLMkYCFNUsdgEU6SIW9COeKHkXj_hMzZ82o1IavIQe2TFfh-png4OXskm9XJNnH4n_Dom/pub?gid=1157264192&single=true&output=csv";
-  
-  // API для добавления комментариев (ваш скрипт)
   const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbzxnUFg_5XYX1-vZ6XFAG7A4j1yJGnHE27cLyle0oi5vk16mUQ8SA9QIUbvxQJ9D0Eq/exec";
-  
-  // API для добавления тем (нужно создать такой же скрипт для листа "Темы")
-  // Пока темы добавляем через ссылку на таблицу (вручную или позже сделаем API)
-  // ==================================
+  const ADD_TOPIC_API = "https://script.google.com/macros/s/AKfycbzcws06pWqn5TZkYDNbNw_m3z-xDlUfa1Ih4nywKdo8BDCBYdLJn0LmyjnwJM7uY6lk/exec";
+  // =================================================
 
-  let topics = [];
-  let comments = [];
+  let topics = [], comments = [];
 
-  // Загрузка данных
   async function loadData() {
     try {
-      document.getElementById('app').innerHTML = '<div class="loading">📡 Загрузка форума...</div>';
-      
-      const topicsRes = await fetch(TOPICS_CSV);
+      const [topicsRes, commentsRes] = await Promise.all([fetch(TOPICS_CSV), fetch(COMMENTS_CSV)]);
       const topicsText = await topicsRes.text();
-      topics = parseCSV(topicsText);
-      
-      const commentsRes = await fetch(COMMENTS_CSV);
       const commentsText = await commentsRes.text();
+      topics = parseCSV(topicsText);
       comments = parseCSV(commentsText);
-      
       showMainPage();
-    } catch (err) {
-      console.error(err);
-      document.getElementById('app').innerHTML = '<div class="loading">⚠️ Ошибка загрузки данных. Проверьте ссылки CSV.</div>';
+    } catch(e) {
+      document.getElementById('app').innerHTML = '<div style="padding:40px;text-align:center;">⚠️ ошибка загрузки. проверь CSV ссылки</div>';
     }
   }
 
   function parseCSV(text) {
     const rows = text.split('\n').filter(r => r.trim());
-    if (rows.length < 2) return [];
-    const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
-    const result = [];
-    for (let i = 1; i < rows.length; i++) {
-      const cols = rows[i].split(',');
-      if (cols.length < 2) continue;
+    if(rows.length<2) return [];
+    const headers = rows[0].split(',').map(h=>h.trim().toLowerCase());
+    let res = [];
+    for(let i=1;i<rows.length;i++) {
+      let cols = rows[i].split(',');
+      if(cols.length<2) continue;
       let obj = {};
-      headers.forEach((h, idx) => {
-        obj[h] = cols[idx] ? cols[idx].trim() : '';
-      });
-      result.push(obj);
+      headers.forEach((h,idx)=> obj[h]=cols[idx]?cols[idx].trim():'');
+      res.push(obj);
     }
-    return result;
+    return res;
   }
 
-  // Главная страница
   function showMainPage() {
-    const categories = ["Общее", "Ивенты", "Постройки", "PvP", "Правила"];
+    const cats = ["Общее","Ивенты","Постройки","PvP","Правила"];
     const totalTopics = topics.length;
     const totalComments = comments.length;
-    const uniqueAuthors = new Set([...topics.map(t => t.author), ...comments.map(c => c.author)]);
-    
-    let html = `
-      <div class="stats">
-        <div class="stat-item"><div class="stat-number">${totalTopics}</div><div>Тем</div></div>
-        <div class="stat-item"><div class="stat-number">${totalComments}</div><div>Сообщений</div></div>
-        <div class="stat-item"><div class="stat-number">${uniqueAuthors.size}</div><div>Авторов</div></div>
-      </div>
-    `;
+    const authors = new Set([...topics.map(t=>t.author), ...comments.map(c=>c.author)]);
+    let html = `<div class="stats">
+      <div class="stat-card"><div class="stat-number">${totalTopics}</div><div class="stat-label">тем</div></div>
+      <div class="stat-card"><div class="stat-number">${totalComments}</div><div class="stat-label">сообщений</div></div>
+      <div class="stat-card"><div class="stat-number">${authors.size}</div><div class="stat-label">авторов</div></div>
+    </div>`;
 
-    for (let cat of categories) {
-      const filtered = topics.filter(t => t.category === cat);
+    for(let cat of cats) {
+      let filtered = topics.filter(t=>t.category===cat);
       html += `<div class="category-title">📁 ${cat}</div>`;
-      
-      if (filtered.length === 0) {
-        html += `<div class="topics-header" style="justify-content:center;">Пока нет тем в этой категории</div>`;
-      } else {
-        for (let topic of filtered) {
-          const commentCount = comments.filter(c => c.topic_id === topic.id).length;
-          html += `
-            <div class="topic-row">
-              <div>
-                <div class="topic-title" onclick="showTopic('${topic.id}')">${escapeHtml(topic.title)}</div>
-                <div class="topic-meta">Автор: ${escapeHtml(topic.author)} | ${topic.date}</div>
-              </div>
-              <div class="topic-stats">
-                💬 ${commentCount} ответов
-              </div>
-            </div>
-          `;
-        }
+      if(filtered.length===0) html+=`<div class="topic-row" style="justify-content:center;">— нет тем —</div>`;
+      else for(let t of filtered) {
+        let cnt = comments.filter(c=>c.topic_id===t.id).length;
+        html += `<div class="topic-row">
+          <div><div class="topic-title" onclick="showTopic('${t.id}')">${escapeHtml(t.title)}</div>
+          <div class="topic-meta">автор: ${escapeHtml(t.author)} | ${t.date}</div></div>
+          <div class="topic-stats">💬 ${cnt}</div>
+        </div>`;
       }
     }
-    
-    html += `<button class="btn" onclick="showCreateTopicForm()">+ Создать новую тему</button>`;
+    html += `<button class="btn" onclick="showCreateTopicForm()">+ создать тему</button>`;
     document.getElementById('app').innerHTML = html;
   }
 
-  // Форма создания темы
   function showCreateTopicForm() {
-    const html = `
-      <div class="back-link" onclick="showMainPage()">← Назад к списку тем</div>
-      <div class="topic-card">
-        <h2>➕ Создать новую тему</h2>
-        <input type="text" id="newTitle" placeholder="Название темы">
-        <select id="newCategory">
-          <option value="Общее">Общее</option>
-          <option value="Ивенты">Ивенты</option>
-          <option value="Постройки">Постройки</option>
-          <option value="PvP">PvP</option>
-          <option value="Правила">Правила</option>
-        </select>
-        <input type="text" id="newAuthor" placeholder="Ваш игровой ник">
-        <button class="btn" onclick="createTopic()">📢 Опубликовать тему</button>
-      </div>
+    document.getElementById('app').innerHTML = `
+      <div class="back-link" onclick="showMainPage()">← назад</div>
+      <div class="topic-card"><h2>📝 новая тема</h2>
+      <input id="newTitle" placeholder="заголовок">
+      <select id="newCategory"><option>Общее</option><option>Ивенты</option><option>Постройки</option><option>PvP</option><option>Правила</option></select>
+      <input id="newAuthor" placeholder="ваш ник">
+      <button class="btn" id="sendTopicBtn">📢 опубликовать</button></div>
     `;
-    document.getElementById('app').innerHTML = html;
+    document.getElementById('sendTopicBtn').onclick = createTopic;
   }
 
-  // Создание темы (временно — открывает Google Sheets)
   async function createTopic() {
     const title = document.getElementById('newTitle').value.trim();
     const author = document.getElementById('newAuthor').value.trim();
     const category = document.getElementById('newCategory').value;
-    
-    if (!title || !author) {
-      alert("Заполните название темы и ваш ник!");
-      return;
-    }
-    
-    // Открываем Google Sheets для добавления строки вручную
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/1rDZgDa-fOp2pLueEqKNRcwyV9pduGvZm41571eM_OKc/edit#gid=0";
-    alert(`✅ Тема "${title}" будет добавлена!\n\n👉 Открой таблицу и добавь строку:\n${sheetUrl}\n\nСтолбцы: id, title, author, date, category\n\nПосле добавления обнови страницу (F5).`);
-    
-    // В будущем можно сделать API для автоматического добавления
-    window.open(sheetUrl, '_blank');
+    if(!title || !author) return alert("заполните ник и название");
+    const date = new Date().toLocaleDateString();
+    const btn = document.getElementById('sendTopicBtn');
+    btn.disabled = true;
+    try {
+      await fetch(ADD_TOPIC_API, { method:'POST', mode:'no-cors', body: JSON.stringify({title,author,date,category}) });
+      alert("✅ тема создана! обновите страницу (F5)");
+      loadData();
+    } catch(e) { alert("ошибка API тем"); }
+    btn.disabled = false;
   }
 
-  // Просмотр темы с комментариями
-  function showTopic(topicId) {
-    const topic = topics.find(t => t.id === topicId);
-    if (!topic) return;
-    
-    const topicComments = comments.filter(c => c.topic_id === topicId);
-    
-    let commentsHtml = '';
-    if (topicComments.length === 0) {
-      commentsHtml = '<div style="color:#8a9a8a; padding:15px;">Пока нет ответов. Будь первым!</div>';
-    } else {
-      for (let c of topicComments) {
-        commentsHtml += `
-          <div class="comment">
-            <div class="comment-author">${escapeHtml(c.author)}</div>
-            <div class="comment-text">${escapeHtml(c.text)}</div>
-            <div class="comment-date">${c.date}</div>
-          </div>
-        `;
-      }
-    }
-    
-    const html = `
-      <div class="back-link" onclick="showMainPage()">← Назад к списку тем</div>
-      <div class="topic-card">
-        <h2>${escapeHtml(topic.title)}</h2>
-        <div class="topic-meta">Автор: ${escapeHtml(topic.author)} | ${topic.date} | Категория: ${topic.category}</div>
-        <div style="margin-top: 20px;"></div>
-        
-        <div class="comments-section">
-          <h3>💬 Ответы (${topicComments.length})</h3>
-          ${commentsHtml}
-          
-          <div class="reply-form">
-            <h4>📝 Ваш ответ</h4>
-            <input type="text" id="replyAuthor" placeholder="Ваш игровой ник">
-            <textarea id="replyText" rows="3" placeholder="Напишите ответ..."></textarea>
-            <button class="btn" onclick="addComment('${topicId}')">✉️ Отправить ответ</button>
-          </div>
-        </div>
-      </div>
-    `;
-    document.getElementById('app').innerHTML = html;
-  }
-
-  // Добавление комментария
   async function addComment(topicId) {
     const author = document.getElementById('replyAuthor').value.trim();
     const text = document.getElementById('replyText').value.trim();
-    
-    if (!author || !text) {
-      alert("Введите ник и текст ответа");
-      return;
-    }
-    
-    const now = new Date();
-    const dateStr = `${now.getDate()}.${now.getMonth()+1}.${now.getFullYear()}`;
-    
-    const commentData = {
-      topic_id: topicId,
-      author: author,
-      text: text,
-      date: dateStr
-    };
-    
+    if(!author || !text) return alert("введите ник и текст");
+    const date = new Date().toLocaleDateString();
     try {
-      await fetch(ADD_COMMENT_API, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(commentData)
-      });
-      
-      alert("✅ Комментарий добавлен! Обновите страницу (F5)");
-      // Перезагружаем данные и показываем тему снова
-      await loadData();
-      showTopic(topicId);
-    } catch (err) {
-      alert("❌ Ошибка при добавлении комментария. Проверьте API.");
-      console.error(err);
-    }
+      await fetch(ADD_COMMENT_API, { method:'POST', mode:'no-cors', body: JSON.stringify({topic_id:topicId, author, text, date}) });
+      alert("✅ комментарий добавлен! обновите страницу");
+      loadData().then(()=>showTopic(topicId));
+    } catch(e) { alert("ошибка API комментариев"); }
   }
 
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    });
+  function showTopic(id) {
+    const topic = topics.find(t=>t.id===id);
+    if(!topic) return;
+    let coms = comments.filter(c=>c.topic_id===id);
+    let comHtml = coms.length ? coms.map(c=>`<div class="comment"><div class="comment-author">${escapeHtml(c.author)}</div><div>${escapeHtml(c.text)}</div><div class="topic-meta">${c.date}</div></div>`).join('') : '<div style="padding:14px;">пока ответов нет</div>';
+    document.getElementById('app').innerHTML = `
+      <div class="back-link" onclick="showMainPage()">← к списку тем</div>
+      <div class="topic-card"><h2>${escapeHtml(topic.title)}</h2><div class="topic-meta">автор: ${escapeHtml(topic.author)} | ${topic.date} | ${topic.category}</div>
+      <div class="comments-section"><h3 style="margin:20px 0 12px;">💬 ответы (${coms.length})</h3>${comHtml}
+      <div class="reply-form"><h4>✏️ ваш ответ</h4><input id="replyAuthor" placeholder="ник"><textarea id="replyText" rows="2"></textarea>
+      <button class="btn" onclick="addComment('${id}')">отправить</button></div></div></div>
+    `;
   }
 
-  // Запуск
+  function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
   loadData();
 </script>
 </body>
