@@ -6,348 +6,62 @@
   <title>ВП | Выживание с Подписчиками — Форум</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: #eef3ea;
-      font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-      color: #1a2a1c;
-      line-height: 1.4;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    .header {
-      background: #1f3b2c;
-      border-bottom: 3px solid #b5dfa3;
-      padding: 18px 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .header-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .logo h1 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #f1ffe8;
-      letter-spacing: -0.3px;
-    }
-
-    .logo p {
-      font-size: 13px;
-      color: #c7e2b9;
-      margin-top: 4px;
-    }
-
-    .nav a {
-      color: #edffe3;
-      margin-left: 32px;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 15px;
-      transition: 0.2s;
-      cursor: pointer;
-    }
-
-    .nav a:hover {
-      color: white;
-      border-bottom: 2px solid #b3e29d;
-      padding-bottom: 4px;
-    }
-
-    .forum-grid {
-      display: flex;
-      gap: 32px;
-      margin: 40px 0;
-      flex-wrap: wrap;
-    }
-
-    .main-col {
-      flex: 2;
-      min-width: 260px;
-    }
-
-    .sidebar-col {
-      flex: 1;
-      min-width: 240px;
-    }
-
-    .category-block {
-      background: white;
-      border-radius: 24px;
-      margin-bottom: 24px;
-      border: 1px solid #e6f0e2;
-      overflow: hidden;
-    }
-
-    .category-header {
-      background: #f6fbf3;
-      padding: 16px 20px;
-      border-bottom: 1px solid #e0ecda;
-    }
-
-    .category-header h3 {
-      font-size: 18px;
-      font-weight: 700;
-      color: #1e582c;
-    }
-
-    .category-links {
-      padding: 8px 0;
-    }
-
-    .category-link {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      border-bottom: 1px solid #f0f6ec;
-      text-decoration: none;
-      color: #2e6b3e;
-    }
-
-    .category-link span:first-child i {
-      width: 24px;
-      color: #7baa6b;
-    }
-
-    .topic-item {
-      background: white;
-      border-radius: 20px;
-      padding: 16px 20px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: 0.2s;
-      border: 1px solid #e2efdb;
-      cursor: pointer;
-    }
-
-    .topic-item:hover {
-      border-color: #b9daab;
-      transform: translateX(4px);
-    }
-
-    .topic-info {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .avatar {
-      width: 44px;
-      height: 44px;
-      background: #dcf0d2;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: #286e3b;
-      font-size: 18px;
-    }
-
-    .topic-title {
-      font-weight: 650;
-      font-size: 16px;
-      color: #1f4829;
-    }
-
-    .topic-meta {
-      font-size: 12px;
-      color: #8aa883;
-      margin-top: 5px;
-    }
-
-    .topic-stats {
-      background: #f0f7ec;
-      padding: 5px 14px;
-      border-radius: 40px;
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .sidebar-card {
-      background: white;
-      border-radius: 24px;
-      padding: 20px;
-      margin-bottom: 28px;
-      border: 1px solid #e0ecda;
-    }
-
-    .sidebar-card h4 {
-      font-size: 17px;
-      margin-bottom: 14px;
-      color: #205e32;
-      border-left: 4px solid #7dbd68;
-      padding-left: 12px;
-    }
-
-    .user-online {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid #edf4e9;
-    }
-
-    .thread-container {
-      background: white;
-      border-radius: 28px;
-      padding: 28px;
-      margin: 24px 0;
-      border: 1px solid #e3efdd;
-    }
-
-    .comment {
-      background: #fafef7;
-      border-radius: 24px;
-      padding: 18px;
-      margin-bottom: 20px;
-      border-left: 4px solid #9ad685;
-    }
-
-    .comment-photo {
-      max-width: 100%;
-      margin-top: 12px;
-      border-radius: 16px;
-      max-height: 300px;
-    }
-
-    .reply-form {
-      background: #f4faf0;
-      border-radius: 28px;
-      padding: 24px;
-      margin-top: 32px;
-    }
-
-    .reply-form textarea {
-      width: 100%;
-      border: 1px solid #d0e2c8;
-      border-radius: 24px;
-      padding: 14px 18px;
-      font-family: inherit;
-      resize: vertical;
-      background: white;
-    }
-
-    .image-upload-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 16px 0;
-      flex-wrap: wrap;
-    }
-
-    .image-preview {
-      max-width: 100px;
-      max-height: 100px;
-      border-radius: 16px;
-      border: 1px solid #cce0c2;
-    }
-
-    .btn-icon {
-      background: #eef6ea;
-      border: 1px solid #cde0c4;
-      padding: 8px 16px;
-      border-radius: 40px;
-      cursor: pointer;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: #2c6b3e;
-    }
-
-    .btn-primary {
-      background: #2e7a45;
-      border: none;
-      color: white;
-      font-weight: 600;
-      padding: 10px 22px;
-      border-radius: 40px;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: #2d7845;
-      cursor: pointer;
-      margin-bottom: 20px;
-      font-weight: 500;
-    }
-
-    footer {
-      text-align: center;
-      padding: 28px;
-      border-top: 1px solid #deecda;
-      color: #8eab86;
-      background: #fafef8;
-      margin-top: 50px;
-    }
-
-    @media (max-width: 800px) {
-      .forum-grid {
-        flex-direction: column;
-      }
-      .topic-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #eef3ea; font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif; color: #1a2a1c; line-height: 1.4; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .header { background: #1f3b2c; border-bottom: 3px solid #b5dfa3; padding: 18px 0; position: sticky; top: 0; z-index: 100; }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo h1 { font-size: 28px; font-weight: 700; color: #f1ffe8; }
+    .logo p { font-size: 13px; color: #c7e2b9; margin-top: 4px; }
+    .nav a { color: #edffe3; margin-left: 32px; text-decoration: none; font-weight: 500; cursor: pointer; }
+    .nav a:hover { color: white; border-bottom: 2px solid #b3e29d; padding-bottom: 4px; }
+    .forum-grid { display: flex; gap: 32px; margin: 40px 0; flex-wrap: wrap; }
+    .main-col { flex: 2; min-width: 260px; }
+    .sidebar-col { flex: 1; min-width: 240px; }
+    .category-block { background: white; border-radius: 24px; margin-bottom: 24px; border: 1px solid #e6f0e2; overflow: hidden; }
+    .category-header { background: #f6fbf3; padding: 16px 20px; border-bottom: 1px solid #e0ecda; }
+    .category-header h3 { font-size: 18px; font-weight: 700; color: #1e582c; }
+    .category-links { padding: 8px 0; }
+    .category-link { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid #f0f6ec; color: #2e6b3e; }
+    .category-link span:first-child i { width: 24px; color: #7baa6b; }
+    /* Стиль тем — такой же, как ссылки в основном разделе */
+    .topic-link { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid #f0f6ec; color: #2e6b3e; cursor: pointer; transition: 0.1s; }
+    .topic-link:hover { background: #f9fef6; }
+    .topic-stats { font-size: 13px; color: #7baa6b; }
+    .btn-primary { background: #2e7a45; border: none; color: white; font-weight: 600; padding: 10px 22px; border-radius: 40px; cursor: pointer; margin: 20px 0; display: inline-block; }
+    .btn-icon { background: #eef6ea; border: 1px solid #cde0c4; padding: 8px 16px; border-radius: 40px; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; color: #2c6b3e; }
+    .thread-container { background: white; border-radius: 28px; padding: 28px; margin: 24px 0; border: 1px solid #e3efdd; }
+    .comment { background: #fafef7; border-radius: 24px; padding: 18px; margin-bottom: 20px; border-left: 4px solid #9ad685; }
+    .comment-photo { max-width: 100%; margin-top: 12px; border-radius: 16px; max-height: 300px; }
+    .reply-form { background: #f4faf0; border-radius: 28px; padding: 24px; margin-top: 32px; }
+    .reply-form textarea { width: 100%; border: 1px solid #d0e2c8; border-radius: 24px; padding: 14px 18px; font-family: inherit; resize: vertical; background: white; }
+    .image-upload-area { display: flex; align-items: center; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+    .image-preview { max-width: 100px; max-height: 100px; border-radius: 16px; border: 1px solid #cce0c2; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: #2d7845; cursor: pointer; margin-bottom: 20px; font-weight: 500; }
+    .sidebar-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 28px; border: 1px solid #e0ecda; }
+    .sidebar-card h4 { font-size: 17px; margin-bottom: 14px; color: #205e32; border-left: 4px solid #7dbd68; padding-left: 12px; }
+    .user-online { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #edf4e9; }
+    footer { text-align: center; padding: 28px; border-top: 1px solid #deecda; color: #8eab86; background: #fafef8; margin-top: 50px; }
+    @media (max-width: 800px) { .forum-grid { flex-direction: column; } }
   </style>
 </head>
 <body>
 
 <div class="header">
   <div class="container header-inner">
-    <div class="logo">
-      <h1>🌿 ВП | Выживание с Подписчиками</h1>
-      <p>официальный форум проекта</p>
-    </div>
-    <div class="nav">
-      <a onclick="showMainPage()">Главная</a>
-      <a onclick="showCreateTopicForm()">Создать тему</a>
-      <a href="#">Правила</a>
-    </div>
+    <div class="logo"><h1>🌿 ВП | Выживание с Подписчиками</h1><p>официальный форум проекта</p></div>
+    <div class="nav"><a onclick="showMainPage()">Главная</a><a onclick="showCreateTopicForm()">Создать тему</a><a href="#">Правила</a></div>
   </div>
 </div>
 
-<div class="container" id="app">
-  <div style="text-align:center; padding: 60px;">📡 загрузка форума...</div>
-</div>
-
-<footer>
-  © 2026 ВП | Выживание с Подписчиками — Форум проекта
-</footer>
+<div class="container" id="app"><div style="text-align:center; padding:60px;">📡 загрузка...</div></div>
+<footer>© 2026 ВП | Выживание с Подписчиками — Форум проекта</footer>
 
 <script>
-  // ========== ТВОИ ССЫЛКИ ==========
   const TOPICS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7w_qakiVZNa26pZXY9_-qZ2peGlKga-J3VlMfE8WtYt_skMjgYyiECDfOGzgxmDn7ZdyFJd_7q_CP/pub?output=csv";
   const COMMENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRhLuXUXT8TU26BTL6j5ih5BlvNQ_RFweSK8yYHgycnK2bObZINPWi9pUUeNtE-5FNQYvmpihg-EWYV/pub?output=csv";
   const ADD_TOPIC_API = "https://script.google.com/macros/s/AKfycbzMqzTrs4Q51_PDGXsAD6-JxoXFkfLH3hwByYoc6fgv6zK08df6tvzYKaOVHy1buVn6Zw/exec";
   const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbxiPAvFOVOGBXayfweiAUJAReTXYfFSvdKcVuiZv2i8O5qj2g04kjHUkJT7FsN2ga8/exec";
-  // ==================================
 
   let topics = [], comments = [];
 
@@ -356,184 +70,116 @@
       const [tRes, cRes] = await Promise.all([fetch(TOPICS_CSV), fetch(COMMENTS_CSV)]);
       topics = parseCSV(await tRes.text());
       comments = parseCSV(await cRes.text());
-      // Сортировка тем: новые (с большим id) — сверху
-      topics.sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
+      topics.sort((a,b) => (Number(b.id)||0) - (Number(a.id)||0));
       showMainPage();
-    } catch(e) {
-      document.getElementById('app').innerHTML = '<div style="padding:40px;text-align:center;">⚠️ Ошибка загрузки. Проверьте таблицы.</div>';
-    }
+    } catch(e) { document.getElementById('app').innerHTML = '<div style="padding:40px;text-align:center;">⚠️ Ошибка загрузки</div>'; }
   }
 
   function parseCSV(text) {
-    const rows = text.split('\n').filter(r => r.trim());
-    if (rows.length < 2) return [];
-    const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
-    return rows.slice(1).map(row => {
-      const cols = row.split(',');
-      let obj = {};
-      headers.forEach((h, i) => obj[h] = cols[i] ? cols[i].trim() : '');
-      return obj;
-    }).filter(obj => Object.keys(obj).length);
+    const rows = text.split('\n').filter(r=>r.trim());
+    if(rows.length<2) return [];
+    const headers = rows[0].split(',').map(h=>h.trim().toLowerCase());
+    return rows.slice(1).map(row=>{ let obj={}; headers.forEach((h,i)=>obj[h]=row.split(',')[i]?.trim()||''); return obj; }).filter(obj=>Object.keys(obj).length);
   }
 
   function showMainPage() {
-    const mainCategories = [
-      { name: "Основной раздел", links: ["Новости и информация", "Технический раздел", "Донат услуги", "Мероприятия и ивенты", "Предложения по улучшению проекта", "Сообщество в Discord", "Группа ВКонтакте"] }
-    ];
-    const topicCategories = ["Общее", "Ивенты", "Постройки", "PvP", "Правила"];
-
-    let html = `<div class="forum-grid">
-      <div class="main-col">`;
-
+    const mainLinks = ["Новости и информация", "Технический раздел", "Донат услуги", "Мероприятия и ивенты", "Предложения по улучшению проекта", "Сообщество в Discord", "Группа ВКонтакте"];
+    const topicCats = ["Общее","Ивенты","Постройки","PvP","Правила"];
+    let html = `<div class="forum-grid"><div class="main-col">`;
+    // Кнопка создания темы — в самом верху
+    html += `<div style="margin: 0 0 20px 0;"><button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button></div>`;
     // Основной раздел
-    for (let cat of mainCategories) {
-      html += `<div class="category-block"><div class="category-header"><h3>${cat.name}</h3></div><div class="category-links">`;
-      cat.links.forEach(link => {
-        html += `<div class="category-link"><span><i class="far fa-folder"></i> ${link}</span></div>`;
-      });
-      html += `</div></div>`;
-    }
-
-    // Кнопка создания темы (теперь сверху)
-    html += `<div style="margin: 10px 0 20px 0;"><button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button></div>`;
-
-    // Категории с реальными темами из таблицы
-    for (let cat of topicCategories) {
-      const filtered = topics.filter(t => t.category === cat);
+    html += `<div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
+    mainLinks.forEach(link => { html += `<div class="category-link"><span><i class="far fa-folder"></i> ${link}</span></div>`; });
+    html += `</div></div>`;
+    // Категории с темами (стиль как в основном разделе)
+    for(let cat of topicCats) {
+      let filtered = topics.filter(t=>t.category===cat);
       html += `<div class="category-block"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
-      if (!filtered.length) {
-        html += `<div class="category-link">— нет тем —</div>`;
-      } else {
-        filtered.forEach(t => {
-          const replyCount = comments.filter(c => c.topic_id === t.id).length;
-          const firstLetter = (t.author?.charAt(0) || '?').toUpperCase();
-          html += `<div class="topic-item" onclick="showTopic('${t.id}')">
-            <div class="topic-info">
-              <div class="avatar">${escapeHtml(firstLetter)}</div>
-              <div>
-                <div class="topic-title">${escapeHtml(t.title)}</div>
-                <div class="topic-meta">автор: ${escapeHtml(t.author)} | ${t.date}</div>
-              </div>
-            </div>
-            <div class="topic-stats">💬 ${replyCount}</div>
-          </div>`;
-        });
-      }
+      if(!filtered.length) html += `<div class="category-link">— нет тем —</div>`;
+      else filtered.forEach(t=>{
+        let cnt = comments.filter(c=>c.topic_id===t.id).length;
+        html += `<div class="topic-link" onclick="showTopic('${t.id}')"><span><i class="far fa-comment"></i> ${escapeHtml(t.title)}</span><span class="topic-stats">💬 ${cnt}</span></div>`;
+      });
       html += `</div>`;
     }
     html += `</div>`;
-
-    // Сайдбар (только ты)
-    const myNick = localStorage.getItem('vp_nick') || 'Vas1ks';
-    const myLetter = myNick.charAt(0).toUpperCase();
-    html += `<div class="sidebar-col">
-      <div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
-        <div class="user-online"><div class="avatar" style="width:36px;height:36px;font-size:14px;">${escapeHtml(myLetter)}</div><div><b>${escapeHtml(myNick)}</b><br><span style="font-size:12px;">Администратор</span></div></div>
-      </div>
-    </div></div>`;
-
+    // Сайдбар
+    let nick = localStorage.getItem('vp_nick') || 'Vas1ks';
+    html += `<div class="sidebar-col"><div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
+      <div class="user-online"><div><b>${escapeHtml(nick)}</b><br><span style="font-size:12px;">Команда проекта</span></div></div>
+    </div></div></div>`;
     document.getElementById('app').innerHTML = html;
   }
 
   function showCreateTopicForm() {
-    document.getElementById('app').innerHTML = `
-      <div class="back-link" onclick="showMainPage()">← назад</div>
-      <div class="thread-container"><h2>📝 Новая тема</h2>
-      <input id="newTitle" placeholder="Название темы">
+    document.getElementById('app').innerHTML = `<div class="back-link" onclick="showMainPage()">← назад</div>
+      <div class="thread-container"><h2>📝 Новая тема</h2><input id="newTitle" placeholder="Название темы">
       <select id="newCategory"><option>Общее</option><option>Ивенты</option><option>Постройки</option><option>PvP</option><option>Правила</option></select>
-      <input id="newAuthor" placeholder="Ваш игровой ник">
-      <button class="btn-primary" id="sendTopicBtn">📢 Опубликовать</button></div>
-    `;
+      <input id="newAuthor" placeholder="Ваш игровой ник"><button class="btn-primary" id="sendTopicBtn">📢 Опубликовать</button></div>`;
     document.getElementById('sendTopicBtn').onclick = createTopic;
   }
 
   async function createTopic() {
-    const title = document.getElementById('newTitle').value.trim();
-    const author = document.getElementById('newAuthor').value.trim();
-    const category = document.getElementById('newCategory').value;
-    if (!title || !author) return alert("Заполните название и ник");
+    let title = document.getElementById('newTitle').value.trim(), author = document.getElementById('newAuthor').value.trim(), category = document.getElementById('newCategory').value;
+    if(!title||!author) return alert("Заполните поля");
     localStorage.setItem('vp_nick', author);
-    const date = new Date().toLocaleDateString();
-    const btn = document.getElementById('sendTopicBtn');
+    let date = new Date().toLocaleDateString();
+    let btn = document.getElementById('sendTopicBtn');
     btn.disabled = true;
-    try {
-      await fetch(ADD_TOPIC_API, { method:'POST', mode:'no-cors', body: JSON.stringify({ title, author, date, category }) });
-      alert("✅ Тема создана! Обновите страницу (F5)");
-      loadData();
-    } catch(e) { alert("Ошибка при создании темы"); }
+    try { await fetch(ADD_TOPIC_API, { method:'POST', mode:'no-cors', body: JSON.stringify({ title, author, date, category }) }); alert("✅ Тема создана! Обновите страницу"); loadData(); } catch(e){ alert("Ошибка"); }
     btn.disabled = false;
   }
 
-  let pendingImageData = null;
-  function triggerImageUpload() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/jpeg, image/png, image/gif, image/webp';
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        pendingImageData = ev.target.result;
-        const previewDiv = document.getElementById('imagePreview');
-        if (previewDiv) {
-          previewDiv.innerHTML = `<img src="${pendingImageData}" class="image-preview" alt="preview"> <span style="font-size:12px;">✓ фото готово</span>`;
-        }
-      };
+  let pendingImage = null;
+  window.triggerImageUpload = ()=> {
+    let inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'image/*';
+    inp.onchange = e=>{
+      let file = e.target.files[0];
+      if(!file) return;
+      let reader = new FileReader();
+      reader.onload = ev=>{ pendingImage = ev.target.result; let div = document.getElementById('imagePreview'); if(div) div.innerHTML = `<img src="${pendingImage}" class="image-preview"> <span>✓ фото</span>`; };
       reader.readAsDataURL(file);
     };
-    input.click();
-  }
+    inp.click();
+  };
 
-  async function addCommentWithImage(topicId) {
-    const author = document.getElementById('replyAuthor').value.trim();
-    const text = document.getElementById('replyText').value.trim();
-    if (!author || (!text && !pendingImageData)) return alert("Введите ник и текст или прикрепите фото");
-    const date = new Date().toLocaleDateString();
+  window.addCommentWithImage = async (topicId)=>{
+    let author = document.getElementById('replyAuthor').value.trim();
+    let text = document.getElementById('replyText').value.trim();
+    if(!author || (!text && !pendingImage)) return alert("Введите ник и текст или фото");
+    let date = new Date().toLocaleDateString();
     let finalText = text;
-    if (pendingImageData) {
-      finalText = finalText + (finalText ? "\n" : "") + "[IMG]" + pendingImageData + "[/IMG]";
-    }
+    if(pendingImage) finalText = (finalText?finalText+"\n":"") + "[IMG]"+pendingImage+"[/IMG]";
     try {
       await fetch(ADD_COMMENT_API, { method:'POST', mode:'no-cors', body: JSON.stringify({ topic_id: topicId, author, text: finalText, date }) });
       alert("✅ Комментарий добавлен! Обновите страницу");
-      loadData().then(() => showTopic(topicId));
-    } catch(e) { alert("Ошибка при отправке"); }
-    pendingImageData = null;
+      loadData().then(()=>showTopic(topicId));
+    } catch(e){ alert("Ошибка"); }
+    pendingImage = null;
+  };
+
+  function showTopic(id){
+    let topic = topics.find(t=>t.id===id);
+    if(!topic) return;
+    let topicComments = comments.filter(c=>c.topic_id===id);
+    let commentsHtml = !topicComments.length ? '<div>— нет ответов —</div>' : topicComments.map(c=>{
+      let txt = c.text, imgHtml = '';
+      let m = txt.match(/\[IMG\](.*?)\[\/IMG\]/);
+      if(m){ imgHtml = `<div><img src="${m[1]}" class="comment-photo"></div>`; txt = txt.replace(/\[IMG\].*?\[\/IMG\]/,'').trim(); }
+      return `<div class="comment"><div style="font-weight:600;">${escapeHtml(c.author)}</div><div>${escapeHtml(txt)}</div>${imgHtml}<div style="font-size:11px;">${c.date}</div></div>`;
+    }).join('');
+    document.getElementById('app').innerHTML = `<div class="back-link" onclick="showMainPage()">← к списку тем</div>
+      <div class="thread-container"><h2>${escapeHtml(topic.title)}</h2><div>автор: ${escapeHtml(topic.author)} | ${topic.date} | ${topic.category}</div>
+      <div style="margin-top:28px;"><h3>💬 Ответы (${topicComments.length})</h3>${commentsHtml}
+      <div class="reply-form"><h4>✏️ Ваш ответ</h4><input id="replyAuthor" placeholder="Ваш ник"><textarea id="replyText" rows="2"></textarea>
+      <div class="image-upload-area"><button type="button" class="btn-icon" onclick="triggerImageUpload()"><i class="fas fa-camera"></i> Прикрепить фото</button><div id="imagePreview"></div></div>
+      <button class="btn-primary" onclick="addCommentWithImage('${id}')">Отправить</button></div></div></div>`;
   }
 
-  function showTopic(id) {
-    const topic = topics.find(t => t.id === id);
-    if (!topic) return;
-    const topicComments = comments.filter(c => c.topic_id === id);
-    let commentsHtml = !topicComments.length ? '<div>пока ответов нет.</div>' :
-      topicComments.map(c => {
-        let text = c.text;
-        let imageHtml = '';
-        const imgMatch = text.match(/\[IMG\](.*?)\[\/IMG\]/);
-        if (imgMatch) {
-          imageHtml = `<div><img src="${imgMatch[1]}" class="comment-photo" alt="photo"></div>`;
-          text = text.replace(/\[IMG\].*?\[\/IMG\]/, '').trim();
-        }
-        return `<div class="comment"><div style="font-weight:600; color:#2a7140;">${escapeHtml(c.author)}</div><div style="margin:8px 0;">${escapeHtml(text)}</div>${imageHtml}<div style="font-size:11px; color:#85a67d;">${c.date}</div></div>`;
-      }).join('');
-
-    document.getElementById('app').innerHTML = `
-      <div class="back-link" onclick="showMainPage()">← к списку тем</div>
-      <div class="thread-container"><h2>${escapeHtml(topic.title)}</h2><div class="topic-meta" style="margin-bottom:28px;">автор: ${escapeHtml(topic.author)} | ${topic.date} | ${topic.category}</div>
-      <div><h3 style="margin-bottom:18px;">💬 Ответы (${topicComments.length})</h3>${commentsHtml}
-      <div class="reply-form"><h4 style="margin-bottom:12px;">✏️ Ваш ответ</h4>
-      <input id="replyAuthor" placeholder="Ваш ник">
-      <textarea id="replyText" rows="2" placeholder="Текст сообщения..."></textarea>
-      <div class="image-upload-area"><button type="button" class="btn-icon" onclick="triggerImageUpload()"><i class="fas fa-camera"></i> Прикрепить фото</button>
-      <div id="imagePreview"></div></div>
-      <button class="btn-primary" onclick="addCommentWithImage('${id}')">Отправить</button></div></div></div>
-    `;
-  }
-
-  function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
-  window.triggerImageUpload = triggerImageUpload;
-  window.addCommentWithImage = addCommentWithImage;
+  function escapeHtml(str){ return String(str).replace(/[&<>]/g, m=> m==='&'? '&amp;' : m==='<'? '&lt;' : '&gt;'); }
   loadData();
 </script>
 </body>
