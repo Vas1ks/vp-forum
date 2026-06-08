@@ -15,34 +15,207 @@
     .logo p { font-size: 13px; color: #c7e2b9; margin-top: 4px; }
     .nav a { color: #edffe3; margin-left: 32px; text-decoration: none; font-weight: 500; cursor: pointer; }
     .nav a:hover { color: white; border-bottom: 2px solid #b3e29d; padding-bottom: 4px; }
-    .forum-grid { display: flex; gap: 32px; margin: 40px 0; flex-wrap: wrap; }
-    .main-col { flex: 2; min-width: 260px; }
-    .sidebar-col { flex: 1; min-width: 240px; }
-    .category-block { background: white; border-radius: 24px; margin-bottom: 24px; border: 1px solid #e6f0e2; overflow: hidden; }
-    .category-header { background: #f6fbf3; padding: 16px 20px; border-bottom: 1px solid #e0ecda; }
-    .category-header h3 { font-size: 18px; font-weight: 700; color: #1e582c; }
-    .category-links { padding: 8px 0; }
-    .category-link { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid #f0f6ec; color: #2e6b3e; }
-    .category-link span:first-child i { width: 24px; color: #7baa6b; }
-    /* Стиль тем — такой же, как ссылки в основном разделе */
-    .topic-link { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid #f0f6ec; color: #2e6b3e; cursor: pointer; transition: 0.1s; }
-    .topic-link:hover { background: #f9fef6; }
-    .topic-stats { font-size: 13px; color: #7baa6b; }
-    .btn-primary { background: #2e7a45; border: none; color: white; font-weight: 600; padding: 10px 22px; border-radius: 40px; cursor: pointer; margin: 20px 0; display: inline-block; }
-    .btn-icon { background: #eef6ea; border: 1px solid #cde0c4; padding: 8px 16px; border-radius: 40px; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; color: #2c6b3e; }
-    .thread-container { background: white; border-radius: 28px; padding: 28px; margin: 24px 0; border: 1px solid #e3efdd; }
-    .comment { background: #fafef7; border-radius: 24px; padding: 18px; margin-bottom: 20px; border-left: 4px solid #9ad685; }
-    .comment-photo { max-width: 100%; margin-top: 12px; border-radius: 16px; max-height: 300px; }
-    .reply-form { background: #f4faf0; border-radius: 28px; padding: 24px; margin-top: 32px; }
-    .reply-form textarea { width: 100%; border: 1px solid #d0e2c8; border-radius: 24px; padding: 14px 18px; font-family: inherit; resize: vertical; background: white; }
-    .image-upload-area { display: flex; align-items: center; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
-    .image-preview { max-width: 100px; max-height: 100px; border-radius: 16px; border: 1px solid #cce0c2; }
-    .back-link { display: inline-flex; align-items: center; gap: 8px; color: #2d7845; cursor: pointer; margin-bottom: 20px; font-weight: 500; }
-    .sidebar-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 28px; border: 1px solid #e0ecda; }
-    .sidebar-card h4 { font-size: 17px; margin-bottom: 14px; color: #205e32; border-left: 4px solid #7dbd68; padding-left: 12px; }
-    .user-online { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #edf4e9; }
-    footer { text-align: center; padding: 28px; border-top: 1px solid #deecda; color: #8eab86; background: #fafef8; margin-top: 50px; }
-    @media (max-width: 800px) { .forum-grid { flex-direction: column; } }
+    
+    /* Три колонки: основной раздел | кнопка | команда */
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+      margin: 40px 0 30px;
+      flex-wrap: wrap;
+    }
+    .main-section {
+      flex: 2;
+      min-width: 260px;
+    }
+    .create-btn-wrapper {
+      flex: 0 0 auto;
+    }
+    .team-section {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    /* Основной раздел (категория) */
+    .category-block {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid #e6f0e2;
+      overflow: hidden;
+    }
+    .category-header {
+      background: #f6fbf3;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e0ecda;
+    }
+    .category-header h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1e582c;
+    }
+    .category-links {
+      padding: 8px 0;
+    }
+    .category-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid #f0f6ec;
+      color: #2e6b3e;
+    }
+    .category-link span:first-child i {
+      width: 24px;
+      color: #7baa6b;
+    }
+    
+    /* Стиль тем (как ссылки) */
+    .topic-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid #f0f6ec;
+      color: #2e6b3e;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .topic-link:hover {
+      background: #f9fef6;
+    }
+    .topic-stats {
+      font-size: 13px;
+      color: #7baa6b;
+    }
+    
+    /* Кнопка */
+    .btn-primary {
+      background: #2e7a45;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 12px 28px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-size: 15px;
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+    .btn-primary:hover {
+      background: #1f5c34;
+      transform: scale(0.97);
+    }
+    
+    /* Команда форума онлайн */
+    .sidebar-card {
+      background: white;
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid #e0ecda;
+    }
+    .sidebar-card h4 {
+      font-size: 17px;
+      margin-bottom: 14px;
+      color: #205e32;
+      border-left: 4px solid #7dbd68;
+      padding-left: 12px;
+    }
+    .user-online {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #edf4e9;
+    }
+    
+    /* Остальное (комментарии, формы) */
+    .thread-container {
+      background: white;
+      border-radius: 28px;
+      padding: 28px;
+      margin: 24px 0;
+      border: 1px solid #e3efdd;
+    }
+    .comment {
+      background: #fafef7;
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 20px;
+      border-left: 4px solid #9ad685;
+    }
+    .comment-photo {
+      max-width: 100%;
+      margin-top: 12px;
+      border-radius: 16px;
+      max-height: 300px;
+    }
+    .reply-form {
+      background: #f4faf0;
+      border-radius: 28px;
+      padding: 24px;
+      margin-top: 32px;
+    }
+    .reply-form textarea {
+      width: 100%;
+      border: 1px solid #d0e2c8;
+      border-radius: 24px;
+      padding: 14px 18px;
+      font-family: inherit;
+      resize: vertical;
+      background: white;
+    }
+    .image-upload-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    .image-preview {
+      max-width: 100px;
+      max-height: 100px;
+      border-radius: 16px;
+      border: 1px solid #cce0c2;
+    }
+    .btn-icon {
+      background: #eef6ea;
+      border: 1px solid #cde0c4;
+      padding: 8px 16px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #2c6b3e;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #2d7845;
+      cursor: pointer;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    footer {
+      text-align: center;
+      padding: 28px;
+      border-top: 1px solid #deecda;
+      color: #8eab86;
+      background: #fafef8;
+      margin-top: 50px;
+    }
+    @media (max-width: 800px) {
+      .top-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .create-btn-wrapper {
+        text-align: center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -85,17 +258,24 @@
   function showMainPage() {
     const mainLinks = ["Новости и информация", "Технический раздел", "Донат услуги", "Мероприятия и ивенты", "Предложения по улучшению проекта", "Сообщество в Discord", "Группа ВКонтакте"];
     const topicCats = ["Общее","Ивенты","Постройки","PvP","Правила"];
-    let html = `<div class="forum-grid"><div class="main-col">`;
-    // Кнопка создания темы — в самом верху
-    html += `<div style="margin: 0 0 20px 0;"><button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button></div>`;
-    // Основной раздел
-    html += `<div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
+    let nick = localStorage.getItem('vp_nick') || 'Vas1ks';
+    
+    // Верхняя строка: основной раздел | кнопка | команда
+    let html = `<div class="top-row">
+      <div class="main-section">
+        <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
     mainLinks.forEach(link => { html += `<div class="category-link"><span><i class="far fa-folder"></i> ${link}</span></div>`; });
-    html += `</div></div>`;
-    // Категории с темами (стиль как в основном разделе)
+    html += `</div></div></div>
+      <div class="create-btn-wrapper"><button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button></div>
+      <div class="team-section"><div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
+        <div class="user-online"><div><b>${escapeHtml(nick)}</b><br><span style="font-size:12px;">Команда проекта</span></div></div>
+      </div></div>
+    </div>`;
+    
+    // Ниже — категории с темами
     for(let cat of topicCats) {
       let filtered = topics.filter(t=>t.category===cat);
-      html += `<div class="category-block"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
+      html += `<div class="category-block" style="margin-top: 24px;"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
       if(!filtered.length) html += `<div class="category-link">— нет тем —</div>`;
       else filtered.forEach(t=>{
         let cnt = comments.filter(c=>c.topic_id===t.id).length;
@@ -103,12 +283,6 @@
       });
       html += `</div>`;
     }
-    html += `</div>`;
-    // Сайдбар
-    let nick = localStorage.getItem('vp_nick') || 'Vas1ks';
-    html += `<div class="sidebar-col"><div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
-      <div class="user-online"><div><b>${escapeHtml(nick)}</b><br><span style="font-size:12px;">Команда проекта</span></div></div>
-    </div></div></div>`;
     document.getElementById('app').innerHTML = html;
   }
 
