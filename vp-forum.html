@@ -1,24 +1,20 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Forum | Форум проекта</title>
+    <title>ВП | Выживание с Подписчиками — Форум проекта</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            font-family: 'Segoe UI', 'Minecraft', 'Courier New', monospace;
-            background-color: #0a0c12;
+            font-family: 'Segoe UI', 'Courier New', monospace;
+            background: linear-gradient(135deg, #0e2a1a 0%, #0a1f12 100%);
             color: #e0e0e0;
             min-height: 100vh;
         }
-
-        /* Minecraft-стиль заднего фона с блоками травы и камня */
         body::before {
             content: "";
             position: fixed;
@@ -26,34 +22,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2;
-            background: linear-gradient(135deg, #1a3a2a 0%, #0e2a1a 50%, #0a1a10 100%);
-        }
-
-        /* Текстурные блоки (имитация грязи и камня) */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             z-index: -1;
-            background-image: 
-                repeating-linear-gradient(45deg, rgba(70, 50, 35, 0.15) 0px, rgba(70, 50, 35, 0.15) 2px, transparent 2px, transparent 8px),
-                repeating-linear-gradient(135deg, rgba(45, 60, 40, 0.1) 0px, rgba(45, 60, 40, 0.1) 4px, transparent 4px, transparent 16px);
+            background-image: repeating-linear-gradient(45deg, rgba(70,50,35,0.1) 0px, rgba(70,50,35,0.1) 2px, transparent 2px, transparent 12px);
             pointer-events: none;
         }
-
-        /* Шапка */
         .header {
-            background: rgba(30, 40, 30, 0.95);
+            background: rgba(20, 35, 22, 0.95);
             backdrop-filter: blur(8px);
-            border-bottom: 4px solid #5a7a4a;
+            border-bottom: 4px solid #5a9a4a;
             padding: 1rem 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-
         .header-content {
             max-width: 1200px;
             margin: 0 auto;
@@ -63,19 +41,15 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-
         .logo h1 {
             font-size: 1.8rem;
             color: #aaffaa;
             text-shadow: 3px 3px 0 #2a5a2a;
-            letter-spacing: 2px;
         }
-
         .logo p {
             font-size: 0.8rem;
             color: #8aae8a;
         }
-
         .nav a {
             color: #ddd;
             text-decoration: none;
@@ -84,48 +58,15 @@
             transition: 0.3s;
             border-bottom: 2px solid transparent;
         }
-
         .nav a:hover {
             color: #aaffaa;
             border-bottom-color: #6aae5a;
         }
-
-        /* Поиск */
-        .search-bar {
-            background: rgba(20, 25, 20, 0.9);
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .search-bar input {
-            background: transparent;
-            border: none;
-            color: #eee;
-            padding: 0.3rem;
-            outline: none;
-            width: 180px;
-        }
-
-        .search-bar button {
-            background: #4a6a3a;
-            border: none;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        /* Основной контейнер */
         .container {
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1.5rem;
         }
-
-        /* Карточка приветствия */
         .welcome-card {
             background: rgba(20, 25, 18, 0.85);
             backdrop-filter: blur(4px);
@@ -133,104 +74,22 @@
             padding: 1.8rem;
             margin-bottom: 2rem;
             border-left: 8px solid #6aae5a;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
-
         .welcome-card h2 {
             color: #ccffaa;
             margin-bottom: 0.5rem;
         }
-
         .stats {
             display: flex;
             gap: 2rem;
             margin-top: 1rem;
             font-size: 0.9rem;
-            color: #bbb;
         }
-
-        /* Категории форума */
-        .forum-category {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 16px;
-            margin-bottom: 1.8rem;
-            overflow: hidden;
-        }
-
-        .category-header {
-            background: #2a3a2a;
-            padding: 0.8rem 1.5rem;
-            font-size: 1.3rem;
-            font-weight: bold;
-            border-bottom: 2px solid #5a8a4a;
-            cursor: pointer;
-        }
-
-        .category-header span {
-            color: #b0ffb0;
-        }
-
-        .topic-list {
-            list-style: none;
-        }
-
-        .topic-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #2a3a2a;
-            transition: 0.2s;
-            background: rgba(10, 15, 8, 0.7);
-        }
-
-        .topic-item:hover {
-            background: rgba(60, 80, 50, 0.5);
-            transform: translateX(5px);
-        }
-
-        .topic-info {
-            flex: 2;
-        }
-
-        .topic-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #ccffaa;
-            text-decoration: none;
-        }
-
-        .topic-title:hover {
-            text-decoration: underline;
-        }
-
-        .topic-meta {
-            font-size: 0.7rem;
-            color: #8a9a7a;
-            margin-top: 4px;
-        }
-
-        .topic-stats {
-            text-align: right;
-            min-width: 100px;
-        }
-
-        .replies {
-            font-size: 0.9rem;
-            color: #ddd;
-        }
-
-        .last-post {
-            font-size: 0.7rem;
-            color: #7a8a6a;
-        }
-
-        /* Кнопка новой темы */
         .new-topic-btn {
             background: #4a6e3e;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 28px;
             border-radius: 40px;
             font-size: 1rem;
             font-weight: bold;
@@ -239,14 +98,59 @@
             transition: 0.2s;
             box-shadow: 0 4px 0 #2a3a1a;
         }
-
         .new-topic-btn:hover {
             background: #6a9e5a;
             transform: translateY(-2px);
-            box-shadow: 0 6px 0 #2a3a1a;
         }
-
-        /* Модальное окно для новой темы */
+        .forum-category {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            margin-bottom: 1.8rem;
+            overflow: hidden;
+        }
+        .category-header {
+            background: #2a3a2a;
+            padding: 0.8rem 1.5rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-bottom: 2px solid #5a8a4a;
+        }
+        .topic-list {
+            list-style: none;
+        }
+        .topic-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #2a3a2a;
+            background: rgba(10, 15, 8, 0.7);
+            transition: 0.2s;
+        }
+        .topic-item:hover {
+            background: rgba(60, 80, 50, 0.5);
+        }
+        .topic-info {
+            flex: 2;
+        }
+        .topic-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ccffaa;
+            text-decoration: none;
+        }
+        .topic-meta {
+            font-size: 0.7rem;
+            color: #8a9a7a;
+            margin-top: 4px;
+        }
+        .topic-category {
+            background: #2a4a2a;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 10px;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -259,7 +163,6 @@
             align-items: center;
             z-index: 1000;
         }
-
         .modal-content {
             background: #1e2a1e;
             padding: 2rem;
@@ -268,8 +171,7 @@
             max-width: 500px;
             border: 2px solid #6aae5a;
         }
-
-        .modal-content input, .modal-content textarea {
+        .modal-content input, .modal-content select, .modal-content textarea {
             width: 100%;
             margin: 0.8rem 0;
             padding: 0.8rem;
@@ -278,7 +180,6 @@
             color: white;
             border-radius: 12px;
         }
-
         .modal-content button {
             background: #5a8a4a;
             padding: 0.8rem;
@@ -288,15 +189,12 @@
             width: 100%;
             cursor: pointer;
         }
-
         .close-modal {
             float: right;
             font-size: 1.8rem;
             cursor: pointer;
             color: #ffaa88;
         }
-
-        /* Футер */
         .footer {
             text-align: center;
             padding: 2rem;
@@ -305,23 +203,15 @@
             border-top: 2px solid #3a5a2a;
             font-size: 0.8rem;
         }
-
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #aaffaa;
+        }
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            .nav a {
-                margin: 0 0.8rem;
-            }
-            .topic-item {
-                flex-direction: column;
-                text-align: center;
-                gap: 8px;
-            }
-            .topic-stats {
-                text-align: center;
-            }
+            .header-content { flex-direction: column; text-align: center; }
+            .topic-item { flex-direction: column; text-align: center; gap: 8px; }
         }
     </style>
 </head>
@@ -330,185 +220,184 @@
 <div class="header">
     <div class="header-content">
         <div class="logo">
-            <h1>⚡ MINECRAFT FORUM</h1>
-            <p>Ваш дом в кубическом мире</p>
+            <h1>🌿 ВП | Выживание с Подписчиками</h1>
+            <p>Официальный форум проекта — только для наших!</p>
         </div>
         <div class="nav">
             <a href="#">Главная</a>
             <a href="#">Новости</a>
-            <a href="#">Гайды</a>
-            <a href="#">Галерея</a>
+            <a href="#">Ивенты</a>
+            <a href="#">Постройки</a>
             <a href="#">Правила</a>
-        </div>
-        <div class="search-bar">
-            <input type="text" placeholder="Поиск по форуму..." id="searchInput">
-            <button>🔍</button>
         </div>
     </div>
 </div>
 
 <div class="container">
     <div class="welcome-card">
-        <h2>🌲 Добро пожаловать на Minecraft форум!</h2>
-        <p>Обсуждай сборки, моды, сервера и стройки с сообществом. Здесь каждый найдёт друга по блоку!</p>
-        <div class="stats">
-            <span>📊 Тем: 142</span>
-            <span>💬 Сообщений: 1.2k</span>
-            <span>👥 Пользователей: 89</span>
+        <h2>🌲 Добро пожаловать на форум "Выживание с Подписчиками"!</h2>
+        <p>Обсуждаем только наш проект: ивенты, постройки, PvP и жизнь на сервере. Все темы сохраняются в облаке и видны всем игрокам.</p>
+        <div class="stats" id="statsBlock">
+            <span>📊 Загрузка статистики...</span>
         </div>
     </div>
 
     <button class="new-topic-btn" id="openModalBtn">+ Создать новую тему</button>
 
-    <!-- Категория 1: Общие обсуждения -->
-    <div class="forum-category">
-        <div class="category-header">
-            <span>🗣️ ОБЩИЕ ОБСУЖДЕНИЯ</span>
-        </div>
-        <ul class="topic-list" id="generalList">
-            <li class="topic-item">
-                <div class="topic-info">
-                    <a href="#" class="topic-title">🎉 Какой ваш любимый биом?</a>
-                    <div class="topic-meta">Автор: SteveMiner | 12.06.2026</div>
-                </div>
-                <div class="topic-stats">
-                    <div class="replies">Ответов: 34</div>
-                    <div class="last-post">Посл. от: Herobrine</div>
-                </div>
-            </li>
-            <li class="topic-item">
-                <div class="topic-info">
-                    <a href="#" class="topic-title">⚔️ PvP сервера — где лучший?</a>
-                    <div class="topic-meta">Автор: PvPGod | 10.06.2026</div>
-                </div>
-                <div class="topic-stats">
-                    <div class="replies">Ответов: 21</div>
-                    <div class="last-post">Посл. от: KillerCreeper</div>
-                </div>
-            </li>
-        </ul>
-    </div>
-
-    <!-- Категория 2: Гайды и строительство -->
-    <div class="forum-category">
-        <div class="category-header">
-            <span>🏗️ ГАЙДЫ И СТРОИТЕЛЬСТВО</span>
-        </div>
-        <ul class="topic-list" id="guidesList">
-            <li class="topic-item">
-                <div class="topic-info">
-                    <a href="#" class="topic-title">🏰 Как построить замок за 5 шагов</a>
-                    <div class="topic-meta">Автор: ArchiCraft | 08.06.2026</div>
-                </div>
-                <div class="topic-stats">
-                    <div class="replies">Ответов: 56</div>
-                    <div class="last-post">Посл. от: BuilderMike</div>
-                </div>
-            </li>
-            <li class="topic-item">
-                <div class="topic-info">
-                    <a href="#" class="topic-title">⛏️ Ферма незерита 1.20+</a>
-                    <div class="topic-meta">Автор: RedstoneGuru | 05.06.2026</div>
-                </div>
-                <div class="topic-stats">
-                    <div class="replies">Ответов: 18</div>
-                    <div class="last-post">Посл. от: NetherWalker</div>
-                </div>
-            </li>
-        </ul>
-    </div>
-
-    <!-- Категория 3: Моды и ресурспаки -->
-    <div class="forum-category">
-        <div class="category-header">
-            <span>📦 МОДЫ И РЕСУРСПАКИ</span>
-        </div>
-        <ul class="topic-list" id="modsList">
-            <li class="topic-item">
-                <div class="topic-info">
-                    <a href="#" class="topic-title">🔧 ТОП-10 модов на улучшение графики</a>
-                    <div class="topic-meta">Автор: ModHunter | 01.06.2026</div>
-                </div>
-                <div class="topic-stats">
-                    <div class="replies">Ответов: 43</div>
-                    <div class="last-post">Посл. от: ShadersFan</div>
-                </div>
-            </li>
-        </ul>
+    <div id="forumContainer">
+        <div class="loading">📡 Загружаем темы из облака...</div>
     </div>
 </div>
 
 <div class="footer">
-    <p>© 2026 Minecraft Forum | Неофициальный фанатский проект. Minecraft — торговая марка Mojang AB.</p>
-    <p>✨ Дополняй код, добавляй базу данных и регистрацию — преврати в настоящий форум!</p>
+    <p>© 2026 ВП | Выживание с Подписчиками — Форум проекта</p>
 </div>
 
-<!-- Модальное окно -->
 <div id="topicModal" class="modal">
     <div class="modal-content">
         <span class="close-modal" id="closeModalBtn">&times;</span>
-        <h3 style="color:#aaffaa;">Создать новую тему</h3>
+        <h3 style="color:#aaffaa;">➕ Новая тема</h3>
         <input type="text" id="topicTitle" placeholder="Название темы">
-        <textarea id="topicDesc" rows="3" placeholder="Краткое описание..."></textarea>
-        <input type="text" id="topicAuthor" placeholder="Ваш ник" value="Vas1ks">
-        <button id="createTopicBtn">➕ Опубликовать тему</button>
+        <select id="topicCategory">
+            <option value="Общее">💬 Общее</option>
+            <option value="Ивенты">🎉 Ивенты</option>
+            <option value="Постройки">🏠 Постройки</option>
+            <option value="PvP">⚔️ PvP и кланы</option>
+            <option value="Правила">📜 Правила и заявки</option>
+        </select>
+        <input type="text" id="topicAuthor" placeholder="Ваш игровой ник" value="Игрок">
+        <button id="createTopicBtn">📢 Опубликовать тему</button>
     </div>
 </div>
 
 <script>
-    // Простая логика для добавления новых тем в категорию "Общие обсуждения"
-    const modal = document.getElementById('topicModal');
-    const openBtn = document.getElementById('openModalBtn');
-    const closeBtn = document.getElementById('closeModalBtn');
-    const createBtn = document.getElementById('createTopicBtn');
-    const generalList = document.getElementById('generalList');
+    // ========== ВАШИ ССЫЛКИ (УЖЕ ВСТАВЛЕНЫ) ==========
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/1rDZgDa-fOp2pLueEqKNRcwyV9pduGvZm41571eM_OKc/export?format=csv";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzYUfWYqJiHcmohcX9PGkfu2tNbJnY6v7S5vfYOI31Wiwh2saucxhedQyLV8hov2TnF/exec";
+    // ==================================================
 
-    // Открыть модалку
-    openBtn.onclick = () => modal.style.display = 'flex';
-    closeBtn.onclick = () => modal.style.display = 'none';
-    window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    let allTopics = [];
 
-    // Создание новой темы
-    createBtn.onclick = () => {
-        const title = document.getElementById('topicTitle').value.trim();
-        const author = document.getElementById('topicAuthor').value.trim() || "Гость";
-        const desc = document.getElementById('topicDesc').value.trim();
+    async function loadTopics() {
+        try {
+            const response = await fetch(CSV_URL);
+            const csvText = await response.text();
+            
+            const rows = csvText.split('\n').filter(row => row.trim());
+            if (rows.length < 2) {
+                document.getElementById('forumContainer').innerHTML = '<div class="loading">📭 Пока нет тем. Создайте первую!</div>';
+                document.getElementById('statsBlock').innerHTML = '<span>📊 Тем: 0</span><span>💬 Сообщений: 0</span><span>👥 Проект: ВП</span>';
+                allTopics = [];
+                return;
+            }
 
-        if (title === "") {
-            alert("Введите название темы!");
-            return;
+            const headers = rows[0].split(',');
+            const titleIdx = headers.findIndex(h => h === 'title');
+            const authorIdx = headers.findIndex(h => h === 'author');
+            const dateIdx = headers.findIndex(h => h === 'date');
+            const categoryIdx = headers.findIndex(h => h === 'category');
+
+            allTopics = [];
+            for (let i = 1; i < rows.length; i++) {
+                const cols = rows[i].split(',');
+                if (cols.length < 2) continue;
+                allTopics.push({
+                    title: cols[titleIdx] || "Без названия",
+                    author: cols[authorIdx] || "Неизвестен",
+                    date: cols[dateIdx] || "недавно",
+                    category: cols[categoryIdx] || "Общее"
+                });
+            }
+
+            renderForum();
+            updateStats();
+
+        } catch (error) {
+            console.error("Ошибка загрузки:", error);
+            document.getElementById('forumContainer').innerHTML = '<div class="loading">⚠️ Не удалось загрузить темы. Проверьте ссылку CSV.</div>';
         }
+    }
 
+    function renderForum() {
+        const categories = ["Общее", "Ивенты", "Постройки", "PvP", "Правила"];
+        let html = '';
+
+        for (let cat of categories) {
+            const catTopics = allTopics.filter(t => t.category === cat);
+            if (catTopics.length === 0 && cat !== "Общее") continue;
+            
+            let catName = "💬 ";
+            if (cat === "Ивенты") catName = "🎉 ";
+            if (cat === "Постройки") catName = "🏠 ";
+            if (cat === "PvP") catName = "⚔️ ";
+            if (cat === "Правила") catName = "📜 ";
+            
+            html += `
+                <div class="forum-category">
+                    <div class="category-header">
+                        <span>${catName}${cat.toUpperCase()}</span>
+                    </div>
+                    <ul class="topic-list">
+            `;
+            
+            if (catTopics.length === 0) {
+                html += `<li class="topic-item"><div class="topic-info"><span style="color:#8a9a7a;">Пока нет тем в этой категории</span></div></li>`;
+            } else {
+                catTopics.forEach(topic => {
+                    html += `
+                        <li class="topic-item">
+                            <div class="topic-info">
+                                <a href="#" class="topic-title">📌 ${escapeHtml(topic.title)}</a>
+                                <div class="topic-meta">Автор: ${escapeHtml(topic.author)} | ${topic.date}</div>
+                            </div>
+                            <div class="topic-stats">
+                                <div class="replies">💬 0 ответов</div>
+                            </div>
+                        </li>
+                    `;
+                });
+            }
+            html += `</ul></div>`;
+        }
+        
+        document.getElementById('forumContainer').innerHTML = html;
+    }
+
+    function updateStats() {
+        document.getElementById('statsBlock').innerHTML = `
+            <span>📊 Тем: ${allTopics.length}</span>
+            <span>💬 Сообщений: ${allTopics.length}</span>
+            <span>👥 Проект: Выживание с Подписчиками</span>
+        `;
+    }
+
+    async function createTopic(title, author, category) {
         const now = new Date();
         const dateStr = `${now.getDate()}.${now.getMonth()+1}.${now.getFullYear()}`;
-
-        // Создаем новый элемент темы
-        const newTopic = document.createElement('li');
-        newTopic.className = 'topic-item';
-        newTopic.innerHTML = `
-            <div class="topic-info">
-                <a href="#" class="topic-title">📢 ${escapeHtml(title)}</a>
-                <div class="topic-meta">Автор: ${escapeHtml(author)} | ${dateStr}</div>
-                <div class="topic-meta" style="font-size:0.7rem; color:#aadd99;">${escapeHtml(desc.substring(0, 60))}</div>
-            </div>
-            <div class="topic-stats">
-                <div class="replies">Ответов: 0</div>
-                <div class="last-post">Только что</div>
-            </div>
-        `;
-
-        generalList.prepend(newTopic);
         
-        // Очистка полей и закрытие
-        document.getElementById('topicTitle').value = '';
-        document.getElementById('topicDesc').value = '';
-        modal.style.display = 'none';
+        const topicData = {
+            title: title,
+            author: author,
+            date: dateStr,
+            category: category
+        };
+        
+        try {
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(topicData)
+            });
+            
+            alert(`✅ Тема "${title}" создана! Обновите страницу (F5), чтобы увидеть её.`);
+            return true;
+        } catch (error) {
+            alert(`❌ Ошибка: ${error.message}. Проверьте URL скрипта.`);
+            return false;
+        }
+    }
 
-        // Небольшой эффект (можно убрать)
-        alert(`Тема "${title}" создана! (демо-режим без БД)`);
-    };
-
-    // Функция защиты от XSS
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -519,20 +408,34 @@
         });
     }
 
-    // Простой поиск по заголовкам тем
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', function(e) {
-        const query = e.target.value.toLowerCase();
-        const allTopics = document.querySelectorAll('.topic-item');
-        allTopics.forEach(topic => {
-            const title = topic.querySelector('.topic-title')?.innerText.toLowerCase() || '';
-            if (title.includes(query)) {
-                topic.style.display = 'flex';
-            } else {
-                topic.style.display = 'none';
-            }
-        });
-    });
+    // Модальное окно
+    const modal = document.getElementById('topicModal');
+    const openBtn = document.getElementById('openModalBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const createBtn = document.getElementById('createTopicBtn');
+
+    openBtn.onclick = () => modal.style.display = 'flex';
+    closeBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+    createBtn.onclick = async () => {
+        const title = document.getElementById('topicTitle').value.trim();
+        const author = document.getElementById('topicAuthor').value.trim() || "Игрок";
+        const category = document.getElementById('topicCategory').value;
+        
+        if (title === "") {
+            alert("Введите название темы!");
+            return;
+        }
+        
+        await createTopic(title, author, category);
+        
+        document.getElementById('topicTitle').value = '';
+        modal.style.display = 'none';
+        setTimeout(() => loadTopics(), 2000);
+    };
+
+    loadTopics();
 </script>
 </body>
 </html>
