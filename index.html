@@ -49,22 +49,20 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 16px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* ГЛАВНАЯ СЕТКА: блок команды прижат к правому краю с большим отступом */
+    /* ОСНОВНАЯ СЕТКА: широкий блок по центру, команда справа */
     .content-layout {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: flex-start;
-      margin: 50px 0;
-      gap: 80px;
+      margin: 50px auto;
+      gap: 60px;
     }
     .center-section {
-      flex: 1;
-      max-width: 800px;
+      flex: 0 1 1000px;  /* Стало шире */
+      min-width: 320px;
     }
     .right-side {
       flex: 0 0 280px;
-      /* Двигаем ещё правее за счёт margin-left */
-      margin-left: auto;
     }
     
     .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
@@ -101,10 +99,13 @@
     .btn-primary:hover { background: #1f5c34; }
     .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
     
-    @media (max-width: 1200px) {
-      .content-layout { flex-direction: column; align-items: center; gap: 40px; }
-      .right-side { margin-left: 0; width: 100%; }
-      .center-section { max-width: 100%; }
+    @media (max-width: 1300px) {
+      .content-layout { gap: 40px; }
+      .center-section { flex-basis: 800px; }
+    }
+    @media (max-width: 1100px) {
+      .content-layout { flex-direction: column; align-items: center; }
+      .right-side { width: 100%; }
     }
   </style>
 </head>
