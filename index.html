@@ -166,15 +166,13 @@
 <footer>© 2026 ВП | Выживание с Подписчиками — Форум проекта</footer>
 
 <script>
-  // ========== ССЫЛКИ НА ТАБЛИЦЫ ==========
+  // ========== ССЫЛКИ ==========
   const TOPICS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7w_qakiVZNa26pZXY9_-qZ2peGlKga-J3VlMfE8WtYt_skMjgYyiECDfOGzgxmDn7ZdyFJd_7q_CP/pub?output=csv";
   const COMMENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRhLuXUXT8TU26BTL6j5ih5BlvNQ_RFweSK8yYHgycnK2bObZINPWi9pUUeNtE-5FNQYvmpihg-EWYV/pub?output=csv";
   const ADD_TOPIC_API = "https://script.google.com/macros/s/AKfycbzMqzTrs4Q51_PDGXsAD6-JxoXFkfLH3hwByYoc6fgv6zK08df6tvzYKaOVHy1buVn6Zw/exec";
   const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbxiPAvFOVOGBXayfweiAUJAReTXYfFSvdKcVuiZv2i8O5qj2g04kjHUkJT7FsN2ga8/exec";
-  
   const VIEWS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJJAL6orI6nTsdcYsnf8y6mfq5C3GNQ1uY8EFW_-_NZ4lSWiBxGVSZJdvoRz01KT7Sn7XpK-pvXQdx/pub?gid=0&single=true&output=csv";
   const LIKES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlGrNpAS7-giEBjtS-wSKWtO1q1Xya--VGr-mAy3FuCynQCTjAvo16jTcgUGQkHfJfSzAx0K18YBHj/pub?gid=0&single=true&output=csv";
-  
   const ADD_VIEW_API = "https://script.google.com/macros/s/AKfycbwyHR5k4YVtHreu0cPmVhSW5315B0_YjYiWNalG4NuCy4MOzpP4ir14crICX3PXUQg-/exec";
   const ADD_LIKE_API = "https://script.google.com/macros/s/AKfycbz2sF2bV0Fm4-0VLX14aT_7clTWVRLr1VLKy8Iyw26vwAgbkAzDN96iLnU1V46efCPtpw/exec";
   // ========================================
@@ -276,7 +274,7 @@
       { name: "Технический раздел", category: "Технический" },
       { name: "Мероприятия и ивенты", category: "Мероприятия" },
       { name: "Предложения по улучшению проекта", category: "Предложения" },
-      { name: "Сообщество в Discord", category: "Discord", external: true },
+      { name: "Сообщество в Discord", category: "Discord", external: true, link: "https://discord.gg/Fn6UecrNNM" },
       { name: "История ВП", category: "История" }
     ];
     
@@ -292,8 +290,6 @@
         </a>`;
         continue;
       }
-      // Собираем темы, которые относятся к этой категории (по совпадению с заголовком темы или можно добавить поле category в тему)
-      // Пока просто показываем общую статистику по всем темам, кроме категорий Общее и Постройки
       let relatedTopics = [];
       if(cat.category === "Новости") relatedTopics = topics.filter(t => t.title.toLowerCase().includes('новость'));
       else if(cat.category === "Технический") relatedTopics = topics.filter(t => t.title.toLowerCase().includes('технический'));
@@ -396,16 +392,33 @@
     pendingImage = null;
   };
 
-  window.likeComment = async (commentId, authorNick) => {
+  window.likeComment = async (commentId) => {
     let currentUser = localStorage.getItem('vp_nick');
     if(!currentUser) currentUser = prompt("Введите ваш игровой ник для лайка");
     if(!currentUser) return;
     localStorage.setItem('vp_nick', currentUser);
-    let success = await toggleLike(commentId, currentUser);
-    if(success) {
-      await loadData();
+    
+    if(hasUserLiked(commentId, currentUser)) {
+      alert("Вы уже поставили лайк этому комментарию");
+      return;
+    }
+    
+    try {
+      await fetch(ADD_LIKE_API, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ action: 'like', comment_id: commentId, user_nick: currentUser })
+      });
+      
+      // Обновляем лайки в памяти
+      likes.push({ comment_id: commentId, user_nick: currentUser, like: '1' });
+      
+      // Находим текущую тему и перерисовываем её (без перезагрузки страницы)
       let topicId = comments.find(c => c.id == commentId)?.topic_id;
-      if(topicId) navigateToTopic(topicId);
+      if(topicId) showTopic(topicId);
+    } catch(e) {
+      console.error("Ошибка лайка", e);
+      alert("Ошибка при отправке лайка");
     }
   };
 
@@ -424,10 +437,12 @@
       if(m){ imgHtml = `<div><img src="${m[1]}" class="comment-photo"></div>`; txt = txt.replace(/\[IMG\].*?\[\/IMG\]/,'').trim(); }
       let likeCount = getLikeCount(c.id);
       let liked = hasUserLiked(c.id, currentUser);
-      return `<div class="comment"><div style="font-weight:600;">${escapeHtml(c.author)}</div><div>${escapeHtml(txt)}</div>${imgHtml}
+      return `<div class="comment" data-comment-id="${c.id}">
+        <div style="font-weight:600;">${escapeHtml(c.author)}</div>
+        <div>${escapeHtml(txt)}</div>${imgHtml}
         <div class="comment-footer">
           <span>${c.date}</span>
-          <button class="like-btn ${liked ? 'liked' : ''}" onclick="likeComment('${c.id}', '${escapeHtml(c.author)}')">👍 ${likeCount}</button>
+          <button class="like-btn ${liked ? 'liked' : ''}" onclick="likeComment('${c.id}')">👍 <span class="like-count">${likeCount}</span></button>
         </div>
       </div>`;
     }).join('');
