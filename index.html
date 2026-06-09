@@ -9,18 +9,20 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #eef3ea; font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif; color: #1a2a1c; line-height: 1.4; display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.2s; }
     
-    /* Тёмная тема */
-    body.dark-theme { background: #1a2a1c; color: #eef3ea; }
+    /* Тёмная тема (ЧЁРНАЯ) */
+    body.dark-theme { background: #121212; color: #e0e0e0; }
     body.dark-theme .category-block, body.dark-theme .sidebar-card, body.dark-theme .thread-container, 
-    body.dark-theme .comment, body.dark-theme .reply-form, body.dark-theme .category-header { background: #2a3a2a; border-color: #4a6e4a; }
-    body.dark-theme .category-link, body.dark-theme .topic-link { color: #d4ecd0; border-bottom-color: #3a553a; }
-    body.dark-theme .category-header h3, body.dark-theme .sidebar-card h4 { color: #b5e0a5; }
-    body.dark-theme .topic-stats { color: #9bd68a; }
-    body.dark-theme footer { background: #1e2e1e; border-top-color: #3a553a; color: #8eab86; }
+    body.dark-theme .comment, body.dark-theme .reply-form, body.dark-theme .category-header { background: #1e1e1e; border-color: #333; }
+    body.dark-theme .category-link, body.dark-theme .topic-link { color: #ddd; border-bottom-color: #2a2a2a; }
+    body.dark-theme .category-header h3, body.dark-theme .sidebar-card h4 { color: #ccc; }
+    body.dark-theme .topic-stats { color: #aaa; }
+    body.dark-theme footer { background: #0a0a0a; border-top-color: #2a2a2a; color: #aaa; }
+    body.dark-theme .btn-primary { background: #333; color: white; }
+    body.dark-theme .btn-primary:hover { background: #444; }
     
     .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; flex: 1; }
     .header { background: #1f3b2c; border-bottom: 3px solid #b5dfa3; padding: 12px 0; position: sticky; top: 0; z-index: 100; transition: background 0.3s; }
-    body.dark-theme .header { background: #0f1f10; border-bottom-color: #3a6e3a; }
+    body.dark-theme .header { background: #0a0a0a; border-bottom-color: #333; }
     .header-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
     .logo { display: flex; align-items: center; gap: 12px; }
     .logo-img { height: 45px; width: auto; border-radius: 12px; background: #eef3ea; padding: 4px; }
@@ -61,7 +63,7 @@
     .back-link { display: inline-flex; align-items: center; gap: 8px; color: #2d7845; cursor: pointer; margin-bottom: 20px; font-weight: 500; }
     
     footer { text-align: center; padding: 28px; border-top: 1px solid #b5dfa3; color: #1f3b2c; background: #fafef8; margin-top: 50px; font-weight: 500; }
-    body.dark-theme footer { background: #1e2e1e; border-top-color: #3a6e3a; color: #b5dfa3; }
+    body.dark-theme footer { background: #0a0a0a; border-top-color: #2a2a2a; color: #aaa; }
     
     @media (max-width: 950px) { .content-layout { flex-direction: column; align-items: center; } .right-side { flex-direction: row; justify-content: center; width: 100%; } .btn-primary { width: auto; } }
   </style>
@@ -115,7 +117,7 @@
       { name: "Новости и информация", link: "#" },
       { name: "Технический раздел", link: "#" },
       { name: "Мероприятия и ивенты", link: "#" },
-      { name: "Предложения по улучшению projektu", link: "#" },
+      { name: "Предложения по улучшению проекта", link: "#" },
       { name: "Сообщество в Discord", link: "https://discord.gg/Fn6UecrNNM", external: true },
       { name: "История ВП", link: "#" }
     ];
