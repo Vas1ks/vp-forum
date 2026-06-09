@@ -8,17 +8,16 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
+      background: #eef3ea;
       font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
-      background: #f4f7f2;
       color: #1a2a1c;
       line-height: 1.4;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      transition: background 0.3s ease;
     }
     
-    /* Тёмная тема (только фон контента, шапка и футер остаются зелёными) */
+    /* Тёмная тема (фон, карточки, но шапка и футер остаются зелёными) */
     body.dark-theme { background: #1a1e1c; color: #e0e0e0; }
     body.dark-theme .category-block,
     body.dark-theme .sidebar-card,
@@ -31,10 +30,12 @@
     body.dark-theme .category-header h3,
     body.dark-theme .sidebar-card h4 { color: #d0e6c0; }
     body.dark-theme .topic-stats { color: #a0c090; }
+    body.dark-theme .btn-primary { background: #444; color: white; }
+    body.dark-theme .btn-primary:hover { background: #555; }
     
     .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; flex: 1; }
     
-    /* ШАПКА (всегда тёмно-зелёная) */
+    /* ШАПКА (кнопка «Создать тему» только здесь) */
     .header {
       background: #1f3b2c;
       border-bottom: 3px solid #b5dfa3;
@@ -45,35 +46,32 @@
     }
     .header-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
     .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-img { height: 45px; width: auto; border-radius: 12px; background: #eef3ea; padding: 4px; }
+    .logo-img { height: 45px; width: auto; background: none; } /* Убираем белый фон */
     .logo h1 { font-size: 26px; font-weight: 700; color: #f1ffe8; margin: 0; }
     .logo p { font-size: 12px; color: #c7e2b9; margin-top: 2px; }
     .nav { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 15px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* ОСНОВНОЙ КОНТЕНТ */
-    .content-layout { display: flex; justify-content: center; gap: 40px; margin: 40px 0 30px; flex-wrap: wrap; }
+    /* ОСНОВНОЙ КОНТЕНТ (как на твоём фото) */
+    .content-layout { display: flex; justify-content: center; gap: 60px; margin: 40px 0 30px; flex-wrap: wrap; }
     .center-section { flex: 0 1 600px; min-width: 280px; }
-    .right-side { flex: 0 0 220px; display: flex; flex-direction: column; gap: 24px; }
+    .right-side { flex: 0 0 220px; }
     
     .category-block { background: white; border-radius: 24px; margin-bottom: 24px; border: 1px solid #e6f0e2; overflow: hidden; width: 100%; }
     .category-header { background: #f6fbf3; padding: 14px 20px; border-bottom: 1px solid #e0ecda; }
-    .category-header h3 { font-size: 17px; font-weight: 700; color: #1e582c; }
+    .category-header h3 { font-size: 18px; font-weight: 700; color: #1e582c; }
     .category-links, .topic-list { padding: 4px 0; }
-    .category-link, .topic-link { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #f0f6ec; color: #2e6b3e; font-size: 14px; }
+    .category-link, .topic-link { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #f0f6ec; color: #2e6b3e; font-size: 15px; }
     .topic-link { cursor: pointer; }
     .topic-link:hover { background: #f9fef6; }
     .topic-stats { font-size: 13px; color: #7baa6b; }
-    
-    .btn-primary { background: #2e7a45; border: none; color: white; font-weight: 600; padding: 12px 24px; border-radius: 40px; cursor: pointer; font-size: 14px; width: 100%; text-align: center; transition: 0.2s; }
-    .btn-primary:hover { background: #1f5c34; transform: scale(0.97); }
     
     .sidebar-card { background: white; border-radius: 24px; padding: 18px; border: 1px solid #e0ecda; width: 100%; }
     .sidebar-card h4 { font-size: 16px; margin-bottom: 12px; color: #205e32; border-left: 4px solid #7dbd68; padding-left: 12px; }
     .user-online { padding: 6px 0; }
     
-    /* ФУТЕР (теперь тёмно-зелёный, как шапка) */
+    /* ФУТЕР (тёмно-зелёный) */
     footer {
       text-align: center;
       padding: 28px;
@@ -84,7 +82,7 @@
       margin-top: 50px;
     }
     
-    /* Стили для страницы темы (не менялись) */
+    /* Страница темы (без изменений) */
     .thread-container { background: white; border-radius: 28px; padding: 24px; margin: 24px 0; border: 1px solid #e3efdd; }
     .comment { background: #fafef7; border-radius: 20px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #9ad685; }
     .comment-photo { max-width: 100%; margin-top: 10px; border-radius: 16px; max-height: 260px; }
@@ -94,8 +92,10 @@
     .image-preview { max-width: 80px; max-height: 80px; border-radius: 14px; border: 1px solid #cce0c2; }
     .btn-icon { background: #eef6ea; border: 1px solid #cde0c4; padding: 6px 14px; border-radius: 40px; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #2c6b3e; }
     .back-link { display: inline-flex; align-items: center; gap: 8px; color: #2d7845; cursor: pointer; margin-bottom: 20px; font-weight: 500; }
+    .btn-primary { background: #2e7a45; border: none; color: white; font-weight: 600; padding: 10px 22px; border-radius: 40px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+    .btn-primary:hover { background: #1f5c34; transform: scale(0.97); }
     
-    @media (max-width: 950px) { .content-layout { flex-direction: column; align-items: center; } .right-side { flex-direction: row; justify-content: center; width: 100%; } .btn-primary { width: auto; } }
+    @media (max-width: 950px) { .content-layout { flex-direction: column; align-items: center; gap: 30px; } .right-side { width: 100%; } }
   </style>
 </head>
 <body>
@@ -177,7 +177,6 @@
     centerHtml += `</div>`;
     
     let rightHtml = `<div class="right-side">
-      <button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button>
       <div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
         <div class="user-online"><b>Vas1ks</b><br><span style="font-size:12px;">Команда проекта</span></div>
       </div>
