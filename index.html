@@ -30,7 +30,7 @@
     body.dark-theme .sidebar-card h4 { color: #d0e6c0; }
     body.dark-theme .topic-stats { color: #a0c090; }
     
-    .container { max-width: 1600px; margin: 0 auto; padding: 0 24px; flex: 1; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; flex: 1; }
     
     .header {
       background: #1f3b2c;
@@ -49,17 +49,20 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 16px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* ОСНОВНАЯ СЕТКА: широкий блок по центру, команда справа */
-    .content-layout {
+    /* НОВАЯ СЕТКА: центральный блок занимает всё место, блок команды прижат к правому краю */
+    .content-wrapper {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      margin: 50px auto;
+      margin: 50px 0;
+    }
+    .content-layout {
+      display: flex;
+      width: 100%;
+      max-width: 1200px;
       gap: 60px;
     }
     .center-section {
-      flex: 0 1 1000px;  /* Стало шире */
-      min-width: 320px;
+      flex: 1;
     }
     .right-side {
       flex: 0 0 280px;
@@ -99,13 +102,9 @@
     .btn-primary:hover { background: #1f5c34; }
     .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
     
-    @media (max-width: 1300px) {
-      .content-layout { gap: 40px; }
-      .center-section { flex-basis: 800px; }
-    }
-    @media (max-width: 1100px) {
-      .content-layout { flex-direction: column; align-items: center; }
-      .right-side { width: 100%; }
+    @media (max-width: 1000px) {
+      .content-layout { flex-direction: column; gap: 40px; }
+      .right-side { flex-basis: auto; }
     }
   </style>
 </head>
@@ -193,7 +192,7 @@
       </div>
     </div>`;
     
-    document.getElementById('app').innerHTML = `<div class="content-layout">${centerHtml}${rightHtml}</div>`;
+    document.getElementById('app').innerHTML = `<div class="content-wrapper"><div class="content-layout">${centerHtml}${rightHtml}</div></div>`;
   }
 
   function showCreateTopicForm() {
