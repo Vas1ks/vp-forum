@@ -77,7 +77,7 @@
     .category-link, .topic-link { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; border-bottom: 1px solid #f0f6ec; color: #2e6b3e; font-size: 17px; }
     .topic-link { cursor: pointer; }
     .topic-link:hover { background: #f9fef6; }
-    .topic-stats { display: flex; gap: 16px; font-size: 14px; color: #7baa6b; }
+    .category-stats { font-size: 14px; color: #7baa6b; display: flex; gap: 16px; }
     
     .sidebar-card { background: white; border-radius: 28px; padding: 24px; border: 1px solid #e0ecda; }
     .sidebar-card h4 { font-size: 20px; margin-bottom: 16px; color: #205e32; border-left: 4px solid #7dbd68; padding-left: 14px; }
@@ -172,11 +172,9 @@
   const ADD_TOPIC_API = "https://script.google.com/macros/s/AKfycbzMqzTrs4Q51_PDGXsAD6-JxoXFkfLH3hwByYoc6fgv6zK08df6tvzYKaOVHy1buVn6Zw/exec";
   const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbxiPAvFOVOGBXayfweiAUJAReTXYfFSvdKcVuiZv2i8O5qj2g04kjHUkJT7FsN2ga8/exec";
   
-  // Новые таблицы
   const VIEWS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJJAL6orI6nTsdcYsnf8y6mfq5C3GNQ1uY8EFW_-_NZ4lSWiBxGVSZJdvoRz01KT7Sn7XpK-pvXQdx/pub?gid=0&single=true&output=csv";
   const LIKES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlGrNpAS7-giEBjtS-wSKWtO1q1Xya--VGr-mAy3FuCynQCTjAvo16jTcgUGQkHfJfSzAx0K18YBHj/pub?gid=0&single=true&output=csv";
   
-  // API для записи
   const ADD_VIEW_API = "https://script.google.com/macros/s/AKfycbwyHR5k4YVtHreu0cPmVhSW5315B0_YjYiWNalG4NuCy4MOzpP4ir14crICX3PXUQg-/exec";
   const ADD_LIKE_API = "https://script.google.com/macros/s/AKfycbz2sF2bV0Fm4-0VLX14aT_7clTWVRLr1VLKy8Iyw26vwAgbkAzDN96iLnU1V46efCPtpw/exec";
   // ========================================
@@ -273,32 +271,50 @@
   };
 
   async function showMainPage() {
-    const mainLinks = [
-      { name: "Новости и информация", link: "#" },
-      { name: "Технический раздел", link: "#" },
-      { name: "Мероприятия и ивенты", link: "#" },
-      { name: "Предложения по улучшению проекта", link: "#" },
-      { name: "Сообщество в Discord", link: "https://discord.gg/Fn6UecrNNM", external: true },
-      { name: "История ВП", link: "#" }
+    const mainCategories = [
+      { name: "Новости и информация", category: "Новости" },
+      { name: "Технический раздел", category: "Технический" },
+      { name: "Мероприятия и ивенты", category: "Мероприятия" },
+      { name: "Предложения по улучшению проекта", category: "Предложения" },
+      { name: "Сообщество в Discord", category: "Discord", external: true },
+      { name: "История ВП", category: "История" }
     ];
+    
     const topicCats = ["Общее", "Постройки"];
     
-    let totalTopics = topics.length;
-    let totalMessages = comments.length;
-    
     let leftHtml = `<div class="left">
-      <div class="stats" style="background:#f6fbf3; border-radius:28px; padding:16px 24px; margin-bottom:28px; display:flex; gap:40px;">
-        <span><strong>📊 Темы:</strong> ${totalTopics}</span>
-        <span><strong>💬 Сообщения:</strong> ${totalMessages}</span>
-      </div>
       <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
-    mainLinks.forEach(link => {
-      if (link.external) {
-        leftHtml += `<a href="${link.link}" target="_blank" class="category-link"><span><i class="fab fa-discord"></i> ${link.name}</span> <i class="fas fa-external-link-alt" style="font-size: 12px;"></i></a>`;
-      } else {
-        leftHtml += `<div class="category-link"><span><i class="far fa-folder"></i> ${link.name}</span></div>`;
+    
+    for(let cat of mainCategories) {
+      if(cat.external) {
+        leftHtml += `<a href="${cat.link}" target="_blank" class="category-link">
+          <span><i class="fab fa-discord"></i> ${cat.name}</span>
+        </a>`;
+        continue;
       }
-    });
+      // Собираем темы, которые относятся к этой категории (по совпадению с заголовком темы или можно добавить поле category в тему)
+      // Пока просто показываем общую статистику по всем темам, кроме категорий Общее и Постройки
+      let relatedTopics = [];
+      if(cat.category === "Новости") relatedTopics = topics.filter(t => t.title.toLowerCase().includes('новость'));
+      else if(cat.category === "Технический") relatedTopics = topics.filter(t => t.title.toLowerCase().includes('технический'));
+      else if(cat.category === "Мероприятия") relatedTopics = topics.filter(t => t.category === "Ивенты");
+      else if(cat.category === "Предложения") relatedTopics = topics.filter(t => t.category === "Предложения");
+      else if(cat.category === "История") relatedTopics = topics.filter(t => t.title.toLowerCase().includes('история'));
+      else relatedTopics = [];
+      
+      let topicsCount = relatedTopics.length;
+      let messagesCount = comments.filter(c => relatedTopics.some(t => t.id == c.topic_id)).length;
+      let viewsCount = relatedTopics.reduce((sum, t) => sum + getViewCount(t.id), 0);
+      
+      leftHtml += `<div class="category-link">
+        <span><i class="far fa-folder"></i> ${cat.name}</span>
+        <div class="category-stats">
+          <span>📌 Темы: ${topicsCount}</span>
+          <span>💬 Сообщения: ${messagesCount}</span>
+          <span>👁️ Просмотры: ${viewsCount}</span>
+        </div>
+      </div>`;
+    }
     leftHtml += `</div></div>`;
     
     for(let cat of topicCats) {
@@ -310,7 +326,7 @@
         let viewCount = getViewCount(t.id);
         leftHtml += `<div class="topic-link" onclick="navigateToTopic('${t.id}')">
           <span><i class="far fa-comment"></i> ${escapeHtml(t.title)}</span>
-          <div class="topic-stats"><span>💬 ${replyCount}</span><span>👁️ ${viewCount}</span></div>
+          <div class="category-stats"><span>💬 ${replyCount}</span><span>👁️ ${viewCount}</span></div>
         </div>`;
       });
       leftHtml += `</div>`;
@@ -394,9 +410,7 @@
   };
 
   async function showTopic(id){
-    // Увеличиваем просмотры
     await incrementView(id);
-    // Перезагружаем данные, чтобы показать актуальные просмотры
     await loadData();
     
     let topic = topics.find(t=>t.id==id);
