@@ -49,31 +49,27 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 16px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* ========== ГЛАВНАЯ СЕТКА (ЧЁТКОЕ ЦЕНТРИРОВАНИЕ) ========== */
-    .content-wrapper {
+    /* ========== ЖЁСТКОЕ ЦЕНТРИРОВАНИЕ ОТНОСИТЕЛЬНО ФУТЕРА ========== */
+    .main-content {
+      max-width: 1000px;  /* Ширина блоков больше, чем надпись в футере */
+      margin: 40px auto;
+      padding: 0 20px;
+      position: relative;
+    }
+    .content-row {
       display: flex;
-      justify-content: center;
-      margin: 50px 0;
+      justify-content: space-between;
+      gap: 60px;
     }
-    .content-layout {
-      display: flex;
-      gap: 80px;
-      /* Ширина подстраивается под контент, но не меньше 300px */
-      width: auto;
-      max-width: 1200px;
+    .left-column {
+      flex: 1;
     }
-    .center-section {
-      /* Левый блок занимает ровно столько места, сколько нужно тексту */
-      width: auto;
-      min-width: 300px;
-    }
-    .right-side {
-      /* Правый блок прилегает к левому и не падает вниз */
+    .right-column {
       flex-shrink: 0;
       width: 260px;
+      margin-top: 0;
     }
     
-    /* Стили блоков (без изменений) */
     .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
     .category-header { background: #f6fbf3; padding: 18px 24px; border-bottom: 1px solid #e0ecda; }
     .category-header h3 { font-size: 22px; font-weight: 700; color: #1e582c; }
@@ -108,9 +104,9 @@
     .btn-primary:hover { background: #1f5c34; }
     .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
     
-    @media (max-width: 800px) {
-      .content-layout { flex-direction: column; align-items: center; gap: 40px; }
-      .right-side { width: 100%; }
+    @media (max-width: 900px) {
+      .content-row { flex-direction: column; gap: 40px; }
+      .right-column { width: 100%; }
     }
   </style>
 </head>
@@ -130,7 +126,10 @@
   </div>
 </div>
 
-<div class="container" id="app"><div style="text-align:center; padding:80px; font-size:18px;">📡 загрузка...</div></div>
+<div class="main-content" id="app">
+  <div style="text-align:center; padding:80px; font-size:18px;">📡 загрузка...</div>
+</div>
+
 <footer>© 2026 ВП | Выживание с Подписчиками — Форум проекта</footer>
 
 <script>
@@ -169,43 +168,43 @@
     ];
     const topicCats = ["Общее", "Постройки"];
     
-    let centerHtml = `<div class="center-section">
+    let leftHtml = `<div class="left-column">
       <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
     mainLinks.forEach(link => {
       if (link.external) {
-        centerHtml += `<a href="${link.link}" target="_blank" class="category-link"><span><i class="fab fa-discord"></i> ${link.name}</span> <i class="fas fa-external-link-alt" style="font-size: 12px;"></i></a>`;
+        leftHtml += `<a href="${link.link}" target="_blank" class="category-link"><span><i class="fab fa-discord"></i> ${link.name}</span> <i class="fas fa-external-link-alt" style="font-size: 12px;"></i></a>`;
       } else {
-        centerHtml += `<div class="category-link"><span><i class="far fa-folder"></i> ${link.name}</span></div>`;
+        leftHtml += `<div class="category-link"><span><i class="far fa-folder"></i> ${link.name}</span></div>`;
       }
     });
-    centerHtml += `</div></div>`;
+    leftHtml += `</div></div>`;
     
     for(let cat of topicCats) {
       let filtered = topics.filter(t=>t.category===cat);
-      centerHtml += `<div class="category-block"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
-      if(!filtered.length) centerHtml += `<div class="category-link">— нет тем —</div>`;
+      leftHtml += `<div class="category-block"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
+      if(!filtered.length) leftHtml += `<div class="category-link">— нет тем —</div>`;
       else filtered.forEach(t=>{
         let cnt = comments.filter(c=>c.topic_id===t.id).length;
-        centerHtml += `<div class="topic-link" onclick="showTopic('${t.id}')"><span><i class="far fa-comment"></i> ${escapeHtml(t.title)}</span><span class="topic-stats">💬 ${cnt}</span></div>`;
+        leftHtml += `<div class="topic-link" onclick="showTopic('${t.id}')"><span><i class="far fa-comment"></i> ${escapeHtml(t.title)}</span><span class="topic-stats">💬 ${cnt}</span></div>`;
       });
-      centerHtml += `</div>`;
+      leftHtml += `</div>`;
     }
-    centerHtml += `</div>`;
+    leftHtml += `</div>`;
     
-    let rightHtml = `<div class="right-side">
+    let rightHtml = `<div class="right-column">
       <div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
         <div class="user-online"><b>Vas1ks</b><br><span style="font-size:14px;">Команда проекта</span></div>
       </div>
     </div>`;
     
-    document.getElementById('app').innerHTML = `<div class="content-wrapper"><div class="content-layout">${centerHtml}${rightHtml}</div></div>`;
+    document.getElementById('app').innerHTML = `<div class="content-row">${leftHtml}${rightHtml}</div>`;
   }
 
   function showCreateTopicForm() {
-    document.getElementById('app').innerHTML = `<div class="back-link" onclick="showMainPage()">← назад</div>
+    document.getElementById('app').innerHTML = `<div><div class="back-link" onclick="showMainPage()">← назад</div>
       <div class="thread-container"><h2>📝 Новая тема</h2><input id="newTitle" placeholder="Название темы" style="font-size:16px;">
       <select id="newCategory" style="font-size:16px;"><option>Общее</option><option>Постройки</option></select>
-      <input id="newAuthor" placeholder="Ваш игровой ник" style="font-size:16px;"><button class="btn-primary" id="sendTopicBtn">📢 Опубликовать</button></div>`;
+      <input id="newAuthor" placeholder="Ваш игровой ник" style="font-size:16px;"><button class="btn-primary" id="sendTopicBtn">📢 Опубликовать</button></div></div>`;
     document.getElementById('sendTopicBtn').onclick = createTopic;
   }
 
@@ -260,7 +259,7 @@
       if(m){ imgHtml = `<div><img src="${m[1]}" class="comment-photo"></div>`; txt = txt.replace(/\[IMG\].*?\[\/IMG\]/,'').trim(); }
       return `<div class="comment"><div style="font-weight:600; font-size:17px;">${escapeHtml(c.author)}</div><div style="margin:10px 0;">${escapeHtml(txt)}</div>${imgHtml}<div style="font-size:13px;">${c.date}</div></div>`;
     }).join('');
-    document.getElementById('app').innerHTML = `<div class="back-link" onclick="showMainPage()">← к списку тем</div>
+    document.getElementById('app').innerHTML = `<div><div class="back-link" onclick="showMainPage()">← к списку тем</div>
       <div class="thread-container"><h2>${escapeHtml(topic.title)}</h2><div style="font-size:16px; margin-bottom:28px;">автор: ${escapeHtml(topic.author)} | ${topic.date} | ${topic.category}</div>
       <div style="margin-top:28px;"><h3 style="font-size:22px; margin-bottom:20px;">💬 Ответы (${topicComments.length})</h3>${commentsHtml}
       <div class="reply-form"><h4 style="font-size:18px; margin-bottom:16px;">✏️ Ваш ответ</h4><input id="replyAuthor" placeholder="Ваш ник" style="font-size:16px;"><textarea id="replyText" rows="2" style="font-size:16px;"></textarea>
