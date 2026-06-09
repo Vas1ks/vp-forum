@@ -49,32 +49,32 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 16px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* ========== ЖЁСТКОЕ ЦЕНТРИРОВАНИЕ (КАК У ФУТЕРА) ========== */
     .main-wrapper {
       flex: 1;
       display: flex;
-      justify-content: center;   /* ← центр по горизонтали */
+      justify-content: center;
       align-items: center;
       margin: 50px 0;
+      width: 100%;
     }
     .content-box {
-      max-width: 1000px;
+      max-width: none;           /* ← блоки на всю ширину */
       width: 100%;
       padding: 0 20px;
-      /* НЕТ margin-left, НЕТ margin-right — строгий центр */
       margin: 0 auto;
     }
     .flex-row {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;   /* ← центр внутри flex-строки */
       gap: 60px;
+      flex-wrap: wrap;
     }
     .left {
-      flex: 1;
+      flex: 0 1 auto;
+      min-width: 300px;
     }
     .right {
-      flex-shrink: 0;
-      width: 260px;
+      flex: 0 0 260px;
     }
     
     .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
@@ -112,7 +112,7 @@
     .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
     
     @media (max-width: 900px) {
-      .flex-row { flex-direction: column; gap: 40px; }
+      .flex-row { justify-content: center; }
       .right { width: 100%; }
     }
   </style>
