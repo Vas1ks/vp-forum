@@ -179,6 +179,13 @@
 
   let topics = [], comments = [], views = [], likes = [];
 
+  // Получаем ID темы из URL (например, #topic/123)
+  function getTopicIdFromUrl() {
+    const hash = window.location.hash;
+    const match = hash.match(/^#topic\/(\d+)$/);
+    return match ? match[1] : null;
+  }
+
   async function loadData() {
     try {
       const [tRes, cRes, vRes, lRes] = await Promise.all([
@@ -189,7 +196,14 @@
       views = parseCSV(await vRes.text());
       likes = parseCSV(await lRes.text());
       topics.sort((a,b) => (Number(b.id)||0) - (Number(a.id)||0));
-      navigateToMain();
+      
+      // Проверяем, есть ли в URL тема
+      const topicId = getTopicIdFromUrl();
+      if(topicId && topics.find(t => t.id == topicId)) {
+        showTopic(topicId);
+      } else {
+        navigateToMain();
+      }
     } catch(e) { 
       console.error(e);
       document.getElementById('app').innerHTML = '<div style="padding:40px;text-align:center;">⚠️ Ошибка загрузки</div>'; 
@@ -276,8 +290,11 @@
   }
 
   window.onpopstate = (event) => {
-    if(event.state && event.state.page === 'topic') showTopic(event.state.id);
-    else showMainPage();
+    if(event.state && event.state.page === 'topic') {
+      showTopic(event.state.id);
+    } else {
+      showMainPage();
+    }
   };
 
   async function showMainPage() {
@@ -412,8 +429,8 @@
     
     const success = await toggleLike(commentId, currentUser);
     if(success) {
-      let topicId = comments.find(c => c.id == commentId)?.topic_id;
-      if(topicId) showTopic(topicId);
+      // Перезагружаем данные и остаёмся на той же теме
+      await loadData();
     }
   };
 
