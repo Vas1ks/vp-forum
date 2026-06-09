@@ -11,7 +11,7 @@
       background: #eef3ea;
       font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
       color: #1a2a1c;
-      line-height: 1.4;
+      line-height: 1.5;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
@@ -30,8 +30,6 @@
     body.dark-theme .category-header h3,
     body.dark-theme .sidebar-card h4 { color: #d0e6c0; }
     body.dark-theme .topic-stats { color: #a0c090; }
-    body.dark-theme .btn-primary { background: #444; color: white; }
-    body.dark-theme .btn-primary:hover { background: #555; }
     
     .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; flex: 1; }
     
@@ -46,72 +44,68 @@
     }
     .header-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
     .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-img { height: 45px; width: auto; background: none; }
-    .logo h1 { font-size: 26px; font-weight: 700; color: #f1ffe8; margin: 0; }
-    .logo p { font-size: 12px; color: #c7e2b9; margin-top: 2px; }
-    .nav { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-    .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 15px; padding: 5px 0; }
+    .logo-img { height: 50px; width: auto; background: none; }
+    .logo h1 { font-size: 28px; font-weight: 700; color: #f1ffe8; margin: 0; }
+    .logo p { font-size: 14px; color: #c7e2b9; margin-top: 4px; }
+    .nav { display: flex; align-items: center; gap: 25px; flex-wrap: wrap; }
+    .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 16px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* ОСНОВНОЙ КОНТЕНТ (блок команды прижат к правому краю) */
+    /* КОНТЕНТ ПО ЦЕНТРУ + БОЛЬШЕ ШРИФТ */
     .content-layout {
       display: flex;
       justify-content: center;
       align-items: flex-start;
       gap: 60px;
-      margin: 40px auto;
-      position: relative;
+      margin: 50px auto;
+      flex-wrap: wrap;
     }
     .center-section {
-      flex: 0 1 600px;
-      min-width: 280px;
+      flex: 0 1 700px;
+      min-width: 320px;
     }
     .right-side {
-      flex: 0 0 240px;
-      /* Этот блок будет справа */
-      margin-left: auto;
+      flex: 0 0 280px;
     }
     
-    .category-block { background: white; border-radius: 24px; margin-bottom: 24px; border: 1px solid #e6f0e2; overflow: hidden; width: 100%; }
-    .category-header { background: #f6fbf3; padding: 14px 20px; border-bottom: 1px solid #e0ecda; }
-    .category-header h3 { font-size: 18px; font-weight: 700; color: #1e582c; }
-    .category-links, .topic-list { padding: 4px 0; }
-    .category-link, .topic-link { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #f0f6ec; color: #2e6b3e; font-size: 15px; }
+    .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
+    .category-header { background: #f6fbf3; padding: 18px 24px; border-bottom: 1px solid #e0ecda; }
+    .category-header h3 { font-size: 22px; font-weight: 700; color: #1e582c; }
+    .category-links, .topic-list { padding: 6px 0; }
+    .category-link, .topic-link { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; border-bottom: 1px solid #f0f6ec; color: #2e6b3e; font-size: 17px; }
     .topic-link { cursor: pointer; }
     .topic-link:hover { background: #f9fef6; }
-    .topic-stats { font-size: 13px; color: #7baa6b; }
+    .topic-stats { font-size: 15px; color: #7baa6b; }
     
-    .sidebar-card { background: white; border-radius: 24px; padding: 18px; border: 1px solid #e0ecda; width: 100%; }
-    .sidebar-card h4 { font-size: 16px; margin-bottom: 12px; color: #205e32; border-left: 4px solid #7dbd68; padding-left: 12px; }
-    .user-online { padding: 6px 0; }
+    .sidebar-card { background: white; border-radius: 28px; padding: 24px; border: 1px solid #e0ecda; }
+    .sidebar-card h4 { font-size: 20px; margin-bottom: 16px; color: #205e32; border-left: 4px solid #7dbd68; padding-left: 14px; }
+    .user-online { padding: 8px 0; font-size: 17px; }
+    .user-online b { font-size: 18px; }
     
     /* ФУТЕР */
     footer {
       text-align: center;
-      padding: 28px;
+      padding: 32px;
       background: #1f3b2c;
       border-top: 3px solid #b5dfa3;
       color: #eef5e8;
       font-weight: 500;
+      font-size: 16px;
       margin-top: 50px;
     }
     
-    /* Страница темы */
-    .thread-container { background: white; border-radius: 28px; padding: 24px; margin: 24px 0; border: 1px solid #e3efdd; }
-    .comment { background: #fafef7; border-radius: 20px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #9ad685; }
-    .comment-photo { max-width: 100%; margin-top: 10px; border-radius: 16px; max-height: 260px; }
-    .reply-form { background: #f4faf0; border-radius: 24px; padding: 20px; margin-top: 28px; }
-    .reply-form textarea { width: 100%; border: 1px solid #d0e2c8; border-radius: 20px; padding: 12px 16px; font-family: inherit; resize: vertical; background: white; }
-    .image-upload-area { display: flex; align-items: center; gap: 12px; margin: 14px 0; flex-wrap: wrap; }
-    .image-preview { max-width: 80px; max-height: 80px; border-radius: 14px; border: 1px solid #cce0c2; }
-    .btn-icon { background: #eef6ea; border: 1px solid #cde0c4; padding: 6px 14px; border-radius: 40px; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #2c6b3e; }
-    .back-link { display: inline-flex; align-items: center; gap: 8px; color: #2d7845; cursor: pointer; margin-bottom: 20px; font-weight: 500; }
-    .btn-primary { background: #2e7a45; border: none; color: white; font-weight: 600; padding: 10px 22px; border-radius: 40px; cursor: pointer; font-size: 14px; transition: 0.2s; }
-    .btn-primary:hover { background: #1f5c34; transform: scale(0.97); }
+    /* Страница темы (крупнее) */
+    .thread-container { background: white; border-radius: 28px; padding: 32px; margin: 28px 0; border: 1px solid #e3efdd; }
+    .thread-container h2 { font-size: 26px; margin-bottom: 16px; }
+    .comment { background: #fafef7; border-radius: 24px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #9ad685; font-size: 16px; }
+    .reply-form { background: #f4faf0; border-radius: 28px; padding: 24px; margin-top: 32px; }
+    .reply-form textarea { font-size: 16px; padding: 14px 18px; }
+    .btn-primary, .btn-icon { font-size: 16px; padding: 12px 26px; }
+    .back-link { font-size: 16px; margin-bottom: 24px; }
     
     @media (max-width: 950px) {
       .content-layout { flex-direction: column; align-items: center; gap: 30px; }
-      .right-side { margin-left: 0; width: 100%; }
+      .right-side { width: 100%; }
     }
   </style>
 </head>
@@ -120,7 +114,7 @@
 <div class="header">
   <div class="container header-inner">
     <div class="logo">
-      <img src="logovp.png" alt="Логотип ВП" class="logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/45?text=VP';">
+      <img src="logovp.png" alt="Логотип ВП" class="logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/50?text=VP';">
       <div><h1>ВП | Выживание с Подписчиками</h1><p>официальный форум проекта</p></div>
     </div>
     <div class="nav">
@@ -131,7 +125,7 @@
   </div>
 </div>
 
-<div class="container" id="app"><div style="text-align:center; padding:60px;">📡 загрузка...</div></div>
+<div class="container" id="app"><div style="text-align:center; padding:80px; font-size:18px;">📡 загрузка...</div></div>
 <footer>© 2026 ВП | Выживание с Подписчиками — Форум проекта</footer>
 
 <script>
@@ -174,7 +168,7 @@
       <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
     mainLinks.forEach(link => {
       if (link.external) {
-        centerHtml += `<a href="${link.link}" target="_blank" class="category-link"><span><i class="fab fa-discord"></i> ${link.name}</span> <i class="fas fa-external-link-alt" style="font-size: 10px;"></i></a>`;
+        centerHtml += `<a href="${link.link}" target="_blank" class="category-link"><span><i class="fab fa-discord"></i> ${link.name}</span> <i class="fas fa-external-link-alt" style="font-size: 12px;"></i></a>`;
       } else {
         centerHtml += `<div class="category-link"><span><i class="far fa-folder"></i> ${link.name}</span></div>`;
       }
@@ -195,7 +189,7 @@
     
     let rightHtml = `<div class="right-side">
       <div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
-        <div class="user-online"><b>Vas1ks</b><br><span style="font-size:12px;">Команда проекта</span></div>
+        <div class="user-online"><b>Vas1ks</b><br><span style="font-size:14px;">Команда проекта</span></div>
       </div>
     </div>`;
     
@@ -204,9 +198,9 @@
 
   function showCreateTopicForm() {
     document.getElementById('app').innerHTML = `<div class="back-link" onclick="showMainPage()">← назад</div>
-      <div class="thread-container"><h2>📝 Новая тема</h2><input id="newTitle" placeholder="Название темы">
-      <select id="newCategory"><option>Общее</option><option>Постройки</option></select>
-      <input id="newAuthor" placeholder="Ваш игровой ник"><button class="btn-primary" id="sendTopicBtn">📢 Опубликовать</button></div>`;
+      <div class="thread-container"><h2>📝 Новая тема</h2><input id="newTitle" placeholder="Название темы" style="font-size:16px;">
+      <select id="newCategory" style="font-size:16px;"><option>Общее</option><option>Постройки</option></select>
+      <input id="newAuthor" placeholder="Ваш игровой ник" style="font-size:16px;"><button class="btn-primary" id="sendTopicBtn">📢 Опубликовать</button></div>`;
     document.getElementById('sendTopicBtn').onclick = createTopic;
   }
 
@@ -255,16 +249,16 @@
     let topic = topics.find(t=>t.id===id);
     if(!topic) return;
     let topicComments = comments.filter(c=>c.topic_id===id);
-    let commentsHtml = !topicComments.length ? '<div>— нет ответов —</div>' : topicComments.map(c=>{
+    let commentsHtml = !topicComments.length ? '<div style="padding:16px; font-size:16px;">— нет ответов —</div>' : topicComments.map(c=>{
       let txt = c.text, imgHtml = '';
       let m = txt.match(/\[IMG\](.*?)\[\/IMG\]/);
       if(m){ imgHtml = `<div><img src="${m[1]}" class="comment-photo"></div>`; txt = txt.replace(/\[IMG\].*?\[\/IMG\]/,'').trim(); }
-      return `<div class="comment"><div style="font-weight:600;">${escapeHtml(c.author)}</div><div>${escapeHtml(txt)}</div>${imgHtml}<div style="font-size:11px;">${c.date}</div></div>`;
+      return `<div class="comment"><div style="font-weight:600; font-size:17px;">${escapeHtml(c.author)}</div><div style="margin:10px 0;">${escapeHtml(txt)}</div>${imgHtml}<div style="font-size:13px;">${c.date}</div></div>`;
     }).join('');
     document.getElementById('app').innerHTML = `<div class="back-link" onclick="showMainPage()">← к списку тем</div>
-      <div class="thread-container"><h2>${escapeHtml(topic.title)}</h2><div>автор: ${escapeHtml(topic.author)} | ${topic.date} | ${topic.category}</div>
-      <div style="margin-top:28px;"><h3>💬 Ответы (${topicComments.length})</h3>${commentsHtml}
-      <div class="reply-form"><h4>✏️ Ваш ответ</h4><input id="replyAuthor" placeholder="Ваш ник"><textarea id="replyText" rows="2"></textarea>
+      <div class="thread-container"><h2>${escapeHtml(topic.title)}</h2><div style="font-size:16px; margin-bottom:28px;">автор: ${escapeHtml(topic.author)} | ${topic.date} | ${topic.category}</div>
+      <div style="margin-top:28px;"><h3 style="font-size:22px; margin-bottom:20px;">💬 Ответы (${topicComments.length})</h3>${commentsHtml}
+      <div class="reply-form"><h4 style="font-size:18px; margin-bottom:16px;">✏️ Ваш ответ</h4><input id="replyAuthor" placeholder="Ваш ник" style="font-size:16px;"><textarea id="replyText" rows="2" style="font-size:16px;"></textarea>
       <div class="image-upload-area"><button type="button" class="btn-icon" onclick="triggerImageUpload()"><i class="fas fa-camera"></i> Прикрепить фото</button><div id="imagePreview"></div></div>
       <button class="btn-primary" onclick="addCommentWithImage('${id}')">Отправить</button></div></div></div>`;
   }
