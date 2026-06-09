@@ -17,7 +17,6 @@
       min-height: 100vh;
     }
     
-    /* Тёмная тема */
     body.dark-theme { background: #1a1e1c; color: #e0e0e0; }
     body.dark-theme .category-block,
     body.dark-theme .sidebar-card,
@@ -33,7 +32,7 @@
     
     .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; flex: 1; }
     
-    /* ШАПКА */
+    /* ШАПКА (без изменений) */
     .header {
       background: #1f3b2c;
       border-bottom: 3px solid #b5dfa3;
@@ -51,23 +50,25 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 16px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* КОНТЕНТ ПО ЦЕНТРУ + БОЛЬШЕ ШРИФТ */
+    /* ОСНОВНАЯ СЕТКА: всё по центру, блок команды — прижат к правому краю */
     .content-layout {
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      gap: 60px;
       margin: 50px auto;
-      flex-wrap: wrap;
+      position: relative;
     }
     .center-section {
-      flex: 0 1 700px;
-      min-width: 320px;
+      width: 700px;
+      margin-right: 60px;
     }
     .right-side {
-      flex: 0 0 280px;
+      position: absolute;
+      right: 0;
+      width: 280px;
     }
     
+    /* СТИЛИ КАРТОЧЕК (без изменений) */
     .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
     .category-header { background: #f6fbf3; padding: 18px 24px; border-bottom: 1px solid #e0ecda; }
     .category-header h3 { font-size: 22px; font-weight: 700; color: #1e582c; }
@@ -82,7 +83,6 @@
     .user-online { padding: 8px 0; font-size: 17px; }
     .user-online b { font-size: 18px; }
     
-    /* ФУТЕР */
     footer {
       text-align: center;
       padding: 32px;
@@ -94,7 +94,7 @@
       margin-top: 50px;
     }
     
-    /* Страница темы (крупнее) */
+    /* Страница темы (без изменений) */
     .thread-container { background: white; border-radius: 28px; padding: 32px; margin: 28px 0; border: 1px solid #e3efdd; }
     .thread-container h2 { font-size: 26px; margin-bottom: 16px; }
     .comment { background: #fafef7; border-radius: 24px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #9ad685; font-size: 16px; }
@@ -103,9 +103,10 @@
     .btn-primary, .btn-icon { font-size: 16px; padding: 12px 26px; }
     .back-link { font-size: 16px; margin-bottom: 24px; }
     
-    @media (max-width: 950px) {
-      .content-layout { flex-direction: column; align-items: center; gap: 30px; }
-      .right-side { width: 100%; }
+    @media (max-width: 1100px) {
+      .content-layout { flex-direction: column; align-items: center; }
+      .right-side { position: static; width: 100%; margin-top: 30px; }
+      .center-section { margin-right: 0; width: 100%; }
     }
   </style>
 </head>
