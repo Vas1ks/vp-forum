@@ -52,15 +52,15 @@
     .main-wrapper {
       flex: 1;
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;  /* ← прижимаем к левому краю, чтобы сдвиг работал */
       align-items: center;
-      margin: 90px 0;
+      margin: 30px 0;              /* ← поднял выше */
     }
     .content-box {
       max-width: 1000px;
       width: 100%;
       padding: 0 20px;
-      margin: 0 auto;  /* ← БЛОКИ ПО ЦЕНТРУ ОТНОСИТЕЛЬНО ФУТЕРА */
+      margin-left: 300px;          /* ← сильный сдвиг вправо */
     }
     .flex-row {
       display: flex;
@@ -110,6 +110,7 @@
     .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
     
     @media (max-width: 900px) {
+      .content-box { margin-left: 20px; }
       .flex-row { flex-direction: column; gap: 40px; }
       .right { width: 100%; }
     }
