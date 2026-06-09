@@ -32,6 +32,7 @@
     
     .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; flex: 1; }
     
+    /* ШАПКА (без изменений) */
     .header {
       background: #1f3b2c;
       border-bottom: 3px solid #b5dfa3;
@@ -49,27 +50,33 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 16px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* ========== ЖЁСТКОЕ ЦЕНТРИРОВАНИЕ ОТНОСИТЕЛЬНО ФУТЕРА ========== */
-    .main-content {
-      max-width: 1000px;  /* Ширина блоков больше, чем надпись в футере */
-      margin: 40px auto;
-      padding: 0 20px;
-      position: relative;
+    /* ========== ОСНОВНОЙ КОНТЕНТ ========== */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 60px 0;
     }
-    .content-row {
+    .content-box {
+      max-width: 1000px;  /* Шире, чем футер */
+      width: 100%;
+      padding: 0 20px;
+    }
+    .flex-row {
       display: flex;
       justify-content: space-between;
       gap: 60px;
     }
-    .left-column {
+    .left {
       flex: 1;
     }
-    .right-column {
+    .right {
       flex-shrink: 0;
       width: 260px;
-      margin-top: 0;
     }
     
+    /* Стили карточек */
     .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
     .category-header { background: #f6fbf3; padding: 18px 24px; border-bottom: 1px solid #e0ecda; }
     .category-header h3 { font-size: 22px; font-weight: 700; color: #1e582c; }
@@ -84,6 +91,7 @@
     .user-online { padding: 8px 0; font-size: 17px; }
     .user-online b { font-size: 18px; }
     
+    /* ФУТЕР (строго внизу) */
     footer {
       text-align: center;
       padding: 32px;
@@ -92,7 +100,7 @@
       color: #eef5e8;
       font-weight: 500;
       font-size: 16px;
-      margin-top: 50px;
+      margin-top: auto;
     }
     
     .thread-container { background: white; border-radius: 28px; padding: 32px; margin: 28px 0; border: 1px solid #e3efdd; }
@@ -105,8 +113,8 @@
     .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
     
     @media (max-width: 900px) {
-      .content-row { flex-direction: column; gap: 40px; }
-      .right-column { width: 100%; }
+      .flex-row { flex-direction: column; gap: 40px; }
+      .right { width: 100%; }
     }
   </style>
 </head>
@@ -126,8 +134,10 @@
   </div>
 </div>
 
-<div class="main-content" id="app">
-  <div style="text-align:center; padding:80px; font-size:18px;">📡 загрузка...</div>
+<div class="main-wrapper">
+  <div class="content-box" id="app">
+    <div style="text-align:center; padding:60px; font-size:18px;">📡 загрузка...</div>
+  </div>
 </div>
 
 <footer>© 2026 ВП | Выживание с Подписчиками — Форум проекта</footer>
@@ -168,7 +178,7 @@
     ];
     const topicCats = ["Общее", "Постройки"];
     
-    let leftHtml = `<div class="left-column">
+    let leftHtml = `<div class="left">
       <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
     mainLinks.forEach(link => {
       if (link.external) {
@@ -191,13 +201,13 @@
     }
     leftHtml += `</div>`;
     
-    let rightHtml = `<div class="right-column">
+    let rightHtml = `<div class="right">
       <div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
         <div class="user-online"><b>Vas1ks</b><br><span style="font-size:14px;">Команда проекта</span></div>
       </div>
     </div>`;
     
-    document.getElementById('app').innerHTML = `<div class="content-row">${leftHtml}${rightHtml}</div>`;
+    document.getElementById('app').innerHTML = `<div class="flex-row">${leftHtml}${rightHtml}</div>`;
   }
 
   function showCreateTopicForm() {
