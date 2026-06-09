@@ -57,23 +57,21 @@
       margin: 90px 0;
     }
     .content-box {
+      max-width: 1000px;
       width: 100%;
-      max-width: 1400px;
       padding: 0 20px;
-      margin: 0 auto; 
+      margin: 0 auto;  /* ← БЛОКИ ПО ЦЕНТРУ ОТНОСИТЕЛЬНО ФУТЕРА */
     }
     .flex-row {
-      position: relattive;
-      width: 900px:
-      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 60px;
     }
     .left {
-      width: 900px;
+      flex: 1;
     }
     .right {
-      position: absolute;
-      left: calc(100% + 60px);
-      top: 0;
+      flex-shrink: 0;
       width: 260px;
     }
     
@@ -111,18 +109,9 @@
     .btn-primary:hover { background: #1f5c34; }
     .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
     
-    @media (max-width: 1200px) {
-      .flex-row {
-        width: 100%;
-      }
-      .left {
-        width: 100%;
-      }
-      .right { 
-        position: static;
-        width: 100%;
-        margin-top: 30px;
-      }
+    @media (max-width: 900px) {
+      .flex-row { flex-direction: column; gap: 40px; }
+      .right { width: 100%; }
     }
   </style>
 </head>
