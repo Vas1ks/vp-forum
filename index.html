@@ -236,16 +236,28 @@
       alert("Представьтесь, чтобы ставить лайки (введите ник в поле ответа или при создании темы)"); 
       return false; 
     }
-    if(hasUserLiked(commentId, userNick)) {
-      alert("Вы уже поставили лайк этому комментарию");
-      return false;
-    }
+    
+    const alreadyLiked = hasUserLiked(commentId, userNick);
+    
     try {
       await fetch(ADD_LIKE_API, {
         method: 'POST',
         mode: 'no-cors',
-        body: JSON.stringify({ action: 'like', comment_id: commentId, user_nick: userNick })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          comment_id: commentId, 
+          user_nick: userNick,
+          remove: alreadyLiked
+        })
       });
+      
+      // Обновляем локальный массив лайков
+      if(alreadyLiked) {
+        const index = likes.findIndex(l => l.comment_id == commentId && l.user_nick == userNick);
+        if(index !== -1) likes.splice(index, 1);
+      } else {
+        likes.push({ comment_id: commentId, user_nick: userNick, like: '1' });
+      }
       return true;
     } catch(e) {
       console.error("Ошибка лайка", e);
@@ -398,27 +410,10 @@
     if(!currentUser) return;
     localStorage.setItem('vp_nick', currentUser);
     
-    if(hasUserLiked(commentId, currentUser)) {
-      alert("Вы уже поставили лайк этому комментарию");
-      return;
-    }
-    
-    try {
-      await fetch(ADD_LIKE_API, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify({ action: 'like', comment_id: commentId, user_nick: currentUser })
-      });
-      
-      // Обновляем лайки в памяти
-      likes.push({ comment_id: commentId, user_nick: currentUser, like: '1' });
-      
-      // Находим текущую тему и перерисовываем её (без перезагрузки страницы)
+    const success = await toggleLike(commentId, currentUser);
+    if(success) {
       let topicId = comments.find(c => c.id == commentId)?.topic_id;
       if(topicId) showTopic(topicId);
-    } catch(e) {
-      console.error("Ошибка лайка", e);
-      alert("Ошибка при отправке лайка");
     }
   };
 
