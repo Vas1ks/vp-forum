@@ -60,7 +60,7 @@
       max-width: 1000px;
       width: 100%;
       padding: 0 20px;
-      margin-left: 100px;
+      margin: 0 auto;  /* ← БЛОКИ ПО ЦЕНТРУ ОТНОСИТЕЛЬНО ФУТЕРА */
     }
     .flex-row {
       display: flex;
@@ -110,7 +110,6 @@
     .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
     
     @media (max-width: 900px) {
-      .content-box { margin-left: 0; }
       .flex-row { flex-direction: column; gap: 40px; }
       .right { width: 100%; }
     }
