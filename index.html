@@ -7,17 +7,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #eef3ea; font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif; color: #1a2a1c; line-height: 1.4; transition: background 0.3s, color 0.2s; }
+    body { background: #eef3ea; font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif; color: #1a2a1c; line-height: 1.4; display: flex; flex-direction: column; min-height: 100vh; transition: background 0.3s, color 0.2s; }
     
-    /* Темная тема (пример) */
+    /* Тёмная тема */
     body.dark-theme { background: #1a2a1c; color: #eef3ea; }
     body.dark-theme .category-block, body.dark-theme .sidebar-card, body.dark-theme .thread-container, 
     body.dark-theme .comment, body.dark-theme .reply-form, body.dark-theme .category-header { background: #2a3a2a; border-color: #4a6e4a; }
     body.dark-theme .category-link, body.dark-theme .topic-link { color: #d4ecd0; border-bottom-color: #3a553a; }
     body.dark-theme .category-header h3, body.dark-theme .sidebar-card h4 { color: #b5e0a5; }
     body.dark-theme .topic-stats { color: #9bd68a; }
+    body.dark-theme footer { background: #1e2e1e; border-top-color: #3a553a; color: #8eab86; }
     
-    .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; flex: 1; }
     .header { background: #1f3b2c; border-bottom: 3px solid #b5dfa3; padding: 12px 0; position: sticky; top: 0; z-index: 100; transition: background 0.3s; }
     body.dark-theme .header { background: #0f1f10; border-bottom-color: #3a6e3a; }
     .header-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
@@ -29,7 +30,6 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 15px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* Контент */
     .content-layout { display: flex; justify-content: center; gap: 40px; margin: 40px 0 30px; flex-wrap: wrap; }
     .center-section { flex: 0 1 600px; min-width: 280px; }
     .right-side { flex: 0 0 220px; display: flex; flex-direction: column; gap: 24px; }
@@ -50,7 +50,6 @@
     .sidebar-card h4 { font-size: 16px; margin-bottom: 12px; color: #205e32; border-left: 4px solid #7dbd68; padding-left: 12px; }
     .user-online { padding: 6px 0; }
     
-    /* Комментарии */
     .thread-container { background: white; border-radius: 28px; padding: 24px; margin: 24px 0; border: 1px solid #e3efdd; }
     .comment { background: #fafef7; border-radius: 20px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #9ad685; }
     .comment-photo { max-width: 100%; margin-top: 10px; border-radius: 16px; max-height: 260px; }
@@ -61,8 +60,8 @@
     .btn-icon { background: #eef6ea; border: 1px solid #cde0c4; padding: 6px 14px; border-radius: 40px; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #2c6b3e; }
     .back-link { display: inline-flex; align-items: center; gap: 8px; color: #2d7845; cursor: pointer; margin-bottom: 20px; font-weight: 500; }
     
-    footer { text-align: center; padding: 28px; border-top: 1px solid #deecda; color: #8eab86; background: #fafef8; margin-top: 50px; }
-    body.dark-theme footer { background: #1e2e1e; border-top-color: #3a553a; }
+    footer { text-align: center; padding: 28px; border-top: 1px solid #b5dfa3; color: #1f3b2c; background: #fafef8; margin-top: 50px; font-weight: 500; }
+    body.dark-theme footer { background: #1e2e1e; border-top-color: #3a6e3a; color: #b5dfa3; }
     
     @media (max-width: 950px) { .content-layout { flex-direction: column; align-items: center; } .right-side { flex-direction: row; justify-content: center; width: 100%; } .btn-primary { width: auto; } }
   </style>
@@ -72,8 +71,7 @@
 <div class="header">
   <div class="container header-inner">
     <div class="logo">
-      <!-- Замените src на прямую ссылку на ваш логотип, если ссылка не работает -->
-      <img src="https://allwebs.ru/image/Ekr%C4%81nuz%C5%86%C4%93mums-2026-06-08-144942.YJcwws" alt="Логотип ВП" class="logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/45?text=VP';">
+      <img src="logovp" alt="Логотип ВП" class="logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/45?text=VP';">
       <div><h1>ВП | Выживание с Подписчиками</h1><p>официальный форум проекта</p></div>
     </div>
     <div class="nav">
@@ -113,13 +111,25 @@
   }
 
   function showMainPage() {
-    const mainLinks = ["Новости и информация", "Технический раздел", "Мероприятия и ивенты", "Предложения по улучшению проекта", "Сообщество в Discord", "История ВП"];
+    const mainLinks = [
+      { name: "Новости и информация", link: "#" },
+      { name: "Технический раздел", link: "#" },
+      { name: "Мероприятия и ивенты", link: "#" },
+      { name: "Предложения по улучшению projektu", link: "#" },
+      { name: "Сообщество в Discord", link: "https://discord.gg/Fn6UecrNNM", external: true },
+      { name: "История ВП", link: "#" }
+    ];
     const topicCats = ["Общее", "Постройки"];
-    let nick = localStorage.getItem('vp_nick') || 'Vas1ks';
     
     let centerHtml = `<div class="center-section">
       <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
-    mainLinks.forEach(link => { centerHtml += `<div class="category-link"><span><i class="far fa-folder"></i> ${link}</span></div>`; });
+    mainLinks.forEach(link => {
+      if (link.external) {
+        centerHtml += `<a href="${link.link}" target="_blank" class="category-link"><span><i class="fab fa-discord"></i> ${link.name}</span> <i class="fas fa-external-link-alt" style="font-size: 10px;"></i></a>`;
+      } else {
+        centerHtml += `<div class="category-link"><span><i class="far fa-folder"></i> ${link.name}</span></div>`;
+      }
+    });
     centerHtml += `</div></div>`;
     
     for(let cat of topicCats) {
@@ -137,7 +147,7 @@
     let rightHtml = `<div class="right-side">
       <button class="btn-primary" onclick="showCreateTopicForm()">+ Создать тему</button>
       <div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
-        <div class="user-online"><b>${escapeHtml(nick)}</b><br><span style="font-size:12px;">Команда проекта</span></div>
+        <div class="user-online"><b>Vas1ks</b><br><span style="font-size:12px;">Команда проекта</span></div>
       </div>
     </div>`;
     
