@@ -49,7 +49,6 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 16px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* Чистое центрирование + сдвиг вправо */
     .main-wrapper {
       flex: 1;
       display: flex;
@@ -61,7 +60,6 @@
       max-width: 1000px;
       width: 100%;
       padding: 0 20px;
-      /* Сдвиг вправо на 150px */
       transform: translateX(150px);
     }
     .flex-row {
@@ -69,13 +67,8 @@
       justify-content: space-between;
       gap: 60px;
     }
-    .left {
-      flex: 1;
-    }
-    .right {
-      flex-shrink: 0;
-      width: 260px;
-    }
+    .left { flex: 1; }
+    .right { flex-shrink: 0; width: 260px; }
     
     .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
     .category-header { background: #f6fbf3; padding: 18px 24px; border-bottom: 1px solid #e0ecda; }
@@ -84,7 +77,7 @@
     .category-link, .topic-link { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; border-bottom: 1px solid #f0f6ec; color: #2e6b3e; font-size: 17px; }
     .topic-link { cursor: pointer; }
     .topic-link:hover { background: #f9fef6; }
-    .topic-stats { font-size: 15px; color: #7baa6b; }
+    .topic-stats { display: flex; gap: 16px; font-size: 14px; color: #7baa6b; }
     
     .sidebar-card { background: white; border-radius: 28px; padding: 24px; border: 1px solid #e0ecda; }
     .sidebar-card h4 { font-size: 20px; margin-bottom: 16px; color: #205e32; border-left: 4px solid #7dbd68; padding-left: 14px; }
@@ -104,10 +97,42 @@
     
     .thread-container { background: white; border-radius: 28px; padding: 32px; margin: 28px 0; border: 1px solid #e3efdd; }
     .thread-container h2 { font-size: 26px; margin-bottom: 16px; }
-    .comment { background: #fafef7; border-radius: 24px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #9ad685; font-size: 16px; }
+    .comment {
+      background: #fafef7;
+      border-radius: 24px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid #9ad685;
+      font-size: 16px;
+    }
+    .comment-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #7baa6b;
+    }
+    .like-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: #7baa6b;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .like-btn:hover { color: #2e7a45; transform: scale(1.05); }
+    .like-btn.liked { color: #2e7a45; font-weight: bold; }
+    
     .reply-form { background: #f4faf0; border-radius: 28px; padding: 24px; margin-top: 32px; }
-    .reply-form textarea { font-size: 16px; padding: 14px 18px; }
-    .btn-primary, .btn-icon { font-size: 16px; padding: 12px 26px; background: #2e7a45; color: white; border: none; border-radius: 40px; cursor: pointer; }
+    .reply-form textarea { width: 100%; border: 1px solid #d0e2c8; border-radius: 24px; padding: 14px 18px; font-family: inherit; resize: vertical; background: white; font-size: 16px; }
+    .image-upload-area { display: flex; align-items: center; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+    .image-preview { max-width: 80px; max-height: 80px; border-radius: 16px; border: 1px solid #cce0c2; }
+    .btn-icon { background: #eef6ea; border: 1px solid #cde0c4; padding: 6px 14px; border-radius: 40px; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #2c6b3e; }
+    .btn-primary { background: #2e7a45; border: none; color: white; font-weight: 600; padding: 12px 26px; border-radius: 40px; cursor: pointer; font-size: 16px; }
     .btn-primary:hover { background: #1f5c34; }
     .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
     
@@ -127,7 +152,7 @@
       <div><h1>ВП | Выживание с Подписчиками</h1><p>официальный форум проекта</p></div>
     </div>
     <div class="nav">
-      <a onclick="showMainPage()">Главная</a>
+      <a onclick="navigateToMain()">Главная</a>
       <a onclick="showCreateTopicForm()">Создать тему</a>
       <button class="theme-toggle" onclick="document.body.classList.toggle('dark-theme')">🌓 Тема</button>
     </div>
@@ -135,39 +160,119 @@
 </div>
 
 <div class="main-wrapper">
-  <div class="content-box" id="app">
-    <div style="text-align:center; padding:60px; font-size:18px;">📡 загрузка...</div>
-  </div>
+  <div class="content-box" id="app"><div style="text-align:center; padding:60px;">📡 загрузка...</div></div>
 </div>
 
 <footer>© 2026 ВП | Выживание с Подписчиками — Форум проекта</footer>
 
 <script>
+  // ========== ССЫЛКИ НА ТАБЛИЦЫ ==========
   const TOPICS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7w_qakiVZNa26pZXY9_-qZ2peGlKga-J3VlMfE8WtYt_skMjgYyiECDfOGzgxmDn7ZdyFJd_7q_CP/pub?output=csv";
   const COMMENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRhLuXUXT8TU26BTL6j5ih5BlvNQ_RFweSK8yYHgycnK2bObZINPWi9pUUeNtE-5FNQYvmpihg-EWYV/pub?output=csv";
   const ADD_TOPIC_API = "https://script.google.com/macros/s/AKfycbzMqzTrs4Q51_PDGXsAD6-JxoXFkfLH3hwByYoc6fgv6zK08df6tvzYKaOVHy1buVn6Zw/exec";
   const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbxiPAvFOVOGBXayfweiAUJAReTXYfFSvdKcVuiZv2i8O5qj2g04kjHUkJT7FsN2ga8/exec";
+  
+  // Новые таблицы
+  const VIEWS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJJAL6orI6nTsdcYsnf8y6mfq5C3GNQ1uY8EFW_-_NZ4lSWiBxGVSZJdvoRz01KT7Sn7XpK-pvXQdx/pub?gid=0&single=true&output=csv";
+  const LIKES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlGrNpAS7-giEBjtS-wSKWtO1q1Xya--VGr-mAy3FuCynQCTjAvo16jTcgUGQkHfJfSzAx0K18YBHj/pub?gid=0&single=true&output=csv";
+  
+  // API для записи
+  const ADD_VIEW_API = "https://script.google.com/macros/s/AKfycbwyHR5k4YVtHreu0cPmVhSW5315B0_YjYiWNalG4NuCy4MOzpP4ir14crICX3PXUQg-/exec";
+  const ADD_LIKE_API = "https://script.google.com/macros/s/AKfycbz2sF2bV0Fm4-0VLX14aT_7clTWVRLr1VLKy8Iyw26vwAgbkAzDN96iLnU1V46efCPtpw/exec";
+  // ========================================
 
-  let topics = [], comments = [];
+  let topics = [], comments = [], views = [], likes = [];
 
   async function loadData() {
     try {
-      const [tRes, cRes] = await Promise.all([fetch(TOPICS_CSV), fetch(COMMENTS_CSV)]);
+      const [tRes, cRes, vRes, lRes] = await Promise.all([
+        fetch(TOPICS_CSV), fetch(COMMENTS_CSV), fetch(VIEWS_CSV), fetch(LIKES_CSV)
+      ]);
       topics = parseCSV(await tRes.text());
       comments = parseCSV(await cRes.text());
+      views = parseCSV(await vRes.text());
+      likes = parseCSV(await lRes.text());
       topics.sort((a,b) => (Number(b.id)||0) - (Number(a.id)||0));
-      showMainPage();
-    } catch(e) { document.getElementById('app').innerHTML = '<div style="padding:40px;text-align:center;">⚠️ Ошибка загрузки</div>'; }
+      navigateToMain();
+    } catch(e) { 
+      console.error(e);
+      document.getElementById('app').innerHTML = '<div style="padding:40px;text-align:center;">⚠️ Ошибка загрузки</div>'; 
+    }
   }
 
   function parseCSV(text) {
     const rows = text.split('\n').filter(r=>r.trim());
     if(rows.length<2) return [];
     const headers = rows[0].split(',').map(h=>h.trim().toLowerCase());
-    return rows.slice(1).map(row=>{ let obj={}; headers.forEach((h,i)=>obj[h]=row.split(',')[i]?.trim()||''); return obj; }).filter(obj=>Object.keys(obj).length);
+    return rows.slice(1).map(row=>{
+      const cols = row.split(',');
+      let obj = {};
+      headers.forEach((h,i)=> obj[h] = cols[i] ? cols[i].trim() : '');
+      return obj;
+    }).filter(obj=>Object.keys(obj).length);
   }
 
-  function showMainPage() {
+  function getViewCount(topicId) {
+    const v = views.find(v => v.topic_id == topicId);
+    return v ? parseInt(v.views) || 0 : 0;
+  }
+
+  async function incrementView(topicId) {
+    try {
+      await fetch(ADD_VIEW_API, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ action: 'increment', topic_id: topicId })
+      });
+    } catch(e) { console.error("Ошибка обновления просмотров", e); }
+  }
+
+  function getLikeCount(commentId) {
+    return likes.filter(l => l.comment_id == commentId && l.like == '1').length;
+  }
+
+  function hasUserLiked(commentId, userNick) {
+    return likes.some(l => l.comment_id == commentId && l.user_nick == userNick && l.like == '1');
+  }
+
+  async function toggleLike(commentId, userNick) {
+    if(!userNick || userNick === "Гость") { 
+      alert("Представьтесь, чтобы ставить лайки (введите ник в поле ответа или при создании темы)"); 
+      return false; 
+    }
+    if(hasUserLiked(commentId, userNick)) {
+      alert("Вы уже поставили лайк этому комментарию");
+      return false;
+    }
+    try {
+      await fetch(ADD_LIKE_API, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ action: 'like', comment_id: commentId, user_nick: userNick })
+      });
+      return true;
+    } catch(e) {
+      console.error("Ошибка лайка", e);
+      return false;
+    }
+  }
+
+  function navigateToMain() {
+    history.pushState({ page: 'main' }, '', '#');
+    showMainPage();
+  }
+
+  function navigateToTopic(id) {
+    history.pushState({ page: 'topic', id: id }, '', '#topic/'+id);
+    showTopic(id);
+  }
+
+  window.onpopstate = (event) => {
+    if(event.state && event.state.page === 'topic') showTopic(event.state.id);
+    else showMainPage();
+  };
+
+  async function showMainPage() {
     const mainLinks = [
       { name: "Новости и информация", link: "#" },
       { name: "Технический раздел", link: "#" },
@@ -178,7 +283,14 @@
     ];
     const topicCats = ["Общее", "Постройки"];
     
+    let totalTopics = topics.length;
+    let totalMessages = comments.length;
+    
     let leftHtml = `<div class="left">
+      <div class="stats" style="background:#f6fbf3; border-radius:28px; padding:16px 24px; margin-bottom:28px; display:flex; gap:40px;">
+        <span><strong>📊 Темы:</strong> ${totalTopics}</span>
+        <span><strong>💬 Сообщения:</strong> ${totalMessages}</span>
+      </div>
       <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
     mainLinks.forEach(link => {
       if (link.external) {
@@ -194,8 +306,12 @@
       leftHtml += `<div class="category-block"><div class="category-header"><h3>📁 ${cat}</h3></div>`;
       if(!filtered.length) leftHtml += `<div class="category-link">— нет тем —</div>`;
       else filtered.forEach(t=>{
-        let cnt = comments.filter(c=>c.topic_id===t.id).length;
-        leftHtml += `<div class="topic-link" onclick="showTopic('${t.id}')"><span><i class="far fa-comment"></i> ${escapeHtml(t.title)}</span><span class="topic-stats">💬 ${cnt}</span></div>`;
+        let replyCount = comments.filter(c=>c.topic_id===t.id).length;
+        let viewCount = getViewCount(t.id);
+        leftHtml += `<div class="topic-link" onclick="navigateToTopic('${t.id}')">
+          <span><i class="far fa-comment"></i> ${escapeHtml(t.title)}</span>
+          <div class="topic-stats"><span>💬 ${replyCount}</span><span>👁️ ${viewCount}</span></div>
+        </div>`;
       });
       leftHtml += `</div>`;
     }
@@ -211,7 +327,7 @@
   }
 
   function showCreateTopicForm() {
-    document.getElementById('app').innerHTML = `<div><div class="back-link" onclick="showMainPage()">← назад</div>
+    document.getElementById('app').innerHTML = `<div><div class="back-link" onclick="navigateToMain()">← назад</div>
       <div class="thread-container"><h2>📝 Новая тема</h2><input id="newTitle" placeholder="Название темы" style="font-size:16px;">
       <select id="newCategory" style="font-size:16px;"><option>Общее</option><option>Постройки</option></select>
       <input id="newAuthor" placeholder="Ваш игровой ник" style="font-size:16px;"><button class="btn-primary" id="sendTopicBtn">📢 Опубликовать</button></div></div>`;
@@ -225,7 +341,11 @@
     let date = new Date().toLocaleDateString();
     let btn = document.getElementById('sendTopicBtn');
     btn.disabled = true;
-    try { await fetch(ADD_TOPIC_API, { method:'POST', mode:'no-cors', body: JSON.stringify({ title, author, date, category }) }); alert("✅ Тема создана! Обновите страницу"); loadData(); } catch(e){ alert("Ошибка"); }
+    try { 
+      await fetch(ADD_TOPIC_API, { method:'POST', mode:'no-cors', body: JSON.stringify({ title, author, date, category }) }); 
+      alert("✅ Тема создана! Обновите страницу"); 
+      await loadData(); 
+    } catch(e){ alert("Ошибка"); }
     btn.disabled = false;
   }
 
@@ -254,25 +374,54 @@
     try {
       await fetch(ADD_COMMENT_API, { method:'POST', mode:'no-cors', body: JSON.stringify({ topic_id: topicId, author, text: finalText, date }) });
       alert("✅ Комментарий добавлен! Обновите страницу");
-      loadData().then(()=>showTopic(topicId));
+      await loadData();
+      navigateToTopic(topicId);
     } catch(e){ alert("Ошибка"); }
     pendingImage = null;
   };
 
-  function showTopic(id){
-    let topic = topics.find(t=>t.id===id);
+  window.likeComment = async (commentId, authorNick) => {
+    let currentUser = localStorage.getItem('vp_nick');
+    if(!currentUser) currentUser = prompt("Введите ваш игровой ник для лайка");
+    if(!currentUser) return;
+    localStorage.setItem('vp_nick', currentUser);
+    let success = await toggleLike(commentId, currentUser);
+    if(success) {
+      await loadData();
+      let topicId = comments.find(c => c.id == commentId)?.topic_id;
+      if(topicId) navigateToTopic(topicId);
+    }
+  };
+
+  async function showTopic(id){
+    // Увеличиваем просмотры
+    await incrementView(id);
+    // Перезагружаем данные, чтобы показать актуальные просмотры
+    await loadData();
+    
+    let topic = topics.find(t=>t.id==id);
     if(!topic) return;
-    let topicComments = comments.filter(c=>c.topic_id===id);
-    let commentsHtml = !topicComments.length ? '<div style="padding:16px; font-size:16px;">— нет ответов —</div>' : topicComments.map(c=>{
+    let topicComments = comments.filter(c=>c.topic_id==id);
+    let currentUser = localStorage.getItem('vp_nick') || "Гость";
+    
+    let commentsHtml = !topicComments.length ? '<div style="padding:16px;">— нет ответов —</div>' : topicComments.map(c=>{
       let txt = c.text, imgHtml = '';
       let m = txt.match(/\[IMG\](.*?)\[\/IMG\]/);
       if(m){ imgHtml = `<div><img src="${m[1]}" class="comment-photo"></div>`; txt = txt.replace(/\[IMG\].*?\[\/IMG\]/,'').trim(); }
-      return `<div class="comment"><div style="font-weight:600; font-size:17px;">${escapeHtml(c.author)}</div><div style="margin:10px 0;">${escapeHtml(txt)}</div>${imgHtml}<div style="font-size:13px;">${c.date}</div></div>`;
+      let likeCount = getLikeCount(c.id);
+      let liked = hasUserLiked(c.id, currentUser);
+      return `<div class="comment"><div style="font-weight:600;">${escapeHtml(c.author)}</div><div>${escapeHtml(txt)}</div>${imgHtml}
+        <div class="comment-footer">
+          <span>${c.date}</span>
+          <button class="like-btn ${liked ? 'liked' : ''}" onclick="likeComment('${c.id}', '${escapeHtml(c.author)}')">👍 ${likeCount}</button>
+        </div>
+      </div>`;
     }).join('');
-    document.getElementById('app').innerHTML = `<div><div class="back-link" onclick="showMainPage()">← к списку тем</div>
-      <div class="thread-container"><h2>${escapeHtml(topic.title)}</h2><div style="font-size:16px; margin-bottom:28px;">автор: ${escapeHtml(topic.author)} | ${topic.date} | ${topic.category}</div>
+    
+    document.getElementById('app').innerHTML = `<div><div class="back-link" onclick="navigateToMain()">← к списку тем</div>
+      <div class="thread-container"><h2>${escapeHtml(topic.title)}</h2><div style="font-size:16px; margin-bottom:28px;">автор: ${escapeHtml(topic.author)} | ${topic.date} | ${topic.category} | 👁️ ${getViewCount(id)} просмотров</div>
       <div style="margin-top:28px;"><h3 style="font-size:22px; margin-bottom:20px;">💬 Ответы (${topicComments.length})</h3>${commentsHtml}
-      <div class="reply-form"><h4 style="font-size:18px; margin-bottom:16px;">✏️ Ваш ответ</h4><input id="replyAuthor" placeholder="Ваш ник" style="font-size:16px;"><textarea id="replyText" rows="2" style="font-size:16px;"></textarea>
+      <div class="reply-form"><h4 style="font-size:18px; margin-bottom:16px;">✏️ Ваш ответ</h4><input id="replyAuthor" placeholder="Ваш ник" value="${currentUser !== "Гость" ? currentUser : ''}" style="font-size:16px;"><textarea id="replyText" rows="2" style="font-size:16px;"></textarea>
       <div class="image-upload-area"><button type="button" class="btn-icon" onclick="triggerImageUpload()"><i class="fas fa-camera"></i> Прикрепить фото</button><div id="imagePreview"></div></div>
       <button class="btn-primary" onclick="addCommentWithImage('${id}')">Отправить</button></div></div></div>`;
   }
