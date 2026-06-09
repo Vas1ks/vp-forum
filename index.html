@@ -53,14 +53,14 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 15px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* ОСНОВНОЙ КОНТЕНТ (блок команды теперь справа по центру) */
+    /* ОСНОВНОЙ КОНТЕНТ (блок команды прижат к правому краю) */
     .content-layout {
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      gap: 40px;
+      gap: 60px;
       margin: 40px auto;
-      flex-wrap: wrap;
+      position: relative;
     }
     .center-section {
       flex: 0 1 600px;
@@ -68,6 +68,8 @@
     }
     .right-side {
       flex: 0 0 240px;
+      /* Этот блок будет справа */
+      margin-left: auto;
     }
     
     .category-block { background: white; border-radius: 24px; margin-bottom: 24px; border: 1px solid #e6f0e2; overflow: hidden; width: 100%; }
@@ -109,7 +111,7 @@
     
     @media (max-width: 950px) {
       .content-layout { flex-direction: column; align-items: center; gap: 30px; }
-      .right-side { width: 100%; }
+      .right-side { margin-left: 0; width: 100%; }
     }
   </style>
 </head>
