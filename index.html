@@ -17,6 +17,7 @@
       min-height: 100vh;
     }
     
+    /* Тёмная тема (фон только основной, шапка и футер не трогаем) */
     body.dark-theme { background: #1a1e1c; color: #e0e0e0; }
     body.dark-theme .category-block,
     body.dark-theme .sidebar-card,
@@ -32,6 +33,7 @@
     
     .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; flex: 1; }
     
+    /* ШАПКА (без изменений) */
     .header {
       background: #1f3b2c;
       border-bottom: 3px solid #b5dfa3;
@@ -49,23 +51,20 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 16px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
-    /* НОВАЯ СЕТКА: центральный блок занимает всё место, блок команды прижат к правому краю */
-    .content-wrapper {
-      display: flex;
-      justify-content: center;
-      margin: 50px 0;
-    }
+    /* ОСНОВНОЙ КОНТЕНТ — ТОЧНО КАК НА СКРИНШОТЕ */
     .content-layout {
       display: flex;
-      width: 100%;
-      max-width: 1200px;
+      justify-content: space-between;
+      align-items: flex-start;
       gap: 60px;
+      margin: 50px auto;
+      max-width: 1100px;
     }
     .center-section {
       flex: 1;
     }
     .right-side {
-      flex: 0 0 280px;
+      flex: 0 0 260px;
     }
     
     .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
@@ -82,6 +81,7 @@
     .user-online { padding: 8px 0; font-size: 17px; }
     .user-online b { font-size: 18px; }
     
+    /* ФУТЕР (строго по центру) */
     footer {
       text-align: center;
       padding: 32px;
@@ -93,6 +93,7 @@
       margin-top: 50px;
     }
     
+    /* Страница темы (без изменений) */
     .thread-container { background: white; border-radius: 28px; padding: 32px; margin: 28px 0; border: 1px solid #e3efdd; }
     .thread-container h2 { font-size: 26px; margin-bottom: 16px; }
     .comment { background: #fafef7; border-radius: 24px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #9ad685; font-size: 16px; }
@@ -192,7 +193,7 @@
       </div>
     </div>`;
     
-    document.getElementById('app').innerHTML = `<div class="content-wrapper"><div class="content-layout">${centerHtml}${rightHtml}</div></div>`;
+    document.getElementById('app').innerHTML = `<div class="content-layout">${centerHtml}${rightHtml}</div>`;
   }
 
   function showCreateTopicForm() {
