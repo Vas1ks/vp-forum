@@ -179,7 +179,6 @@
 
   let topics = [], comments = [], views = [], likes = [];
 
-  // Получаем ID темы из URL (например, #topic/123)
   function getTopicIdFromUrl() {
     const hash = window.location.hash;
     const match = hash.match(/^#topic\/(\d+)$/);
@@ -197,7 +196,6 @@
       likes = parseCSV(await lRes.text());
       topics.sort((a,b) => (Number(b.id)||0) - (Number(a.id)||0));
       
-      // Проверяем, есть ли в URL тема
       const topicId = getTopicIdFromUrl();
       if(topicId && topics.find(t => t.id == topicId)) {
         showTopic(topicId);
@@ -427,10 +425,44 @@
     if(!currentUser) return;
     localStorage.setItem('vp_nick', currentUser);
     
-    const success = await toggleLike(commentId, currentUser);
-    if(success) {
-      // Перезагружаем данные и остаёмся на той же теме
-      await loadData();
+    const alreadyLiked = hasUserLiked(commentId, currentUser);
+    const newLikeCount = getLikeCount(commentId) + (alreadyLiked ? -1 : 1);
+    
+    // Отправляем запрос на сервер
+    try {
+      await fetch(ADD_LIKE_API, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          comment_id: commentId, 
+          user_nick: currentUser,
+          remove: alreadyLiked
+        })
+      });
+      
+      // Обновляем локальный массив лайков
+      if(alreadyLiked) {
+        const index = likes.findIndex(l => l.comment_id == commentId && l.user_nick == currentUser);
+        if(index !== -1) likes.splice(index, 1);
+      } else {
+        likes.push({ comment_id: commentId, user_nick: currentUser, like: '1' });
+      }
+      
+      // Находим кнопку лайка и обновляем её счётчик и класс
+      const likeBtn = document.querySelector(`.comment[data-comment-id='${commentId}'] .like-btn`);
+      if(likeBtn) {
+        const likeSpan = likeBtn.querySelector('.like-count');
+        if(likeSpan) likeSpan.textContent = newLikeCount;
+        if(alreadyLiked) {
+          likeBtn.classList.remove('liked');
+        } else {
+          likeBtn.classList.add('liked');
+        }
+      }
+    } catch(e) {
+      console.error("Ошибка лайка", e);
+      alert("Ошибка при отправке лайка");
     }
   };
 
