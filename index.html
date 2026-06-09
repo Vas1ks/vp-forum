@@ -49,18 +49,20 @@
     .nav a, .theme-toggle { color: #edffe3; text-decoration: none; font-weight: 500; cursor: pointer; background: none; border: none; font-size: 16px; padding: 5px 0; }
     .nav a:hover, .theme-toggle:hover { color: white; border-bottom: 2px solid #b3e29d; }
     
+    /* ========== ЖЁСТКОЕ ЦЕНТРИРОВАНИЕ (КАК У ФУТЕРА) ========== */
     .main-wrapper {
       flex: 1;
       display: flex;
-      justify-content: flex-start;  /* ← прижимаем к левому краю, чтобы сдвиг работал */
+      justify-content: center;   /* ← центр по горизонтали */
       align-items: center;
-      margin: 30px 0;              /* ← поднял выше */
+      margin: 50px 0;
     }
     .content-box {
       max-width: 1000px;
       width: 100%;
       padding: 0 20px;
-      margin-left: 300px;          /* ← сильный сдвиг вправо */
+      /* НЕТ margin-left, НЕТ margin-right — строгий центр */
+      margin: 0 auto;
     }
     .flex-row {
       display: flex;
@@ -110,7 +112,6 @@
     .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
     
     @media (max-width: 900px) {
-      .content-box { margin-left: 20px; }
       .flex-row { flex-direction: column; gap: 40px; }
       .right { width: 100%; }
     }
