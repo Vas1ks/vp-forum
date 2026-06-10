@@ -95,6 +95,7 @@ app.get('/views/:topicId', (req, res) => {
 });
 
 // ===== СТАРТ =====
-app.listen(3000, () => {
-  console.log('Сервер запущен на http://localhost:3000');
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Сервер запущен на порту ${port}`);
 });
