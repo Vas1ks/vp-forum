@@ -62,12 +62,11 @@ body.dark-theme .topic-stats { color: #a0c090; }
 .left { flex: 1; }
 .right { flex-shrink: 0; width: 260px; }
 
-/* ИСПРАВЛЕННАЯ ЗАГРУЗКА — ровно по центру экрана */
 .loading-placeholder {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 200px);
+  flex: 1;
   width: 100%;
   font-size: 18px;
   color: #5a7c5a;
