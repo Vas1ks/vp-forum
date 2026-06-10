@@ -46,7 +46,7 @@ body.dark-theme .loading-placeholder { background: #1a1e1c; color: #e0e0e0; }
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;  /* ← центрируем по вертикали внутри свободного пространства */
+  align-items: center;
   margin: 0;
 }
 .content-box {
@@ -63,7 +63,7 @@ body.dark-theme .loading-placeholder { background: #1a1e1c; color: #e0e0e0; }
 .left { flex: 1; }
 .right { flex-shrink: 0; width: 260px; }
 
-/* ЗАГРУЗКА — ОБЫЧНЫЙ БЛОК, КОТОРЫЙ ЦЕНТРИРУЕТСЯ ВНУТРИ .MAIN-WRAPPER */
+/* ЗАГРУЗКА — БЕЗ СДВИГА, ТОЛЬКО ЦЕНТР */
 .loading-placeholder {
   display: flex;
   justify-content: center;
@@ -72,6 +72,7 @@ body.dark-theme .loading-placeholder { background: #1a1e1c; color: #e0e0e0; }
   font-size: 18px;
   color: #5a7c5a;
   padding: 40px 0;
+  transform: none;
 }
 
 .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
