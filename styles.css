@@ -63,15 +63,25 @@ body.dark-theme .loading-placeholder { background: #1a1e1c; color: #e0e0e0; }
 .left { flex: 1; }
 .right { flex-shrink: 0; width: 260px; }
 
-/* ЗАГРУЗКА — в потоке, сдвигается вместе с контентом */
+/* ===== ГЛАВНОЕ ИСПРАВЛЕНИЕ ДЛЯ ЗАГРУЗКИ ===== */
 .loading-placeholder {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
+  height: 100%;
+  background: #eef3ea;
+  z-index: 9999;
   font-size: 18px;
   color: #5a7c5a;
+  transform: translateX(150px);
+  margin: 0;
+  padding: 0;
 }
 
 .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
@@ -187,5 +197,8 @@ footer {
   .category-link span:first-child,
   .topic-link span:first-child {
     white-space: normal;
+  }
+  .loading-placeholder {
+    transform: translateX(0);
   }
 }
