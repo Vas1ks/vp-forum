@@ -21,6 +21,7 @@ body.dark-theme .topic-link { color: #ddd; border-bottom-color: #2a3a2a; }
 body.dark-theme .category-header h3,
 body.dark-theme .sidebar-card h4 { color: #d0e6c0; }
 body.dark-theme .topic-stats { color: #a0c090; }
+body.dark-theme .loading-placeholder { background: #1a1e1c; }
 
 .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; flex: 1; }
 
@@ -62,14 +63,25 @@ body.dark-theme .topic-stats { color: #a0c090; }
 .left { flex: 1; }
 .right { flex-shrink: 0; width: 260px; }
 
+/* ЗАГРУЗКА — СТРОГО ПО ЦЕНТРУ ЭКРАНА */
 .loading-placeholder {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
+  height: 100%;
   font-size: 18px;
   color: #5a7c5a;
+  background: #eef3ea;
+  z-index: 999;
+  margin: 0;
+  padding: 0;
+  transform: none;
 }
 
 .category-block { background: white; border-radius: 28px; margin-bottom: 28px; border: 1px solid #e0ecda; overflow: hidden; }
