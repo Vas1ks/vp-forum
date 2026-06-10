@@ -190,7 +190,12 @@ async function showMainPage() {
   
   let rightHtml = `<div class="right">
     <div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
+<<<<<<< HEAD
       <div class="user-online"><b>Vas1ks</b><br><span style="font-size:14px;">Команда проекта</span></div>
+=======
+      <div class="user-online"><b>Vas1ks</b><br><span style="font-size:12px;">Команда проекта</span></div>
+      <div class="user-online"><b>anak0n</b><br><span style="font-size:12px;">Команда проекта</span></div>
+>>>>>>> 13925648665dcb363154b80340dde432ba55f9fe
     </div>
   </div>`;
   
@@ -330,4 +335,8 @@ async function showTopic(id){
 
 function escapeHtml(str){ return String(str).replace(/[&<>]/g, m=> m==='&'? '&amp;' : m==='<'? '&lt;' : '&gt;'); }
 
+<<<<<<< HEAD
 loadData();
+=======
+loadData();
+>>>>>>> 13925648665dcb363154b80340dde432ba55f9fe
