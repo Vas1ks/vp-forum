@@ -62,11 +62,12 @@ body.dark-theme .topic-stats { color: #a0c090; }
 .left { flex: 1; }
 .right { flex-shrink: 0; width: 260px; }
 
+/* ИСПРАВЛЕННАЯ ЗАГРУЗКА — ровно по центру экрана */
 .loading-placeholder {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 60vh;
+  min-height: calc(100vh - 200px);
   width: 100%;
   font-size: 18px;
   color: #5a7c5a;
@@ -76,8 +77,6 @@ body.dark-theme .topic-stats { color: #a0c090; }
 .category-header { background: #f6fbf3; padding: 18px 24px; border-bottom: 1px solid #e0ecda; }
 .category-header h3 { font-size: 22px; font-weight: 700; color: #1e582c; }
 .category-links, .topic-list { padding: 6px 0; }
-
-/* Главное исправление: текст + счетчики в одну строку */
 .category-link {
   display: flex;
   justify-content: space-between;
@@ -89,7 +88,6 @@ body.dark-theme .topic-stats { color: #a0c090; }
   gap: 20px;
   flex-wrap: nowrap;
 }
-
 .topic-link {
   display: flex;
   justify-content: space-between;
@@ -102,10 +100,7 @@ body.dark-theme .topic-stats { color: #a0c090; }
   gap: 20px;
   flex-wrap: nowrap;
 }
-
 .topic-link:hover { background: #f9fef6; }
-
-/* Счетчики: не переносятся, прижаты к правому краю */
 .category-stats {
   font-size: 14px;
   color: #7baa6b;
@@ -115,8 +110,6 @@ body.dark-theme .topic-stats { color: #a0c090; }
   flex-shrink: 0;
   white-space: nowrap;
 }
-
-/* Текст названия — не переносится (на десктопе) */
 .category-link span:first-child,
 .topic-link span:first-child {
   white-space: nowrap;
@@ -180,7 +173,6 @@ footer {
 .btn-primary:hover { background: #1f5c34; }
 .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
 
-/* Мобильная версия: разрешаем перенос */
 @media (max-width: 900px) {
   .content-box { transform: translateX(0); }
   .flex-row { flex-direction: column; gap: 40px; }
