@@ -12,11 +12,18 @@ app.use(express.json());
 
 // Создаём таблицы
 db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS topics (
+  db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nick TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    role TEXT DEAFAULT 'user'
+    role TEXT DEFAULT 'user'
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS topics (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
+    category TEXT NOT NULL,
+    date TEXT NOT NULL
   )`);
   db.run(`CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
