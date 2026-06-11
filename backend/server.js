@@ -53,6 +53,13 @@ app.get('/topics', (req, res) => {
   });
 });
 
+app.get('/users', (req, res) => {
+  db.all('SELECT id, nick, role FROM users', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
 app.post('/topics', (req, res) => {
   const { title, author, category, date } = req.body;
   if (!title || !author || !category) return res.status(400).json({ error: 'Заполните все поля' });
