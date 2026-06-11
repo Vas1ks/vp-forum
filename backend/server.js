@@ -50,6 +50,14 @@ async function initDB() {
     );
   `);
 }
+// ===== ADMINS =====
+app.post('make-admin', async (req, res) => {
+  const { userId } = req.body;
+  if (!userId) return res.status(403).json({ error: 'Укажите ID пользователя' });
+  await pool.query("UPDATE usert SET role = 'admin' WHERE nick = $1", [userId]);
+  res.json({ ok: true });
+});
+
 
 // ===== USERS =====
 app.get('/users', async (req, res) => {
