@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const db = new sqlite3.Database('forum.db');
@@ -12,10 +14,9 @@ app.use(express.json());
 db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS topics (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    author TEXT NOT NULL,
-    category TEXT NOT NULL,
-    date TEXT NOT NULL
+    nick TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    role TEXT DEAFAULT 'user'
   )`);
   db.run(`CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -114,6 +115,29 @@ app.get('/views/:topicId', (req, res) => {
   db.get('SELECT views FROM views WHERE topic_id = ?', [req.params.topicId], (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ views: row ? row.views : 0 });
+  });
+});
+
+app.post('/register', async(req, res) => {
+  const { nick, password } = req.body;
+  if (!nick || !password) return res.status(400).json({ error: 'Заполните все поля' });
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  db.run('INSERT INTO users (nick, password) VALUES (?, ?)', [nick, hashedPassword], function(err) {
+    if (err) return res.status(400).json({ error: 'Пользователь с таким ником уже существует' });
+    const token = jwt.sign({ id: this.lastID, nick, role: 'user' }, SECRET);
+    res.json({ id: this.lastID, role: 'user', token });
+  });
+});
+
+app.post('/login', (req, res) => {
+  const { nick, password } = req.body;
+  db.get('SELECT * FROM users WHERE nick = ?', [nick], async (err, user) => {
+    if (!user) return res.status(400).json({ error: 'Пользователь не найден' });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ error: 'Неверный пароль' });
+    const token = jwt.sign({ id: user.id, nick, role: user.role }, SECRET);
+    res.json({ id: user.id, role: user.role, token });
   });
 });
 
