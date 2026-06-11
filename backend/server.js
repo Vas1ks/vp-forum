@@ -4,7 +4,7 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const secret = 'vp_forum_secret_key';
+const SECRET = 'vp_forum_secret_key';
 const app = express();
 const db = new sqlite3.Database('forum.db');
 
