@@ -51,13 +51,12 @@ async function initDB() {
   `);
 }
 // ===== ADMINS =====
-app.post('make-admin', async (req, res) => {
+app.post('/make-admin', async (req, res) => {
   const { userId } = req.body;
   if (!userId) return res.status(403).json({ error: 'Укажите ID пользователя' });
-  await pool.query("UPDATE usert SET role = 'admin' WHERE nick = $1", [userId]);
+  await pool.query("UPDATE users SET role = 'admin' WHERE id = $1", [userId]);
   res.json({ ok: true });
 });
-
 
 // ===== USERS =====
 app.get('/users', async (req, res) => {
@@ -65,7 +64,7 @@ app.get('/users', async (req, res) => {
   res.json(result.rows);
 });
 
-// ===== AUTH =====
+// ===== REGISTRATION =====
 app.post('/register', async (req, res) => {
   const { nick, password } = req.body;
   if (!nick || !password) return res.status(400).json({ error: 'Заполните все поля' });
@@ -80,6 +79,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// ===== LOGIN =====
 app.post('/login', async (req, res) => {
   const { nick, password } = req.body;
   try {
@@ -122,6 +122,11 @@ app.post('/comments', async (req, res) => {
 });
 
 // ===== LIKES =====
+app.get('likes', async (req, res) => {
+  const result = await pool.query('SELECT * FROM likes');
+  res.json(result.rows);
+});
+
 app.post('/likes', async (req, res) => {
   const { comment_id, user_nick } = req.body;
   const existing = await pool.query('SELECT * FROM likes WHERE comment_id = $1 AND user_nick = $2', [comment_id, user_nick]);
@@ -140,6 +145,11 @@ app.get('/likes/:commentId', async (req, res) => {
 });
 
 // ===== VIEWS =====
+app.get('/views', async (req, res) => {
+  const result = await pool.query('SELECT * FROM views');
+  res.json(result.rows);
+});
+
 app.post('/views/:topicId', async (req, res) => {
   await pool.query('INSERT INTO views (topic_id, views) VALUES ($1, 1) ON CONFLICT (topic_id) DO UPDATE SET views = views.views + 1', [req.params.topicId]);
   res.json({ ok: true });
@@ -150,8 +160,38 @@ app.get('/views/:topicId', async (req, res) => {
   res.json({ views: result.rows[0] ? result.rows[0].views : 0 });
 });
 
+// ===== HTML версия списка database =====
+app.get('/users-table', async (req, res) => {
+  const result = await pool.query('SELECT id, nick, role FROM users ORDER BY id ASC');
+  let rows = result.rows.map(user => `<tr><td>${user.id}</td><td>${user.nick}</td><td>${user.role}</td></tr>`).join('');
+
+  let html = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Users list</title>
+    <style>
+      html { background-color: #5e8b82}
+      body { font: Arial, sans-serif, padding: 20px; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1.5px solid #f77878; padding: 8px, text-align: left; }
+      th { background-color: #c1d373; }
+      tr:nth-child(even) { background-color: #c1d373; }
+    </style>
+  </head>
+  <body>
+    <h1>Users list</h1>
+    <table>
+      <tr><th>ID</th><th>Nick</th><th>Role</th></tr>
+      ${rows}
+    </table>
+  </body>
+  </html>`;
+  res.send(html);
+});
+
 // ===== СТАРТ =====
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT ||  8080;
 initDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Сервер запущен на порту ${PORT}`);

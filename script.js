@@ -1,13 +1,6 @@
-// ========== ССЫЛКИ ==========
-const TOPICS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7w_qakiVZNa26pZXY9_-qZ2peGlKga-J3VlMfE8WtYt_skMjgYyiECDfOGzgxmDn7ZdyFJd_7q_CP/pub?output=csv";
-const COMMENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRhLuXUXT8TU26BTL6j5ih5BlvNQ_RFweSK8yYHgycnK2bObZINPWi9pUUeNtE-5FNQYvmpihg-EWYV/pub?output=csv";
-const ADD_TOPIC_API = "https://script.google.com/macros/s/AKfycbzMqzTrs4Q51_PDGXsAD6-JxoXFkfLH3hwByYoc6fgv6zK08df6tvzYKaOVHy1buVn6Zw/exec";
-const ADD_COMMENT_API = "https://script.google.com/macros/s/AKfycbxiPAvFOVOGBXayfweiAUJAReTXYfFSvdKcVuiZv2i8O5qj2g04kjHUkJT7FsN2ga8/exec";
-const VIEWS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJJAL6orI6nTsdcYsnf8y6mfq5C3GNQ1uY8EFW_-_NZ4lSWiBxGVSZJdvoRz01KT7Sn7XpK-pvXQdx/pub?gid=0&single=true&output=csv";
-const LIKES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSlGrNpAS7-giEBjtS-wSKWtO1q1Xya--VGr-mAy3FuCynQCTjAvo16jTcgUGQkHfJfSzAx0K18YBHj/pub?gid=0&single=true&output=csv";
-const ADD_VIEW_API = "https://script.google.com/macros/s/AKfycbwyHR5k4YVtHreu0cPmVhSW5315B0_YjYiWNalG4NuCy4MOzpP4ir14crICX3PXUQg-/exec";
-const ADD_LIKE_API = "https://script.google.com/macros/s/AKfycbz2sF2bV0Fm4-0VLX14aT_7clTWVRLr1VLKy8Iyw26vwAgbkAzDN96iLnU1V46efCPtpw/exec";
-// ========================================
+// ========== БЭКЕНД ==========
+const API = "https://testvp-forum-backend-production.up.railway.app";
+// ============================
 
 let topics = [], comments = [], views = [], likes = [];
 
@@ -17,40 +10,56 @@ function getTopicIdFromUrl() {
   return match ? match[1] : null;
 }
 
+
+// Подгружаем данные из API
 async function loadData() {
   try {
     document.getElementById('app').innerHTML = '<div class="loading-placeholder">📡 загрузка...</div>';
-    const [tRes, cRes, vRes, lRes] = await Promise.all([
-      fetch(TOPICS_CSV), fetch(COMMENTS_CSV), fetch(VIEWS_CSV), fetch(LIKES_CSV)
+    const [tRes, vRes, lRes] = await Promise.all([
+      fetch(`${API}/topics`),
+      fetch(`${API}/views`),
+      fetch(`${API}/likes`),
     ]);
-    topics = parseCSV(await tRes.text());
-    comments = parseCSV(await cRes.text());
-    views = parseCSV(await vRes.text());
-    likes = parseCSV(await lRes.text());
-    topics.sort((a,b) => (Number(b.id)||0) - (Number(a.id)||0));
+    topics = await tRes.json();
+    views = await vRes.json();
+    likes = await lRes.json();
+    comments = [];
+
+    topics.sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
     
+    // Авторизация пользователя
+    function getCurrentUser() {
+      const token = localStorage.getItem('vp_token');
+      if (!token) return null;
+      try {
+        const payload = JSON.parce(atob(token.split('.')[1]));
+      } catch {
+        return null;
+      }
+    }
+
+    // Выход из пользователя
+    function logout() {
+      localStorage.removeItem('vp_token');
+      navigateToMain();
+    }
+
+    // Проверка на админа
+    function isAdmin() {
+      const user = getCurrentUser();
+      return user && user.role === 'admin';
+    }
+
     const topicId = getTopicIdFromUrl();
     if(topicId && topics.find(t => t.id == topicId)) {
       showTopic(topicId);
     } else {
       navigateToMain();
     }
-  } catch(e) { 
-    console.error(e);
+  } catch(loadError) { 
+    console.error(loadError);
     document.getElementById('app').innerHTML = '<div class="loading-placeholder">⚠️ Ошибка загрузки</div>'; 
   }
-}
-
-function parseCSV(text) {
-  const rows = text.split('\n').filter(r=>r.trim());
-  if(rows.length<2) return [];
-  const headers = rows[0].split(',').map(h=>h.trim().toLowerCase());
-  return rows.slice(1).map(row=>{
-    const cols = row.split(',');
-    let obj = {};
-    headers.forEach((h,i)=> obj[h] = cols[i] ? cols[i].trim() : '');
-    return obj;
-  }).filter(obj=>Object.keys(obj).length);
 }
 
 function getViewCount(topicId) {
@@ -58,14 +67,12 @@ function getViewCount(topicId) {
   return v ? parseInt(v.views) || 0 : 0;
 }
 
+// Отправляет POST-запрос на API, чтобы увеличить счётчик просмотров темы
+
 async function incrementView(topicId) {
   try {
-    await fetch(ADD_VIEW_API, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify({ action: 'increment', topic_id: topicId })
-    });
-  } catch(e) { console.error("Ошибка обновления просмотров", e); }
+    await fetch(`${API}/views/${topicId}`, { method: 'POST' });
+  } catch(err) { console.error("Ошибка при увеличении просмотров", err); }
 }
 
 function getLikeCount(commentId) {
@@ -85,9 +92,8 @@ async function toggleLike(commentId, userNick) {
   const alreadyLiked = hasUserLiked(commentId, userNick);
   
   try {
-    await fetch(ADD_LIKE_API, {
+    await fetch(`${API}/likes`, {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
         comment_id: commentId, 
@@ -205,19 +211,37 @@ function showCreateTopicForm() {
   document.getElementById('sendTopicBtn').onclick = createTopic;
 }
 
+// Создание новой темы
+
 async function createTopic() {
-  let title = document.getElementById('newTitle').value.trim(), author = document.getElementById('newAuthor').value.trim(), category = document.getElementById('newCategory').value;
-  if(!title||!author) return alert("Заполните поля");
-  localStorage.setItem('vp_nick', author);
-  let date = new Date().toLocaleDateString();
-  let btn = document.getElementById('sendTopicBtn');
+  const user = getCurrentUser();
+  if(!user) return alert("Войдите в аккаунт, чтобы создавать темы");
+
+  const title = document.getElementById('newTitle').value.trim();
+  const category = document.getElementById('newCategory').value;
+  if(!title) return alert("Введите название темы");
+
+  const title = document.getElementById('newTitle').value.trim();
+  const category = document.getElementById('newCategory').value;
+  if(!title) return alert("Введите название темы");
+
+  const date = new Date().toLocaleDateString();
+  const btn = document.getElementById('sendTopicBtn');
   btn.disabled = true;
-  try { 
-    await fetch(ADD_TOPIC_API, { method:'POST', mode:'no-cors', body: JSON.stringify({ title, author, date, category }) }); 
-    alert("✅ Тема создана! Обновите страницу"); 
-    await loadData(); 
-  } catch(e){ alert("Ошибка"); }
+  btn.textContent = "⏳ Создание...";
+
+  try {
+    await fetch(`${API}/topics`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, author: user.nick, category, date })
+    })
+    alert("✅ Тема создана");
+    await loadData();
+  } catch(err) { alert("Ошибка при создании темы"); }
+
   btn.disabled = false;
+  btn.textContent = "📢 Опубликовать";
 }
 
 let pendingImage = null;
@@ -235,69 +259,69 @@ window.triggerImageUpload = ()=> {
   inp.click();
 };
 
+// Добавление комментария с поддержкой изображения
+
 window.addCommentWithImage = async (topicId)=>{
-  let author = document.getElementById('replyAuthor').value.trim();
-  let text = document.getElementById('replyText').value.trim();
-  if(!author || (!text && !pendingImage)) return alert("Введите ник и текст или фото");
-  let date = new Date().toLocaleDateString();
+  const user = getCurrentUser();
+  if(!user) return alert("Войдите в аккаунт, чтобы оставлять комментарии");
+
+  const text = document.getElementById('replyText').value.trim();
+  if(!text && !pendingImage) return alert("Введите текст комментария или прикрепите фото");
+
+  let data = new Date().toLocaleDateString();
   let finalText = text;
-  if(pendingImage) finalText = (finalText?finalText+"\n":"") + "[IMG]"+pendingImage+"[/IMG]";
+  if (pendingImage) finalText = (finalText ? finalText + '\n' : '') + `[IMG]${pendingImage}[/IMG]`;
+
   try {
-    await fetch(ADD_COMMENT_API, { method:'POST', mode:'no-cors', body: JSON.stringify({ topic_id: topicId, author, text: finalText, date }) });
-    alert("✅ Комментарий добавлен! Обновите страницу");
+    await fetch(`${API}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({ topic_id: topicId, author: user.nick, text: finalText, date })
+  
+    });
+    alert("✅ Комментарий добавлен");
     await loadData();
     navigateToTopic(topicId);
-  } catch(e){ alert("Ошибка"); }
+  } catch(err) {alert("Ошибка при добавлении комментария"); }
   pendingImage = null;
 };
 
+// Лайк комментария
+
 window.likeComment = async (commentId) => {
-  let currentUser = localStorage.getItem('vp_nick');
-  if(!currentUser) currentUser = prompt("Введите ваш игровой ник для лайка");
-  if(!currentUser) return;
-  localStorage.setItem('vp_nick', currentUser);
-  
-  const alreadyLiked = hasUserLiked(commentId, currentUser);
+  const user = getCurrentUser();
+  if (!user) return alert("Войдите в аккаунт, чтобы ставить лайки");
+
+  const alreadyLiked = hasUserLiked(commentId, user.nick);
   const newLikeCount = getLikeCount(commentId) + (alreadyLiked ? -1 : 1);
-  
+
   try {
-    await fetch(ADD_LIKE_API, {
+    await fetch(`${API}/likes`, {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        comment_id: commentId, 
-        user_nick: currentUser,
-        remove: alreadyLiked
-      })
+      body: JSON.stringify({ comment_id: commentId, user_nick: user.nick })
     });
-    
-    if(alreadyLiked) {
-      const index = likes.findIndex(l => l.comment_id == commentId && l.user_nick == currentUser);
-      if(index !== -1) likes.splice(index, 1);
+    if (alreadyLiked) {
+      const index = likes.findIndex(l => l.comment_id == commentId && l.user_nick == user.nick);
+      if (index !== -1) likes.splice(index, 1);
     } else {
-      likes.push({ comment_id: commentId, user_nick: currentUser, like: '1' });
+      likes.push({ comment_id: commentId, user_nick: user.nick, like: '1' });
     }
-    
-    const likeBtn = document.querySelector(`.comment[data-comment-id='${commentId}'] .like-btn`);
-    if(likeBtn) {
-      const likeSpan = likeBtn.querySelector('.like-count');
-      if(likeSpan) likeSpan.textContent = newLikeCount;
-      if(alreadyLiked) {
-        likeBtn.classList.remove('liked');
-      } else {
-        likeBtn.classList.add('liked');
-      }
+
+    const likeBtn = document.querySelector(`.comment[data-comment-id="${commentId}"] .like-btn`);
+    if (likeBtn) {
+      likeBtn.querySelector('.like-count').textContent = newLikeCount;
+      alreadyLiked ? likeBtn.classList.remove('liked') : likeBtn.classList.add('liked');
     }
-  } catch(e) {
-    console.error("Ошибка лайка", e);
-    alert("Ошибка при отправке лайка");
-  }
+  } catch (err) { alert("Ошибка при обновлении лайка");}
 };
 
 async function showTopic(id){
   await incrementView(id);
   await loadData();
+
+  const cRes = await fetch(`${API}/comments/${id}`);
+  comments = await cRes.json();
   
   let topic = topics.find(t=>t.id==id);
   if(!topic) return;
