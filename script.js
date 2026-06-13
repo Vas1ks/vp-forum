@@ -11,8 +11,8 @@ function closeAuth() {
 }
 
 async function login() {
-  const nick = document.getElementById('loginNick').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
+  const nick = document.getElementById('authNick').value.trim();
+  const password = document.getElementById('authPassword').value.trim();
   if (!nick || !password) return alert("Заполните все поля");
 
   try {
