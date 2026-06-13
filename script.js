@@ -2,14 +2,53 @@
 const API = "https://web-production-d1dc3.up.railway.app";
 // ============================
 
-let topics = [], comments = [], views = [], likes = [];
-
-function getTopicIdFromUrl() {
-  const hash = window.location.hash;
-  const match = hash.match(/^#topic\/(\d+)$/);
-  return match ? match[1] : null;
+// ===== AUTH MODAL =====
+function openAuth() {
+  document.getElementById('authModal').style.display = 'block';
+}
+function closeAuth() {
+  document.getElementById('authModal').style.display = 'none';
 }
 
+async function login() {
+  const nick = document.getElementById('loginNick').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  if (!nick || !password) return alert("Заполните все поля");
+
+  try {
+    const res = await fetch(`${API}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nick, password })
+    });
+    const data = await res.json();
+    if (data.error) return alert(data.error);
+    localStorage.setItem('vp_token', data.token);
+    closeAuth();
+    location.reload();
+  } catch (err) { alert("Ошибка при входе"); }
+}
+
+async function register() {
+  const nick = document.getElementById('regNick').value.trim();
+  const password = document.getElementById('regPassword').value.trim();
+  if (!nick || !password) return alert("Заполните все поля");
+
+  try {
+    const res = await fetch(`${API}/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nick, password })
+    });
+    const data = await res.json();
+    if (data.error) return alert(data.error);
+    localStorage.setItem('vp_token', data.token);
+    closeAuth();
+    location.reload();
+  } catch (err) { alert("Ошибка при регистрации"); }
+}
+
+let topics = [], comments = [], views = [], likes = [];
 
 // Подгружаем данные из API
 async function loadData() {
@@ -26,13 +65,19 @@ async function loadData() {
     comments = [];
 
     topics.sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
-    
+
+function getTopicIdFromUrl() {
+  const hash = window.location.hash;
+  const match = hash.match(/^#topic\/(\d+)$/);
+  return match ? match[1] : null;
+}
+
     // Авторизация пользователя
     function getCurrentUser() {
       const token = localStorage.getItem('vp_token');
       if (!token) return null;
       try {
-        const payload = JSON.parce(atob(token.split('.')[1]));
+        const payload = JSON.parse(atob(token.split('.')[1]));
       } catch {
         return null;
       }
