@@ -49,15 +49,15 @@ async function login() {
     if (data.error) return alert(data.error);
     localStorage.setItem("vp_token", data.token);
     closeAuth();
-    updateAuthButtons();
+    updateAuthButton();
   } catch (err) {
     alert("Ошибка при входе");
   }
 }
 
 async function register() {
-  const nick = document.getElementById("regNick").value.trim();
-  const password = document.getElementById("regPassword").value.trim();
+  const nick = document.getElementById("authNick").value.trim();
+  const password = document.getElementById("authPassword").value.trim();
   if (!nick || !password) return alert("Заполните все поля");
 
   try {
@@ -70,13 +70,13 @@ async function register() {
     if (data.error) return alert(data.error);
     localStorage.setItem("vp_token", data.token);
     closeAuth();
-    updateAuthButtons();
+    updateAuthButton();
   } catch (err) {
     alert("Ошибка при регистрации");
   }
 }
 
-function updateAuthButtons() {
+function updateAuthButton() {
   const user = getCurrentUser();
   const btn = document.querySelector("authBtn");
   if (!btn) return;
@@ -491,5 +491,5 @@ function escapeHtml(str) {
   );
 }
 
-updateAuthButtons();
+updateAuthButton();
 loadData();
