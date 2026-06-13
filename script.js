@@ -78,7 +78,7 @@ async function register() {
 
 function updateAuthButton() {
   const user = getCurrentUser();
-  const btn = document.querySelector("authBtn");
+  const btn = document.getElementById("authBtn");
   if (!btn) return;
   if (user) {
     btn.textContent = user.nick;
@@ -450,7 +450,7 @@ async function showTopic(id) {
   let topic = topics.find((t) => t.id == id);
   if (!topic) return;
   let topicComments = comments.filter((c) => c.topic_id == id);
-  let currentUser = localStorage.getItem("vp_nick") || "Гость";
+  let currentUser = getCurrentUser()?.nick || "Гость";
 
   let commentsHtml = !topicComments.length
     ? '<div style="padding:16px;">— нет ответов —</div>'
