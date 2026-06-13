@@ -1,5 +1,5 @@
 // ========== БЭКЕНД ==========
-const API = "https://testvp-forum-backend-production.up.railway.app";
+const API = "https://web-production-d1dc3.up.railway.app";
 // ============================
 
 let topics = [], comments = [], views = [], likes = [];
