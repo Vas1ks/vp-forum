@@ -53,13 +53,11 @@ body.dark-theme .loading-placeholder { background: #1a1e1c; color: #e0e0e0; }
   max-width: 1000px;
   width: 100%;
   padding: 0 20px;
-  /* transform: translateX(150px); */
 }
 .flex-row {
   display: flex;
   justify-content: space-between;
   gap: 60px;
-  
 }
 .left { flex: 1; }
 .right { flex-shrink: 0; width: 260px; }
@@ -170,6 +168,39 @@ footer {
 .btn-primary { background: #2e7a45; border: none; color: white; font-weight: 600; padding: 12px 26px; border-radius: 40px; cursor: pointer; font-size: 16px; }
 .btn-primary:hover { background: #1f5c34; }
 .back-link { font-size: 16px; margin-bottom: 24px; color: #2d7845; cursor: pointer; display: inline-block; }
+
+/* Кнопка авторизации */
+.auth-btn {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #edffe3;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.auth-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(0.97);
+}
+
+body.dark-theme .auth-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #e0e0e0;
+}
+
+body.dark-theme .auth-btn:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
 
 @media (max-width: 900px) {
   .content-box { transform: translateX(0); }
