@@ -25,7 +25,7 @@ async function login() {
     if (data.error) return alert(data.error);
     localStorage.setItem('vp_token', data.token);
     closeAuth();
-    location.reload();
+    updateAuthButtons();
   } catch (err) { alert("Ошибка при входе"); }
 }
 
@@ -44,8 +44,23 @@ async function register() {
     if (data.error) return alert(data.error);
     localStorage.setItem('vp_token', data.token);
     closeAuth();
-    location.reload();
+    updateAuthButtons();
   } catch (err) { alert("Ошибка при регистрации"); }
+}
+
+function updateAuthButtons() {
+  const user = getCurrentUser();
+  const btn = document.querySelector('authBtn');
+  if (!btn) return;
+  if (user) {
+    btn.textContent = user.nick;
+    btn.onclick = () => {
+      if (confirm(`Выйти из аккаунта ${user.nick}?`)) logout();
+    };
+  } else {
+    btn.textContent = "Войти";
+    btn.onclick = openAuth;
+  }
 }
 
 let topics = [], comments = [], views = [], likes = [];
@@ -395,4 +410,5 @@ async function showTopic(id){
 
 function escapeHtml(str){ return String(str).replace(/[&<>]/g, m=> m==='&'? '&amp;' : m==='<'? '&lt;' : '&gt;'); }
 
+updateAuthButtons();
 loadData();
