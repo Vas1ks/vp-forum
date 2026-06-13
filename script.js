@@ -17,6 +17,7 @@ function getCurrentUser() {
 // Выход из пользователя
 function logout() {
   localStorage.removeItem("vp_token");
+  updateAuthButton();
   navigateToMain();
 }
 
