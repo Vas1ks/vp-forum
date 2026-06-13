@@ -19,7 +19,10 @@
       <a onclick="navigateToMain()">Главная</a>
       <a onclick="showCreateTopicForm()">Создать тему</a>
       <button class="theme-toggle" onclick="document.body.classList.toggle('dark-theme')">🌓 Тема</button>
-      <button class="auth-button" id="authBtn" onclick="openAuth()">Войти</button>
+      <button class="auth-btn" onclick="openAuth()">
+        <i class="fas fa-user-circle"></i> 
+        <span>Войти</span>
+      </button>
     </div>
   </div>
 </div>
@@ -30,7 +33,7 @@
 
 <footer>© 2026 ВП | Выживание с Подписчиками — Форум проекта</footer>
 
-<!-- Модальное окно для авторизации(переделать на нормальное, а не костыльное) -->
+<!-- Модальное окно для авторизации -->
 <div id="authModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
   <div style="background:#fff; margin:10% auto; padding:30px; width:300px; border-radius:8px;">
     <button onclick="closeAuth()" style="float:right;">×</button>
@@ -41,7 +44,6 @@
     <button onclick="register()">Зарегистрироваться</button>
   </div>
 </div>
-
 
 <script src="script.js"></script>
 </body>
