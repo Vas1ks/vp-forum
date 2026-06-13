@@ -221,10 +221,6 @@ async function createTopic() {
   const category = document.getElementById('newCategory').value;
   if(!title) return alert("Введите название темы");
 
-  const title = document.getElementById('newTitle').value.trim();
-  const category = document.getElementById('newCategory').value;
-  if(!title) return alert("Введите название темы");
-
   const date = new Date().toLocaleDateString();
   const btn = document.getElementById('sendTopicBtn');
   btn.disabled = true;

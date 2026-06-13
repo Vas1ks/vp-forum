@@ -53,20 +53,13 @@ body.dark-theme .loading-placeholder { background: #1a1e1c; color: #e0e0e0; }
   max-width: 1000px;
   width: 100%;
   padding: 0 20px;
-<<<<<<< HEAD
   /* transform: translateX(150px); */
-=======
->>>>>>> 121c352c7a81af2fb48a19098542d6a9a7b00d53
 }
 .flex-row {
   display: flex;
   justify-content: space-between;
   gap: 60px;
-<<<<<<< HEAD
   
-=======
-  transform: translateX(150px);
->>>>>>> 121c352c7a81af2fb48a19098542d6a9a7b00d53
 }
 .left { flex: 1; }
 .right { flex-shrink: 0; width: 260px; }
