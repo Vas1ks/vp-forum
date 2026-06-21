@@ -527,7 +527,11 @@ function showProfile() {
   const user = getCurrentUser();
   if (!user) return alert("Войдите в аккаунт");
 
-  const roleLabel = user.role === "admin" ? "👑 Администратор" : "🎮 Игрок";
+  //const roleLabel = user.role === "admin" ? "👑 Администратор" : "🎮 Игрок";
+
+  if (isAdmin) {
+    const roleLabel = "👑 Администратор";
+  } else const roleLabel = "🎮 Игрок";
 
   document.getElementById("app").innerHTML = `
     <div>
