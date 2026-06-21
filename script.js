@@ -109,7 +109,8 @@ function updateAuthButton() {
 function toggleAuthDropdown() {
   const dropdown = document.getElementById("authDropdown");
   if (!dropdown) return;
-  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  dropdown.style.display =
+    dropdown.style.display === "block" ? "none" : "block";
 }
 
 document.addEventListener("click", () => {
@@ -365,8 +366,11 @@ async function createTopic() {
   try {
     await fetch(`${API}/topics`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, author: user.nick, category, date }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage}.getItem("vp_token")}`,
+      },
+      body: JSON.stringify({ title, category, date }),
     });
     alert("✅ Тема создана");
     await loadData();
@@ -417,10 +421,12 @@ window.addCommentWithImage = async (topicId) => {
   try {
     await fetch(`${API}/comments`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
       body: JSON.stringify({
         topic_id: topicId,
-        author: user.nick,
         text: finalText,
         date,
       }),
