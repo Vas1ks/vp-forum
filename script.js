@@ -17,6 +17,8 @@ function getCurrentUser() {
 // Выход из пользователя
 function logout() {
   localStorage.removeItem("vp_token");
+  document.getElementById("authNick").value = "";
+  document.getElementById("authPassword").value = "";
   updateAuthButton();
   navigateToMain();
 }
@@ -30,6 +32,8 @@ function isAdmin() {
 // ===== AUTH MODAL =====
 function openAuth() {
   document.getElementById("authModal").style.display = "block";
+  document.getElementById("authNick").value = "";
+  document.getElementById("authPassword").value = "";
 }
 function closeAuth() {
   document.getElementById("authModal").style.display = "none";
@@ -80,39 +84,67 @@ async function register() {
 function updateAuthButton() {
   const user = getCurrentUser();
   const btn = document.getElementById("authBtn");
+  const dropdown = document.getElementById("authDropdown");
+  const createBtn = document.getElementById("createTopicBtn");
   if (!btn) return;
+
+  if (createBtn) {
+    createBtn.style.display = user ? "" : "none";
+  }
+
+  const span = btn.querySelector("span");
   if (user) {
-    btn.textContent = user.nick;
-    btn.onclick = () => {
-      if (confirm(`Выйти из аккаунта ${user.nick}?`)) logout();
+    if (span) span.textContent = user.nick;
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      toggleAuthDropdown();
     };
   } else {
-    btn.textContent = "Войти";
+    if (span) span.textContent = "Войти";
     btn.onclick = openAuth;
+    if (dropdown) dropdown.style.display = "none";
   }
 }
+
+function toggleAuthDropdown() {
+  const dropdown = document.getElementById("authDropdown");
+  if (!dropdown) return;
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+document.addEventListener("click", () => {
+  const dropdown = document.getElementById("authDropdown");
+  if (dropdown) dropdown.style.display = "none";
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeAuth();
+});
 
 let topics = [],
   comments = [],
   views = [],
   likes = [];
 
+async function refreshData() {
+  const [tRes, vRes, lRes] = await Promise.all([
+    fetch(`${API}/topics`),
+    fetch(`${API}/views`),
+    fetch(`${API}/likes`),
+  ]);
+  topics = await tRes.json();
+  views = await vRes.json();
+  likes = await lRes.json();
+  topics.sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
+}
+
 // Подгружаем данные из API
 async function loadData() {
   try {
     document.getElementById("app").innerHTML =
-      '<div class="loading-placeholder">📡 загрузка...</div>';
-    const [tRes, vRes, lRes] = await Promise.all([
-      fetch(`${API}/topics`),
-      fetch(`${API}/views`),
-      fetch(`${API}/likes`),
-    ]);
-    topics = await tRes.json();
-    views = await vRes.json();
-    likes = await lRes.json();
+      '<div class="loading-placeholder">⏳ загрузка...</div>';
+    await refreshData();
     comments = [];
-
-    topics.sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
 
     function getTopicIdFromUrl() {
       const hash = window.location.hash;
@@ -298,10 +330,9 @@ async function showMainPage() {
   leftHtml += `</div>`;
 
   let rightHtml = `<div class="right">
-    <div class="sidebar-card"><h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
+      <h4><i class="fas fa-users"></i> Команда форума онлайн</h4>
       <div class="user-online"><b>Vas1ks</b><br><span style="font-size:14px;">Команда проекта</span></div>
-    </div>
-  </div>`;
+    </div>`;
 
   document.getElementById("app").innerHTML =
     `<div class="flex-row">${leftHtml}${rightHtml}</div>`;
@@ -312,7 +343,7 @@ function showCreateTopicForm() {
     `<div><div class="back-link" onclick="navigateToMain()">← назад</div>
     <div class="thread-container"><h2>📝 Новая тема</h2><input id="newTitle" placeholder="Название темы" style="font-size:16px;">
     <select id="newCategory" style="font-size:16px;"><option>Общее</option><option>Постройки</option></select>
-    <input id="newAuthor" placeholder="Ваш игровой ник" style="font-size:16px;"><button class="btn-primary" id="sendTopicBtn">📢 Опубликовать</button></div></div>`;
+    <button class="btn-primary" id="sendTopicBtn">📢 Опубликовать</button></div></div>`;
   document.getElementById("sendTopicBtn").onclick = createTopic;
 }
 
@@ -371,7 +402,7 @@ window.triggerImageUpload = () => {
 
 window.addCommentWithImage = async (topicId) => {
   const user = getCurrentUser();
-  if (!user) return alert("Войдите в аккаунт, чтобы оставлять комментарии");
+  if (!user) return alert("Вы не вошли в аккаунт");
 
   const text = document.getElementById("replyText").value.trim();
   if (!text && !pendingImage)
@@ -443,7 +474,7 @@ window.likeComment = async (commentId) => {
 
 async function showTopic(id) {
   await incrementView(id);
-  await loadData();
+  await refreshData();
 
   const cRes = await fetch(`${API}/comments/${id}`);
   comments = await cRes.json();
@@ -481,9 +512,32 @@ async function showTopic(id) {
     `<div><div class="back-link" onclick="navigateToMain()">← к списку тем</div>
     <div class="thread-container"><h2>${escapeHtml(topic.title)}</h2><div style="font-size:16px; margin-bottom:28px;">автор: ${escapeHtml(topic.author)} | ${topic.date} | ${topic.category} | 👁️ ${getViewCount(id)} просмотров</div>
     <div style="margin-top:28px;"><h3 style="font-size:22px; margin-bottom:20px;">💬 Ответы (${topicComments.length})</h3>${commentsHtml}
-    <div class="reply-form"><h4 style="font-size:18px; margin-bottom:16px;">✏️ Ваш ответ</h4><input id="replyAuthor" placeholder="Ваш ник" value="${currentUser !== "Гость" ? currentUser : ""}" style="font-size:16px;"><textarea id="replyText" rows="2" style="font-size:16px;"></textarea>
+    <div class="reply-form"><h4 style="font-size:18px; margin-bottom:16px;">✏️ Ваш ответ</h4><textarea id="replyText" rows="2" style="font-size:16px;"></textarea>
     <div class="image-upload-area"><button type="button" class="btn-icon" onclick="triggerImageUpload()"><i class="fas fa-camera"></i> Прикрепить фото</button><div id="imagePreview"></div></div>
     <button class="btn-primary" onclick="addCommentWithImage('${id}')">Отправить</button></div></div></div>`;
+}
+
+function showProfile() {
+  const user = getCurrentUser();
+  if (!user) return alert("Войдите в аккаунт");
+
+  const roleLabel = user.role === "admin" ? "👑 Администратор" : "🎮 Игрок";
+
+  document.getElementById("app").innerHTML = `
+    <div>
+      <div class="back-link" onclick="navigateToMain()">← назад</div>
+      <div class="profile-container">
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <i class="fas fa-user-circle" style="font-size:80px;color:#2e7a45;"></i>
+          </div>
+          <div class="profile-info">
+            <h2>${escapeHtml(user.nick)}</h2>
+            <span class="profile-role">${roleLabel}</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
 }
 
 function escapeHtml(str) {
