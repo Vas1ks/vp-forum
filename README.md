@@ -134,8 +134,9 @@ const API = "https://web-production-d1dc3.up.railway.app";
 
 ---
 
-## Автор
+## Авторы
 
 **Vas1ks** — https://github.com/Vas1ks
+**anak0n** - https://github.com/anak0n
 
 Лицензия в репозитории не указана.
