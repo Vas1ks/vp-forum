@@ -17,12 +17,18 @@
     </div>
     <div class="nav">
       <a onclick="navigateToMain()">Главная</a>
-      <a onclick="showCreateTopicForm()">Создать тему</a>
+      <a id="createTopicBtn" onclick="showCreateTopicForm()">Создать тему</a>
       <button class="theme-toggle" onclick="document.body.classList.toggle('dark-theme')">🌓 Тема</button>
-      <button class="auth-button" id="authBtn" onclick="openAuth()">
-        <i class="fas fa-user-circle"></i> 
-        <span>Войти</span>
-      </button>
+      <div class="auth-wrapper">
+        <button class="auth-button" id="authBtn">
+          <i class="fas fa-user-circle"></i> 
+          <span>Войти</span>
+        </button>
+        <div class="auth-dropdown" id="authDropdown">
+          <a onclick="showProfile()">Профиль</a>
+          <a onclick="logout()">Выход</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -31,17 +37,19 @@
   <div class="content-box" id="app"></div>
 </div>
 
-<footer>© 2026 ВП | Выживание с Подписчиками — Форум проекта</footer>
+<footer><div class="footer-inner">© 2026 ВП | Выживание с Подписчиками — Форум проекта</div></footer>
 
 <!-- Модальное окно для авторизации -->
 <div id="authModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
-  <div style="background:#fff; margin:10% auto; padding:30px; width:300px; border-radius:8px;">
-    <button onclick="closeAuth()" style="float:right;">×</button>
-    <h2>Вход / Регистрация</h2>
-    <input id="authNick" placeholder="Ник" style="width:100%; margin:8px 0; padding:8px;"><br>
-    <input id="authPassword" type="password" placeholder="Пароль" style="width:100%; margin:8px 0; padding:8px;"><br>
-    <button onclick="login()">Войти</button>
-    <button onclick="register()">Зарегистрироваться</button>
+  <div style="background:#fff; margin:10% auto; padding:30px; width:380px; border-radius:8px;position:relative;">
+    <button onclick="closeAuth()" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;">×</button>
+    <h2 style="margin-bottom:16px;">Вход / Регистрация</h2>
+    <input id="authNick" placeholder="Ник" style="width:100%; margin:8px 0; padding:8px;box-sizing:border-box;"><br>
+    <input id="authPassword" type="password" placeholder="Пароль" style="width:100%; margin:8px 0; padding:8px;box-sizing:border-box;"><br>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <button onclick="login()" style="flex:1;">Войти</button>
+      <button onclick="register()" style="flex:1;">Зарегистрироваться</button>
+    </div>
   </div>
 </div>
 
