@@ -19,13 +19,17 @@
       <a onclick="navigateToMain()">Главная</a>
       <a id="createTopicBtn" onclick="showCreateTopicForm()">Создать тему</a>
       <button class="theme-toggle" onclick="document.body.classList.toggle('dark-theme')">🌓 Тема</button>
+      <div class="profile-search">
+        <input id="profileSearch" placeholder="🔍 Профиль..." onkeydown="if(event.key==='Enter') searchProfile()">
+        <button onclick="searchProfile()">🔍</button>
+      </div>
       <div class="auth-wrapper">
         <button class="auth-button" id="authBtn">
           <i class="fas fa-user-circle"></i> 
           <span>Войти</span>
         </button>
         <div class="auth-dropdown" id="authDropdown">
-          <a onclick="showProfile()">Профиль</a>
+          <a onclick="if(getCurrentUser()) navigateToProfile(getCurrentUser().nick)">Профиль</a>
           <a onclick="logout()">Выход</a>
         </div>
       </div>

@@ -74,6 +74,7 @@ async function register() {
     const data = await res.json();
     if (data.error) return alert(data.error);
     localStorage.setItem("vp_token", data.token);
+    localStorage.setItem("vp_registered_at", String(Date.now()));
     closeAuth();
     updateAuthButton();
   } catch (err) {
@@ -122,6 +123,10 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeAuth();
 });
 
+document.getElementById("authPassword").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") login();
+});
+
 let topics = [],
   comments = [],
   views = [],
@@ -145,7 +150,6 @@ async function loadData() {
     document.getElementById("app").innerHTML =
       '<div class="loading-placeholder">⏳ загрузка...</div>';
     await refreshData();
-    comments = [];
 
     function getTopicIdFromUrl() {
       const hash = window.location.hash;
@@ -153,9 +157,18 @@ async function loadData() {
       return match ? match[1] : null;
     }
 
+    function getProfileNickFromUrl() {
+      const hash = window.location.hash;
+      const match = hash.match(/^#profile\/(.+)$/);
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+
     const topicId = getTopicIdFromUrl();
+    const profileNick = getProfileNickFromUrl();
     if (topicId && topics.find((t) => t.id == topicId)) {
-      showTopic(topicId);
+      await showTopic(topicId);
+    } else if (profileNick) {
+      showProfile(profileNick);
     } else {
       navigateToMain();
     }
@@ -238,15 +251,41 @@ function navigateToTopic(id) {
   showTopic(id);
 }
 
+function navigateToProfile(nick) {
+  history.pushState({ page: "profile", nick: nick }, "", "#profile/" + encodeURIComponent(nick));
+  showProfile(nick);
+}
+
 window.onpopstate = (event) => {
   if (event.state && event.state.page === "topic") {
     showTopic(event.state.id);
+  } else if (event.state && event.state.page === "profile") {
+    showProfile(event.state.nick);
   } else {
     showMainPage();
   }
 };
 
 async function showMainPage() {
+  try {
+    const all = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith("vp_comments_")) {
+        const stored = JSON.parse(localStorage.getItem(key) || "[]");
+        all.push(...stored);
+      }
+    }
+    if (all.length > 0) comments = all;
+  } catch {}
+
+  try {
+    const stored = JSON.parse(localStorage.getItem("vp_likes") || "[]");
+    if (Array.isArray(stored) && stored.length > 0 && likes.length === 0) {
+      likes = stored;
+    }
+  } catch {}
+
   const mainCategories = [
     { name: "Новости и информация", category: "Новости" },
     { name: "Технический раздел", category: "Технический" },
@@ -319,7 +358,7 @@ async function showMainPage() {
       leftHtml += `<div class="category-link">— нет тем —</div>`;
     else
       filtered.forEach((t) => {
-        let replyCount = comments.filter((c) => c.topic_id === t.id).length;
+        let replyCount = comments.filter((c) => c.topic_id == t.id).length;
         let viewCount = getViewCount(t.id);
         leftHtml += `<div class="topic-link" onclick="navigateToTopic('${t.id}')">
         <span><i class="far fa-comment"></i> ${escapeHtml(t.title)}</span>
@@ -368,13 +407,13 @@ async function createTopic() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage}.getItem("vp_token")}`,
       },
-      body: JSON.stringify({ title, category, date }),
+      body: JSON.stringify({ title, author: user.nick, category, date }),
     });
     alert("✅ Тема создана");
     await loadData();
   } catch (err) {
+    console.error(err);
     alert("Ошибка при создании темы");
   }
 
@@ -412,29 +451,54 @@ window.addCommentWithImage = async (topicId) => {
   if (!text && !pendingImage)
     return alert("Введите текст комментария или прикрепите фото");
 
-  let data = new Date().toLocaleDateString();
+  let date = new Date().toLocaleDateString();
   let finalText = text;
   if (pendingImage)
     finalText =
       (finalText ? finalText + "\n" : "") + `[IMG]${pendingImage}[/IMG]`;
 
   try {
-    await fetch(`${API}/comments`, {
+    const res = await fetch(`${API}/comments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
       },
       body: JSON.stringify({
         topic_id: topicId,
+        author: user.nick,
         text: finalText,
         date,
       }),
     });
-    alert("✅ Комментарий добавлен");
-    await loadData();
-    navigateToTopic(topicId);
+
+    const commentObj = {
+      id: Date.now(),
+      topic_id: topicId,
+      author: user.nick,
+      text: finalText,
+      date,
+    };
+
+    if (res.ok) {
+      try {
+        const body = await res.json();
+        console.log("POST /comments response:", body);
+        if (body && body.id) commentObj.id = body.id;
+      } catch {}
+    }
+
+    comments.push(commentObj);
+
+    try {
+      const key = `vp_comments_${topicId}`;
+      const stored = JSON.parse(localStorage.getItem(key) || "[]");
+      stored.push(commentObj);
+      localStorage.setItem(key, JSON.stringify(stored));
+    } catch {}
+    await refreshData();
+    renderTopicView(topicId);
   } catch (err) {
+    console.error(err);
     alert("Ошибка при добавлении комментария");
   }
   pendingImage = null;
@@ -453,7 +517,11 @@ window.likeComment = async (commentId) => {
     await fetch(`${API}/likes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ comment_id: commentId, user_nick: user.nick }),
+      body: JSON.stringify({
+        comment_id: commentId,
+        user_nick: user.nick,
+        remove: alreadyLiked,
+      }),
     });
     if (alreadyLiked) {
       const index = likes.findIndex(
@@ -463,6 +531,8 @@ window.likeComment = async (commentId) => {
     } else {
       likes.push({ comment_id: commentId, user_nick: user.nick, like: "1" });
     }
+
+    try { localStorage.setItem("vp_likes", JSON.stringify(likes)); } catch {}
 
     const likeBtn = document.querySelector(
       `.comment[data-comment-id="${commentId}"] .like-btn`,
@@ -478,13 +548,65 @@ window.likeComment = async (commentId) => {
   }
 };
 
-async function showTopic(id) {
-  await incrementView(id);
-  await refreshData();
+window.editComment = (commentId) => {
+  let comment = comments.find((c) => c.id == commentId);
+  if (!comment) return;
 
-  const cRes = await fetch(`${API}/comments/${id}`);
-  comments = await cRes.json();
+  let textWithoutImg = comment.text.replace(/\[IMG\].*?\[\/IMG\]/, "").trim();
+  let newText = prompt("Редактировать комментарий:", textWithoutImg);
+  if (newText === null || newText.trim() === "") return;
 
+  let imgMatch = comment.text.match(/\[IMG\](.*?)\[\/IMG\]/);
+  comment.text = imgMatch ? `[IMG]${imgMatch[1]}[/IMG] ${newText.trim()}` : newText.trim();
+  comment.editedAt = new Date().toLocaleString();
+
+  try {
+    const key = `vp_comments_${comment.topic_id}`;
+    const stored = JSON.parse(localStorage.getItem(key) || "[]");
+    const idx = stored.findIndex((c) => c.id == commentId);
+    if (idx !== -1) {
+      stored[idx].text = comment.text;
+      stored[idx].editedAt = comment.editedAt;
+      localStorage.setItem(key, JSON.stringify(stored));
+    }
+  } catch {}
+
+  fetch(`${API}/comments/${commentId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: comment.text }),
+  }).catch(() => {});
+
+  renderTopicView(comment.topic_id);
+};
+
+window.deleteComment = (commentId) => {
+  if (!confirm("Удалить комментарий?")) return;
+
+  let comment = comments.find((c) => c.id == commentId);
+  if (!comment) return;
+
+  const idx = comments.findIndex((c) => c.id == commentId);
+  if (idx !== -1) comments.splice(idx, 1);
+
+  try {
+    const key = `vp_comments_${comment.topic_id}`;
+    const stored = JSON.parse(localStorage.getItem(key) || "[]");
+    const storedIdx = stored.findIndex((c) => c.id == commentId);
+    if (storedIdx !== -1) {
+      stored.splice(storedIdx, 1);
+      localStorage.setItem(key, JSON.stringify(stored));
+    }
+  } catch {}
+
+  fetch(`${API}/comments/${commentId}`, {
+    method: "DELETE",
+  }).catch(() => {});
+
+  renderTopicView(comment.topic_id);
+};
+
+function renderTopicView(id) {
   let topic = topics.find((t) => t.id == id);
   if (!topic) return;
   let topicComments = comments.filter((c) => c.topic_id == id);
@@ -503,12 +625,20 @@ async function showTopic(id) {
           }
           let likeCount = getLikeCount(c.id);
           let liked = hasUserLiked(c.id, currentUser);
+          let isOwn = c.author === currentUser && currentUser !== "Гость";
+          let editedHtml = c.editedAt
+            ? `<span class="comment-edited">изменено ${c.editedAt}</span>`
+            : "";
           return `<div class="comment" data-comment-id="${c.id}">
       <div style="font-weight:600;">${escapeHtml(c.author)}</div>
       <div>${escapeHtml(txt)}</div>${imgHtml}
       <div class="comment-footer">
         <span>${c.date}</span>
-        <button class="like-btn ${liked ? "liked" : ""}" onclick="likeComment('${c.id}')">👍 <span class="like-count">${likeCount}</span></button>
+        <span class="comment-footer-right">
+          ${isOwn ? `<span class="comment-actions"><button class="comment-btn" onclick="editComment('${c.id}')" title="Изменить">✏️</button><button class="comment-btn" onclick="deleteComment('${c.id}')" title="Удалить">🗑️</button></span>` : ""}
+          ${editedHtml}
+          <button class="like-btn ${liked ? "liked" : ""}" onclick="likeComment('${c.id}')">👍 <span class="like-count">${likeCount}</span></button>
+        </span>
       </div>
     </div>`;
         })
@@ -523,11 +653,142 @@ async function showTopic(id) {
     <button class="btn-primary" onclick="addCommentWithImage('${id}')">Отправить</button></div></div></div>`;
 }
 
-function showProfile() {
+async function showTopic(id) {
   const user = getCurrentUser();
-  if (!user) return alert("Войдите в аккаунт");
+  if (user) {
+    const viewedKey = `vp_viewed_${id}`;
+    const lastViewed = localStorage.getItem(viewedKey);
+    const now = Date.now();
+    if (!lastViewed || now - Number(lastViewed) > 180000) {
+      await incrementView(id);
+      localStorage.setItem(viewedKey, String(now));
+    }
+  }
 
-  const roleLabel = isAdmin() ? "👑 Администратор" : "🎮 Игрок";
+  await refreshData();
+
+  if (likes.length === 0) {
+    try {
+      const stored = JSON.parse(localStorage.getItem("vp_likes") || "[]");
+      if (Array.isArray(stored) && stored.length > 0) likes = stored;
+    } catch {}
+  }
+
+  comments = [];
+
+  const patterns = [
+    `${API}/comments/${id}`,
+    `${API}/comments?topic_id=${id}`,
+    `${API}/topics/${id}/comments`,
+    `${API}/comments`,
+  ];
+
+  for (const url of patterns) {
+    try {
+      const cRes = await fetch(url);
+      const data = await cRes.json();
+      console.log(`GET ${url}:`, data);
+      if (Array.isArray(data) && data.length > 0) {
+        comments = data;
+        return renderTopicView(id);
+      }
+      if (data && Array.isArray(data.comments) && data.comments.length > 0) {
+        comments = data.comments;
+        return renderTopicView(id);
+      }
+      if (data && Array.isArray(data.data) && data.data.length > 0) {
+        comments = data.data;
+        return renderTopicView(id);
+      }
+      if (data && Array.isArray(data.results) && data.results.length > 0) {
+        comments = data.results;
+        return renderTopicView(id);
+      }
+    } catch (e) {
+      console.warn(`GET ${url} failed:`, e);
+    }
+  }
+
+  try {
+    const stored = JSON.parse(
+      localStorage.getItem(`vp_comments_${id}`) || "[]",
+    );
+    if (Array.isArray(stored) && stored.length > 0) {
+      comments = stored;
+      console.log(`Loaded ${stored.length} comments from localStorage`);
+    }
+  } catch {}
+
+  renderTopicView(id);
+}
+
+function searchProfile() {
+  const input = document.getElementById("profileSearch");
+  const nick = input.value.replace(/^\\+/, "").trim();
+  if (nick) navigateToProfile(nick);
+}
+
+async function checkUserExists(nick) {
+  try {
+    const res = await fetch(`${API}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nick, password: "__check__" }),
+    });
+    const data = await res.json();
+    if (!data.error) return true;
+    if (/не найден|not found|не существует/i.test(data.error)) return false;
+    return true;
+  } catch { return true; }
+}
+
+async function showProfile(nick) {
+  const currentUser = getCurrentUser();
+
+  if (nick && (!currentUser || nick !== currentUser.nick)) {
+    const exists = await checkUserExists(nick);
+    if (!exists) {
+      document.getElementById("app").innerHTML = `
+        <div>
+          <div class="back-link" onclick="navigateToMain()">← назад</div>
+          <div style="text-align:center;padding:60px 20px;">
+            <div style="font-size:48px;margin-bottom:16px;">😕</div>
+            <h2>Пользователь «${escapeHtml(nick)}» не найден</h2>
+          </div>
+        </div>`;
+      return;
+    }
+  }
+
+  const user = nick ? { nick } : currentUser;
+  if (!user || !user.nick) return alert("Войдите в аккаунт");
+
+  try {
+    const all = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith("vp_comments_")) {
+        const stored = JSON.parse(localStorage.getItem(key) || "[]");
+        all.push(...stored);
+      }
+    }
+    if (all.length > 0) comments = all;
+  } catch {}
+
+  const isSelf = !nick || (currentUser && nick === currentUser.nick);
+  const roleLabel = isSelf && isAdmin() ? "👑 Администратор" : "🎮 Игрок";
+
+  const userTopics = topics.filter((t) => t.author === user.nick);
+  const userComments = comments.filter((c) => c.author === user.nick);
+
+  let topicsHtml = !userTopics.length
+    ? "<p>— нет тем —</p>"
+    : userTopics
+        .map(
+          (t) =>
+            `<div class="topic-link" onclick="navigateToTopic('${t.id}')">${escapeHtml(t.title)}</div>`,
+        )
+        .join("");
 
   document.getElementById("app").innerHTML = `
     <div>
@@ -540,7 +801,15 @@ function showProfile() {
           <div class="profile-info">
             <h2>${escapeHtml(user.nick)}</h2>
             <span class="profile-role">${roleLabel}</span>
+            <div style="margin-top:8px;font-size:14px;color:#888;">
+              <span>📌 Тем: ${userTopics.length}</span>
+              <span style="margin-left:12px;">💬 Комментариев: ${userComments.length}</span>
+            </div>
           </div>
+        </div>
+        <div style="margin-top:24px;">
+          <h3 style="font-size:18px;margin-bottom:12px;">📌 Темы автора</h3>
+          ${topicsHtml}
         </div>
       </div>
     </div>`;
