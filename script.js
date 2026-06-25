@@ -617,6 +617,8 @@ window.deleteComment = (commentId) => {
     }
   } catch {}
 
+  console.log("token:", localStorage.getItem("vp_token"));
+  console.log("commentId:", commentId);
   fetch(`${API}/comments/${commentId}`, {
     method: "DELETE",
     headers: {
