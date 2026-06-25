@@ -697,7 +697,6 @@ async function showTopic(id) {
 
   const patterns = [
     `${API}/comments/${id}`,
-    `${API}/comments?topic_id=${id}`,
     `${API}/topics/${id}/comments`,
     `${API}/comments`,
   ];
