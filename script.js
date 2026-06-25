@@ -218,7 +218,10 @@ async function toggleLike(commentId, userNick) {
   try {
     await fetch(`${API}/likes`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Autorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
       body: JSON.stringify({
         comment_id: commentId,
         user_nick: userNick,
@@ -467,6 +470,7 @@ window.addCommentWithImage = async (topicId) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Autorization: `Bearer ${localStorage.getItem("vp_token")}`,
       },
       body: JSON.stringify({
         topic_id: topicId,
@@ -521,7 +525,10 @@ window.likeComment = async (commentId) => {
   try {
     await fetch(`${API}/likes`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
       body: JSON.stringify({
         comment_id: commentId,
         user_nick: user.nick,
@@ -582,7 +589,10 @@ window.editComment = (commentId) => {
 
   fetch(`${API}/comments/${commentId}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+    },
     body: JSON.stringify({ text: comment.text }),
   }).catch(() => {});
 
@@ -741,7 +751,10 @@ async function checkUserExists(nick) {
   try {
     const res = await fetch(`${API}/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
       body: JSON.stringify({ nick, password: "__check__" }),
     });
     const data = await res.json();
