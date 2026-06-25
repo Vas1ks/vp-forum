@@ -252,7 +252,11 @@ function navigateToTopic(id) {
 }
 
 function navigateToProfile(nick) {
-  history.pushState({ page: "profile", nick: nick }, "", "#profile/" + encodeURIComponent(nick));
+  history.pushState(
+    { page: "profile", nick: nick },
+    "",
+    "#profile/" + encodeURIComponent(nick),
+  );
   showProfile(nick);
 }
 
@@ -407,8 +411,9 @@ async function createTopic() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
       },
-      body: JSON.stringify({ title, author: user.nick, category, date }),
+      body: JSON.stringify({ title, category, date }),
     });
     alert("✅ Тема создана");
     await loadData();
@@ -532,7 +537,9 @@ window.likeComment = async (commentId) => {
       likes.push({ comment_id: commentId, user_nick: user.nick, like: "1" });
     }
 
-    try { localStorage.setItem("vp_likes", JSON.stringify(likes)); } catch {}
+    try {
+      localStorage.setItem("vp_likes", JSON.stringify(likes));
+    } catch {}
 
     const likeBtn = document.querySelector(
       `.comment[data-comment-id="${commentId}"] .like-btn`,
@@ -557,7 +564,9 @@ window.editComment = (commentId) => {
   if (newText === null || newText.trim() === "") return;
 
   let imgMatch = comment.text.match(/\[IMG\](.*?)\[\/IMG\]/);
-  comment.text = imgMatch ? `[IMG]${imgMatch[1]}[/IMG] ${newText.trim()}` : newText.trim();
+  comment.text = imgMatch
+    ? `[IMG]${imgMatch[1]}[/IMG] ${newText.trim()}`
+    : newText.trim();
   comment.editedAt = new Date().toLocaleString();
 
   try {
@@ -739,7 +748,9 @@ async function checkUserExists(nick) {
     if (!data.error) return true;
     if (/не найден|not found|не существует/i.test(data.error)) return false;
     return true;
-  } catch { return true; }
+  } catch {
+    return true;
+  }
 }
 
 async function showProfile(nick) {
