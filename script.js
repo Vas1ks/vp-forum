@@ -220,7 +220,7 @@ async function toggleLike(commentId, userNick) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Autorization: `Bearer ${localStorage.getItem("vp_token")}`,
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
       },
       body: JSON.stringify({
         comment_id: commentId,
@@ -470,11 +470,10 @@ window.addCommentWithImage = async (topicId) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Autorization: `Bearer ${localStorage.getItem("vp_token")}`,
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
       },
       body: JSON.stringify({
         topic_id: topicId,
-        author: user.nick,
         text: finalText,
         date,
       }),
@@ -620,6 +619,9 @@ window.deleteComment = (commentId) => {
 
   fetch(`${API}/comments/${commentId}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+    },
   }).catch(() => {});
 
   renderTopicView(comment.topic_id);
@@ -695,11 +697,7 @@ async function showTopic(id) {
 
   comments = [];
 
-  const patterns = [
-    `${API}/comments/${id}`,
-    `${API}/topics/${id}/comments`,
-    `${API}/comments`,
-  ];
+  const patterns = [`${API}/comments/${id}`];
 
   for (const url of patterns) {
     try {
@@ -748,20 +746,10 @@ function searchProfile() {
 
 async function checkUserExists(nick) {
   try {
-    const res = await fetch(`${API}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
-      },
-      body: JSON.stringify({ nick, password: "__check__" }),
-    });
-    const data = await res.json();
-    if (!data.error) return true;
-    if (/не найден|not found|не существует/i.test(data.error)) return false;
-    return true;
+    const res = await fetch(`${API}/users/${encodeURIComponent(nick)}`);
+    return res.ok;
   } catch {
-    return true;
+    return false;
   }
 }
 
