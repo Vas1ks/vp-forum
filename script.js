@@ -195,13 +195,12 @@ async function incrementView(topicId) {
 }
 
 function getLikeCount(commentId) {
-  return likes.filter((l) => l.comment_id == commentId && l.like == "1").length;
+  return likes.filter((l) => l.comment_id == commentId).length;
 }
 
 function hasUserLiked(commentId, userNick) {
   return likes.some(
-    (l) =>
-      l.comment_id == commentId && l.user_nick == userNick && l.like == "1",
+    (l) => l.comment_id == commentId && l.user_nick == userNick,
   );
 }
 
