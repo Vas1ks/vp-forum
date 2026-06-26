@@ -18,9 +18,9 @@
     <div class="nav">
       <a onclick="navigateToMain()">Главная</a>
       <a id="createTopicBtn" onclick="showCreateTopicForm()">Создать тему</a>
-      <button class="theme-toggle" onclick="document.body.classList.toggle('dark-theme')">🌓 Тема</button>
+      <button class="theme-toggle" onclick="toggleTheme()">🌓 Тема</button>
       <div class="profile-search">
-        <input id="profileSearch" placeholder="🔍 Профиль..." onkeydown="if(event.key==='Enter') searchProfile()">
+        <input id="profileSearch" placeholder="Профиль..." onkeydown="if(event.key==='Enter') searchProfile()">
         <button onclick="searchProfile()">🔍</button>
       </div>
       <div class="auth-wrapper">

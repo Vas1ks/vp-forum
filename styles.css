@@ -17,6 +17,19 @@ body.dark-theme .thread-container,
 body.dark-theme .comment,
 body.dark-theme .reply-form,
 body.dark-theme .category-header { background: #2a2f2a; border-color: #3a4a3a; }
+body.dark-theme .comment { color: #e0e0e0; }
+body.dark-theme .thread-container h2,
+body.dark-theme .thread-container > div { color: #e0e0e0; }
+body.dark-theme .reply-form textarea {
+  background: #1a1e1c;
+  color: #e0e0e0;
+  border-color: #3a4a3a;
+}
+body.dark-theme .btn-icon {
+  background: #3a4a3a;
+  color: #e0e0e0;
+  border-color: #5a7a5a;
+}
 body.dark-theme .category-link,
 body.dark-theme .topic-link { color: #ddd; border-bottom-color: #2a3a2a; }
 body.dark-theme .category-header h3,
@@ -251,6 +264,7 @@ footer {
 .comment-btn:hover { background: rgba(0,0,0,.06); }
 .comment-edited { font-size: 11px; color: #999; }
 .comment-footer-right { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; }
+.comment-photo { max-width: 100%; height: auto; border-radius: 12px; }
 .like-btn {
   background: none;
   border: none;
