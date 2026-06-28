@@ -3,13 +3,18 @@ const API = "https://web-production-d1dc3.up.railway.app";
 // ============================
 
 const ROLES = [
-  { id: "user",         label: "Игрок",              level: 0, color: "#888888" },
-  { id: "helper",       label: "Хелпер",             level: 1, color: "#5bc0de" },
-  { id: "tech_admin",   label: "Тех. Администратор", level: 2, color: "#8eb6c5" },
-  { id: "admin",        label: "Администратор",      level: 3, color: "#f0ad4e" },
-  { id: "senior_admin", label: "Ст. Администратор",  level: 4, color: "#2d6a4f" },
-  { id: "head_admin",   label: "Гл. Администратор",  level: 5, color: "#52b788" },
-  { id: "team",         label: "Команда проекта",    level: 6, color: "#e63946" },
+  { id: "user", label: "Игрок", level: 0, color: "#888888" },
+  { id: "helper", label: "Хелпер", level: 1, color: "#5bc0de" },
+  { id: "tech_admin", label: "Тех. Администратор", level: 2, color: "#8eb6c5" },
+  { id: "admin", label: "Администратор", level: 3, color: "#f0ad4e" },
+  {
+    id: "senior_admin",
+    label: "Ст. Администратор",
+    level: 4,
+    color: "#2d6a4f",
+  },
+  { id: "head_admin", label: "Гл. Администратор", level: 5, color: "#52b788" },
+  { id: "team", label: "Команда проекта", level: 6, color: "#e63946" },
 ];
 
 function getRoleInfo(role) {
@@ -22,10 +27,16 @@ function getRoleLevel(role) {
 let nickRoleMap = {};
 async function loadUsers() {
   try {
-    const res = await fetch(`${API}/users`);
+    const res = await fetch(`${API}/users`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
+    });
     const users = await res.json();
     nickRoleMap = {};
-    users.forEach((u) => { nickRoleMap[u.nick] = { role: u.role, id: u.id }; });
+    users.forEach((u) => {
+      nickRoleMap[u.nick] = { role: u.role, id: u.id };
+    });
   } catch {}
 }
 
@@ -513,7 +524,8 @@ window.likeComment = async (commentId) => {
       `.comment[data-comment-id="${commentId}"] .like-btn`,
     );
     if (likeBtn) {
-      likeBtn.querySelector(".like-count").textContent = getLikeCount(commentId);
+      likeBtn.querySelector(".like-count").textContent =
+        getLikeCount(commentId);
       result.liked
         ? likeBtn.classList.add("liked")
         : likeBtn.classList.remove("liked");
@@ -590,7 +602,7 @@ function renderTopicView(id) {
           let likeCount = getLikeCount(c.id);
           let liked = hasUserLiked(c.id, currentNick);
           let isOwn = c.author === currentNick && currentNick !== "Гость";
-          let authorRole = (nickRoleMap[c.author]?.role) || "user";
+          let authorRole = nickRoleMap[c.author]?.role || "user";
           let authorInfo = getRoleInfo(authorRole);
           let authorLevel = authorInfo.level;
 
@@ -598,7 +610,8 @@ function renderTopicView(id) {
           let canDelete = isOwn || currentLevelNum > authorLevel;
 
           // #: только SeniorAdmin+ и только если цель ниже
-          let canInteract = currentLevelNum >= 4 && currentLevelNum > authorLevel;
+          let canInteract =
+            currentLevelNum >= 4 && currentLevelNum > authorLevel;
 
           let editedHtml = c.editedAt
             ? `<span class="comment-edited">изменено ${c.editedAt}</span>`
@@ -735,9 +748,11 @@ async function showProfile(nick) {
       <div class="profile-container">
         <div class="profile-header">
           <div class="profile-avatar" ${isSelf ? `onclick="document.getElementById('avatarInput').click()"` : ""}>
-            ${userData.avatar
-              ? `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-              : `<i class="fas fa-user-circle" style="font-size:80px;color:#2e7a45;"></i>`}
+            ${
+              userData.avatar
+                ? `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+                : `<i class="fas fa-user-circle" style="font-size:80px;color:#2e7a45;"></i>`
+            }
             ${isSelf ? `<span class="avatar-add">+</span>` : ""}
           </div>
           ${isSelf ? `<input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">` : ""}
@@ -778,7 +793,11 @@ function closeActiveMenu() {
 }
 
 document.addEventListener("click", (e) => {
-  if (activeMenu && !activeMenu.contains(e.target) && !e.target.closest(".user-menu-btn")) {
+  if (
+    activeMenu &&
+    !activeMenu.contains(e.target) &&
+    !e.target.closest(".user-menu-btn")
+  ) {
     closeActiveMenu();
   }
 });
@@ -849,7 +868,9 @@ function openProfileMenu(nick, targetRole, isBanned, btn) {
 
   if (currentLevel >= 4 && currentLevel > targetLevel) {
     const banItem = document.createElement("a");
-    banItem.textContent = isBanned ? "⛔ Изменить отстранение" : "⛔ Отстранить";
+    banItem.textContent = isBanned
+      ? "⛔ Изменить отстранение"
+      : "⛔ Отстранить";
     banItem.onclick = (e) => {
       e.stopPropagation();
       closeActiveMenu();
@@ -897,7 +918,8 @@ async function banUser(nick) {
   const reason = prompt("Причина отстранения:");
   if (!reason || !reason.trim()) return;
   const days = prompt("Время в днях:");
-  if (!days || isNaN(days) || Number(days) < 1) return alert("Некорректное число дней");
+  if (!days || isNaN(days) || Number(days) < 1)
+    return alert("Некорректное число дней");
 
   try {
     const res = await fetch(`${API}/ban/${userData.id}`, {
