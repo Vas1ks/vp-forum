@@ -348,7 +348,29 @@ body.dark-theme .auth-dropdown a:hover { background: #3a4a3a; }
   align-items: center;
   justify-content: center;
   border: 3px solid #b5dfa3;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
+.avatar-add {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(2px);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.avatar-add:hover { background: rgba(0,0,0,0.6); }
 
 .profile-info h2 { font-size: 28px; margin-bottom: 8px; }
 
@@ -366,6 +388,42 @@ body.dark-theme .profile-container {
 body.dark-theme .profile-avatar { background: #3a4a3a; border-color: #5a8a5a; }
 
 body.dark-theme .profile-info h2 { color: #e0e0e0; }
+
+.user-menu-btn {
+  background: none; border: none; cursor: pointer; font-size: 14px; font-weight: bold;
+  padding: 0 4px; border-radius: 3px; color: #666; transition: .15s; vertical-align: middle;
+}
+.user-menu-btn:hover { background: rgba(0,0,0,.08); color: #333; }
+
+.user-menu-dropdown {
+  position: fixed;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #e0ecda;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  min-width: 180px;
+  overflow: hidden;
+}
+.user-menu-dropdown a {
+  display: block;
+  padding: 10px 16px;
+  color: #1a2a1c;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+.user-menu-dropdown a:hover { background: #f0f6ec; }
+
+body.dark-theme .user-menu-btn { color: #aaa; }
+body.dark-theme .user-menu-btn:hover { background: rgba(255,255,255,.1); color: #ddd; }
+body.dark-theme .user-menu-dropdown {
+  background: #2a2f2a;
+  border-color: #3a4a3a;
+}
+body.dark-theme .user-menu-dropdown a { color: #e0e0e0; }
+body.dark-theme .user-menu-dropdown a:hover { background: #3a4a3a; }
 
 @media (max-width: 900px) {
   .right { display: none; }

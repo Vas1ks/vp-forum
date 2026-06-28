@@ -2,6 +2,33 @@
 const API = "https://web-production-d1dc3.up.railway.app";
 // ============================
 
+const ROLES = [
+  { id: "user",         label: "Игрок",              level: 0, color: "#888888" },
+  { id: "helper",       label: "Хелпер",             level: 1, color: "#5bc0de" },
+  { id: "tech_admin",   label: "Тех. Администратор", level: 2, color: "#8eb6c5" },
+  { id: "admin",        label: "Администратор",      level: 3, color: "#f0ad4e" },
+  { id: "senior_admin", label: "Ст. Администратор",  level: 4, color: "#2d6a4f" },
+  { id: "head_admin",   label: "Гл. Администратор",  level: 5, color: "#52b788" },
+  { id: "team",         label: "Команда проекта",    level: 6, color: "#e63946" },
+];
+
+function getRoleInfo(role) {
+  return ROLES.find((r) => r.id === role) || ROLES[0];
+}
+function getRoleLevel(role) {
+  return getRoleInfo(role).level;
+}
+
+let nickRoleMap = {};
+async function loadUsers() {
+  try {
+    const res = await fetch(`${API}/users`);
+    const users = await res.json();
+    nickRoleMap = {};
+    users.forEach((u) => { nickRoleMap[u.nick] = { role: u.role, id: u.id }; });
+  } catch {}
+}
+
 // Авторизация пользователя
 function getCurrentUser() {
   const token = localStorage.getItem("vp_token");
@@ -21,12 +48,6 @@ function logout() {
   document.getElementById("authPassword").value = "";
   updateAuthButton();
   navigateToMain();
-}
-
-// Проверка на админа
-function isAdmin() {
-  const user = getCurrentUser();
-  return user && user.role === "admin";
 }
 
 // ===== AUTH MODAL =====
@@ -149,6 +170,7 @@ async function loadData() {
     document.getElementById("app").innerHTML =
       '<div class="loading-placeholder">⏳ загрузка...</div>';
     await refreshData();
+    await loadUsers();
 
     function getTopicIdFromUrl() {
       const hash = window.location.hash;
@@ -318,26 +340,23 @@ async function showMainPage() {
 
   let teamHtml = "";
   try {
-    const [usersRes, onlineRes] = await Promise.all([
-      fetch(`${API}/users`),
-      fetch(`${API}/online`),
-    ]);
-    const allUsers = await usersRes.json();
+    const onlineRes = await fetch(`${API}/online`);
     const onlineUsers = await onlineRes.json();
     const onlineNicks = new Set(onlineUsers.map((u) => u.user_nick));
-    const teamRoles = [
-      "team",
-      "tech_admin",
-      "senior_admin",
-      "head_admin",
-    ];
-    const teamMembers = allUsers.filter((u) => teamRoles.includes(u.role));
+    const staff = Object.entries(nickRoleMap).filter(
+      ([, data]) => data.role !== "user",
+    );
 
-    teamHtml = teamMembers
-      .map(
-        (u) =>
-          `<div class="user-online"><b onclick="navigateToProfile('${u.nick}')" style="cursor:pointer;">${escapeHtml(u.nick)}</b><br><span style="font-size:14px;color:${onlineNicks.has(u.nick) ? "#4caf50" : "#888"};">${onlineNicks.has(u.nick) ? "● Онлайн" : "○ Офлайн"}</span></div>`,
-      )
+    teamHtml = staff
+      .filter(([nick]) => onlineNicks.has(nick))
+      .map(([nick, data]) => {
+        const info = getRoleInfo(data.role);
+        return `<div class="user-online">
+          <b onclick="navigateToProfile('${nick}')" style="cursor:pointer;color:${info.color};">${escapeHtml(nick)}</b>
+          <span style="font-size:11px;color:${info.color};">[${info.label}]</span>
+          <br><span style="font-size:14px;color:#4caf50;">● Онлайн</span>
+        </div>`;
+      })
       .join("");
   } catch {}
 
@@ -553,7 +572,9 @@ function renderTopicView(id) {
   let topic = topics.find((t) => t.id == id);
   if (!topic) return;
   let topicComments = comments.filter((c) => c.topic_id == id);
-  let currentUser = getCurrentUser()?.nick || "Гость";
+  let currentUser = getCurrentUser();
+  let currentNick = currentUser?.nick || "Гость";
+  let currentLevelNum = currentUser ? getRoleLevel(currentUser.role) : -1;
 
   let commentsHtml = !topicComments.length
     ? '<div style="padding:16px;">— нет ответов —</div>'
@@ -567,18 +588,33 @@ function renderTopicView(id) {
             txt = txt.replace(/\[IMG\].*?\[\/IMG\]/, "").trim();
           }
           let likeCount = getLikeCount(c.id);
-          let liked = hasUserLiked(c.id, currentUser);
-          let isOwn = c.author === currentUser && currentUser !== "Гость";
+          let liked = hasUserLiked(c.id, currentNick);
+          let isOwn = c.author === currentNick && currentNick !== "Гость";
+          let authorRole = (nickRoleMap[c.author]?.role) || "user";
+          let authorInfo = getRoleInfo(authorRole);
+          let authorLevel = authorInfo.level;
+
+          // 🗑️: свой комментарий или иерархия
+          let canDelete = isOwn || currentLevelNum > authorLevel;
+
+          // #: только SeniorAdmin+ и только если цель ниже
+          let canInteract = currentLevelNum >= 4 && currentLevelNum > authorLevel;
+
           let editedHtml = c.editedAt
             ? `<span class="comment-edited">изменено ${c.editedAt}</span>`
             : "";
           return `<div class="comment" data-comment-id="${c.id}">
-      <div style="font-weight:600;">${escapeHtml(c.author)}</div>
+      <div style="font-weight:600;">
+        <span style="color:${authorInfo.color};cursor:pointer;" onclick="navigateToProfile('${c.author}')">${escapeHtml(c.author)}</span>
+        <span style="font-size:11px;color:${authorInfo.color};">[${authorInfo.label}]</span>
+        ${canInteract ? `<button class="user-menu-btn" onclick="openCommentMenu('${c.author}', this)" title="Действия">#</button>` : ""}
+      </div>
       <div>${escapeHtml(txt)}</div>${imgHtml}
       <div class="comment-footer">
         <span>${c.date}</span>
         <span class="comment-footer-right">
-          ${isOwn ? `<span class="comment-actions"><button class="comment-btn" onclick="editComment('${c.id}')" title="Изменить">✏️</button><button class="comment-btn" onclick="deleteComment('${c.id}')" title="Удалить">🗑️</button></span>` : ""}
+          ${isOwn ? `<span class="comment-actions"><button class="comment-btn" onclick="editComment('${c.id}')" title="Изменить">✏️</button></span>` : ""}
+          ${canDelete ? `<span class="comment-actions"><button class="comment-btn" onclick="deleteComment('${c.id}')" title="Удалить">🗑️</button></span>` : ""}
           ${editedHtml}
           <button class="like-btn ${liked ? "liked" : ""}" onclick="likeComment('${c.id}')">👍 <span class="like-count">${likeCount}</span></button>
         </span>
@@ -609,6 +645,7 @@ async function showTopic(id) {
   }
 
   await refreshData();
+  await loadUsers();
 
   try {
     const cRes = await fetch(`${API}/comments/${id}`);
@@ -647,6 +684,7 @@ async function showProfile(nick) {
       return;
     }
     userData = await res.json();
+    nickRoleMap[userData.nick] = { role: userData.role, id: userData.id };
   } catch {
     document.getElementById("app").innerHTML = `
       <div>
@@ -660,7 +698,14 @@ async function showProfile(nick) {
   }
 
   const isSelf = !nick || (currentUser && nick === currentUser.nick);
-  const roleLabel = isSelf && isAdmin() ? "👑 Администратор" : "🎮 Игрок";
+  const targetRole = userData.role || "user";
+  const roleInfo = getRoleInfo(targetRole);
+  const currentLevel = currentUser ? getRoleLevel(currentUser.role) : -1;
+  const targetLevel = roleInfo.level;
+
+  // # только если текущий выше по иерархии и не ниже SeniorAdmin
+  const canInteract =
+    currentUser && currentLevel >= 4 && currentLevel > targetLevel;
 
   const userTopics = topics.filter((t) => t.author === userData.nick);
   const userComments = comments.filter((c) => c.author === userData.nick);
@@ -668,6 +713,11 @@ async function showProfile(nick) {
   let regDateStr = "";
   if (userData.created_at) {
     regDateStr = `<div style="margin-top:8px;">📅 Зарегистрирован: ${new Date(userData.created_at).toLocaleDateString()}</div>`;
+  }
+
+  let banInfo = "";
+  if (userData.topic_ban && userData.topic_ban_until) {
+    banInfo = `<div style="margin-top:8px;color:#e63946;">⛔ Отстранён до ${new Date(userData.topic_ban_until).toLocaleDateString()}${userData.ban_reason ? ` (причина: ${escapeHtml(userData.ban_reason)})` : ""}</div>`;
   }
 
   let topicsHtml = !userTopics.length
@@ -684,17 +734,22 @@ async function showProfile(nick) {
       <div class="back-link" onclick="navigateToMain()">← назад</div>
       <div class="profile-container">
         <div class="profile-header">
-          <div class="profile-avatar">
-            <i class="fas fa-user-circle" style="font-size:80px;color:#2e7a45;"></i>
+          <div class="profile-avatar" ${isSelf ? `onclick="document.getElementById('avatarInput').click()"` : ""}>
+            ${userData.avatar
+              ? `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+              : `<i class="fas fa-user-circle" style="font-size:80px;color:#2e7a45;"></i>`}
+            ${isSelf ? `<span class="avatar-add">+</span>` : ""}
           </div>
+          ${isSelf ? `<input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">` : ""}
           <div class="profile-info">
-            <h2>${escapeHtml(userData.nick)}</h2>
-            <span class="profile-role">${roleLabel}</span>
+            <h2 style="color:${roleInfo.color};">${escapeHtml(userData.nick)} ${canInteract ? `<button class="user-menu-btn" onclick="openProfileMenu('${userData.nick}', '${targetRole}', ${userData.topic_ban || false}, this)" title="Действия">#</button>` : ""}</h2>
+            <span class="profile-role" style="color:${roleInfo.color};">${roleInfo.label}</span>
             <div style="margin-top:8px;font-size:14px;color:#888;">
               <span>📌 Тем: ${userTopics.length}</span>
               <span style="margin-left:12px;">💬 Комментариев: ${userComments.length}</span>
             </div>
             ${regDateStr}
+            ${banInfo}
           </div>
         </div>
         <div style="margin-top:24px;">
@@ -711,11 +766,230 @@ function escapeHtml(str) {
   );
 }
 
+// ===== ВЗАИМОДЕЙСТВИЕ С ПОЛЬЗОВАТЕЛЕМ (БАН / СМЕНА РОЛИ) =====
+
+let activeMenu = null;
+
+function closeActiveMenu() {
+  if (activeMenu) {
+    activeMenu.remove();
+    activeMenu = null;
+  }
+}
+
+document.addEventListener("click", (e) => {
+  if (activeMenu && !activeMenu.contains(e.target) && !e.target.closest(".user-menu-btn")) {
+    closeActiveMenu();
+  }
+});
+
+function openCommentMenu(nick, btn) {
+  closeActiveMenu();
+
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+  const currentLevel = getRoleLevel(currentUser.role);
+  const targetRole = nickRoleMap[nick]?.role || "user";
+  const targetLevel = getRoleLevel(targetRole);
+
+  const menu = document.createElement("div");
+  menu.className = "user-menu-dropdown";
+  menu.style.position = "fixed";
+
+  const rect = btn.getBoundingClientRect();
+  menu.style.left = rect.left + "px";
+  menu.style.top = rect.bottom + "px";
+
+  // Бан/разбан (SeniorAdmin+, цель ниже)
+  if (currentLevel >= 4 && currentLevel > targetLevel) {
+    const banItem = document.createElement("a");
+    banItem.textContent = "⛔ Отстранить";
+    banItem.onclick = (e) => {
+      e.stopPropagation();
+      closeActiveMenu();
+      banUser(nick);
+    };
+    menu.appendChild(banItem);
+  }
+  if (currentLevel >= 5 && currentLevel > targetLevel) {
+    const unbanItem = document.createElement("a");
+    unbanItem.textContent = "✅ Снять отстранение";
+    unbanItem.onclick = (e) => {
+      e.stopPropagation();
+      closeActiveMenu();
+      unbanUser(nick);
+    };
+    menu.appendChild(unbanItem);
+  }
+
+  if (!menu.children.length) return;
+  document.body.appendChild(menu);
+  activeMenu = menu;
+}
+
+function openProfileMenu(nick, targetRole, isBanned, btn) {
+  closeActiveMenu();
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+  const currentLevel = getRoleLevel(currentUser.role);
+  const targetLevel = getRoleLevel(targetRole);
+
+  const menu = document.createElement("div");
+  menu.className = "user-menu-dropdown";
+  menu.style.position = "fixed";
+
+  if (btn) {
+    const rect = btn.getBoundingClientRect();
+    menu.style.left = rect.left + "px";
+    menu.style.top = rect.bottom + "px";
+  } else {
+    menu.style.left = "50%";
+    menu.style.top = "50%";
+  }
+
+  if (currentLevel >= 4 && currentLevel > targetLevel) {
+    const banItem = document.createElement("a");
+    banItem.textContent = isBanned ? "⛔ Изменить отстранение" : "⛔ Отстранить";
+    banItem.onclick = (e) => {
+      e.stopPropagation();
+      closeActiveMenu();
+      banUser(nick);
+    };
+    menu.appendChild(banItem);
+  }
+  if (currentLevel >= 5 && currentLevel > targetLevel) {
+    const unbanItem = document.createElement("a");
+    unbanItem.textContent = "✅ Снять отстранение";
+    unbanItem.onclick = (e) => {
+      e.stopPropagation();
+      closeActiveMenu();
+      unbanUser(nick);
+    };
+    menu.appendChild(unbanItem);
+  }
+  if (currentLevel === 6 && currentLevel > targetLevel && targetLevel < 6) {
+    const separator = document.createElement("a");
+    separator.textContent = "── Сменить роль ──";
+    separator.style.pointerEvents = "none";
+    separator.style.color = "#888";
+    menu.appendChild(separator);
+    ROLES.filter((r) => r.level < 6 && r.level > 0).forEach((r) => {
+      const item = document.createElement("a");
+      item.textContent = r.label;
+      item.style.color = r.color;
+      item.onclick = (e) => {
+        e.stopPropagation();
+        closeActiveMenu();
+        changeRole(nick, r.id);
+      };
+      menu.appendChild(item);
+    });
+  }
+
+  if (!menu.children.length) return;
+  document.body.appendChild(menu);
+  activeMenu = menu;
+}
+
+async function banUser(nick) {
+  const userData = nickRoleMap[nick];
+  if (!userData?.id) return alert("Пользователь не найден");
+  const reason = prompt("Причина отстранения:");
+  if (!reason || !reason.trim()) return;
+  const days = prompt("Время в днях:");
+  if (!days || isNaN(days) || Number(days) < 1) return alert("Некорректное число дней");
+
+  try {
+    const res = await fetch(`${API}/ban/${userData.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
+      body: JSON.stringify({ duration: Number(days), reason: reason.trim() }),
+    });
+    const data = await res.json();
+    if (data.error) return alert(data.error);
+    alert("✅ Пользователь отстранён");
+    showProfile(nick);
+  } catch {
+    alert("Ошибка при отстранении");
+  }
+}
+
+async function unbanUser(nick) {
+  const userData = nickRoleMap[nick];
+  if (!userData?.id) return alert("Пользователь не найден");
+  if (!confirm(`Снять отстранение с пользователя «${nick}»?`)) return;
+
+  try {
+    const res = await fetch(`${API}/unban/${userData.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
+    });
+    const data = await res.json();
+    if (data.error) return alert(data.error);
+    alert("✅ Отстранение снято");
+    showProfile(nick);
+  } catch {
+    alert("Ошибка при снятии отстранения");
+  }
+}
+
+async function changeRole(nick, roleId) {
+  const userData = nickRoleMap[nick];
+  if (!userData?.id) return alert("Пользователь не найден");
+
+  try {
+    const res = await fetch(`${API}/change-role/${userData.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
+      body: JSON.stringify({ role: roleId }),
+    });
+    const data = await res.json();
+    if (data.error) return alert(data.error);
+    const info = getRoleInfo(roleId);
+    alert(`✅ Роль изменена на «${info.label}»`);
+    showProfile(nick);
+  } catch {
+    alert("Ошибка при смене роли");
+  }
+}
+
 function toggleTheme() {
   document.body.classList.toggle("dark-theme");
   const isDark = document.body.classList.contains("dark-theme");
   localStorage.setItem("vp_theme", isDark ? "dark" : "light");
 }
+
+const uploadAvatar = async (input) => {
+  const file = input.files?.[0];
+  if (!file) return;
+  if (file.size > 3 * 1024 * 1024) return alert("Файл больше 3 МБ");
+
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  try {
+    const res = await fetch(`${API}/change-avatar`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${localStorage.getItem("vp_token")}` },
+      body: formData,
+    });
+    const data = await res.json();
+    if (data.error) return alert(data.error);
+    const user = getCurrentUser();
+    if (user) showProfile(user.nick);
+  } catch {
+    alert("Ошибка при загрузке аватара");
+  }
+};
 
 // Применить сохранённую тему при загрузке
 if (localStorage.getItem("vp_theme") === "dark") {
