@@ -658,7 +658,6 @@ async function showTopic(id) {
   }
 
   await refreshData();
-  await loadUsers();
 
   try {
     const cRes = await fetch(`${API}/comments/${id}`);
@@ -1019,4 +1018,5 @@ if (localStorage.getItem("vp_theme") === "dark") {
 }
 
 updateAuthButton();
+loadUsers();
 loadData();
