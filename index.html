@@ -19,9 +19,10 @@
       <a onclick="navigateToMain()">Главная</a>
       <a id="createTopicBtn" onclick="showCreateTopicForm()">Создать тему</a>
       <button class="theme-toggle" onclick="toggleTheme()">🌓 Тема</button>
-      <div class="profile-search">
-        <input id="profileSearch" placeholder="Профиль..." onkeydown="if(event.key==='Enter') searchProfile()">
+      <div class="profile-search" style="position:relative;">
+        <input id="profileSearch" placeholder="Профиль..." autocomplete="off" oninput="showProfileSearchSuggestions()" onfocus="showProfileSearchSuggestions()" onblur="setTimeout(hideProfileSearchSuggestions,200)" onkeydown="if(event.key==='Enter'){const f=document.querySelector('#profileSuggestions .suggestion-item');if(f)f.click();else searchProfile()}">
         <button onclick="searchProfile()">🔍</button>
+        <div id="profileSuggestions" class="profile-search-suggestions" style="display:none;"></div>
       </div>
       <div class="auth-wrapper">
         <button class="auth-button" id="authBtn">
@@ -30,6 +31,7 @@
         </button>
         <div class="auth-dropdown" id="authDropdown">
           <a onclick="if(getCurrentUser()) navigateToProfile(getCurrentUser().nick)">Профиль</a>
+          <a id="adminPanelBtn" onclick="navigateToAdminPanel()" style="display:none">🧑‍💼 Админ панель</a>
           <a onclick="logout()">Выход</a>
         </div>
       </div>
