@@ -3,7 +3,7 @@
     {
       "id": 1,
       "nick": "Vas1ks",
-      "password": "sickgreenx98",
+      "password": "12345",
       "role": "team",
       "email": "Goshav2007@gmail.com",
       "created_at": "2025-01-01T00:00:00.000Z",
@@ -50,7 +50,8 @@
     "4c1ee4b72076f9a6aacaa3f4decd35f5eb1ca59a304f5b0f8d307aae2dd03c97": 1,
     "adbf3f529fb4ab99026980a530b854b3e1800ec2d6d14f9f57cf3f79927ffb36": 2,
     "228c553c43c05df54e22e4bd19cb957c22c94d0a27019ff3e5d93a68553ddf60": 1,
-    "b5fef550dd658e7a92de161670f75800039fa95030869ab0fe85f4d770511e41": 2
+    "b5fef550dd658e7a92de161670f75800039fa95030869ab0fe85f4d770511e41": 2,
+    "820558df8c23fb66c2d67473b1ed02840a4f632ebee813634cf7015b5a35dc5c": 1
   },
   "nextUserId": 3,
   "nextTopicId": 1,

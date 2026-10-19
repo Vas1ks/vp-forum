@@ -34,7 +34,7 @@ function seedDB() {
       {
         id: 1,
         nick: "Vas1ks",
-        password: "sickgreenx98",
+        password: "12345",
         role: "team",
         email: "",
         created_at: new Date("2025-01-01").toISOString(),
@@ -446,6 +446,6 @@ app.put("/change-avatar", authMiddleware, (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`✅ Backend running: http://localhost:${PORT}`);
-  console.log(`   Admin: Vas1ks / sickgreenx98`);
+  console.log(`   Admin: Vas1ks / 12345`);
   console.log(`   Test:  test / 12345678`);
 });
