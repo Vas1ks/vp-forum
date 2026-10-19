@@ -1,0 +1,58 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "nick": "Vas1ks",
+      "password": "sickgreenx98",
+      "role": "team",
+      "email": "Goshav2007@gmail.com",
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "avatar": "",
+      "topic_ban": false,
+      "topic_ban_until": null,
+      "ban_reason": "",
+      "banned_by": "",
+      "hard_ban": false
+    },
+    {
+      "id": 2,
+      "nick": "test",
+      "password": "12345678",
+      "role": "user",
+      "email": "",
+      "created_at": "2025-06-01T00:00:00.000Z",
+      "avatar": "",
+      "topic_ban": false,
+      "topic_ban_until": null,
+      "ban_reason": "",
+      "banned_by": "",
+      "hard_ban": false,
+      "banned_at": null
+    }
+  ],
+  "topics": [],
+  "comments": [],
+  "views": {},
+  "likes": [],
+  "online": [
+    {
+      "user_nick": "Vas1ks",
+      "last_seen": 1792395659994
+    }
+  ],
+  "tokens": {
+    "644da8237d2e7e1246cfe5ecfd816dc97e891b918717ab7748966ec62f00dc39": 1,
+    "27b213f1fd992996bdaf3ee61c28bbd0e92305e72fc34c1c40493f7899d9968f": 2,
+    "fe797aee433311601e173ab9001414ab75c5b8d060b3d63a767fcf533f1c2658": 2,
+    "5e8aee687ca770992797e5e176a9e414a8b10d3f7ae5233acebfa7e202955b19": 1,
+    "31201d0d4e3a39790f8e3052de88f4a5d8a172e81a6deed127d21b7910224e72": 1,
+    "cd3776318f7c3966d54266be86ad6f7e6bcdfc0a8e0ebec25a99eea441cf97da": 1,
+    "4c1ee4b72076f9a6aacaa3f4decd35f5eb1ca59a304f5b0f8d307aae2dd03c97": 1,
+    "adbf3f529fb4ab99026980a530b854b3e1800ec2d6d14f9f57cf3f79927ffb36": 2,
+    "228c553c43c05df54e22e4bd19cb957c22c94d0a27019ff3e5d93a68553ddf60": 1,
+    "b5fef550dd658e7a92de161670f75800039fa95030869ab0fe85f4d770511e41": 2
+  },
+  "nextUserId": 3,
+  "nextTopicId": 1,
+  "nextCommentId": 1
+}

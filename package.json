@@ -1,0 +1,14 @@
+{
+  "name": "vp-forum",
+  "version": "1.0.0",
+  "description": "VP Forum — форум проекта Выживание с Подписчиками",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "run": "bash start.sh",
+    "stop": "bash stop.sh"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

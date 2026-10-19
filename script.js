@@ -1,5 +1,5 @@
 // ========== БЭКЕНД ==========
-const API = "https://web-production-d1dc3.up.railway.app";
+const API = "http://localhost:3001";
 // ============================
 
 const ROLES = [
@@ -60,12 +60,28 @@ function getCurrentUser() {
   }
 }
 
+function getUserEmail() {
+  const user = getCurrentUser();
+  if (user?.email) return user.email;
+  return localStorage.getItem("vp_user_email") || null;
+}
+
+function checkEmailStatus() {
+  const banner = document.getElementById("emailBanner");
+  if (!banner) return;
+  const user = getCurrentUser();
+  banner.style.display = user && !getUserEmail() ? "block" : "none";
+}
+
 // Выход из пользователя
 function logout() {
   localStorage.removeItem("vp_token");
+  localStorage.removeItem("vp_last_password");
+  localStorage.removeItem("vp_user_email");
   document.getElementById("authNick").value = "";
   document.getElementById("authPassword").value = "";
   updateAuthButton();
+  checkEmailStatus();
   navigateToMain();
 }
 
@@ -90,6 +106,44 @@ function closeAuth() {
   document.getElementById("authModal").style.display = "none";
 }
 
+// ===== EMAIL MODAL =====
+function showEmailModal() {
+  document.getElementById("emailModal").style.display = "block";
+  document.getElementById("emailInput").value = getUserEmail() || "";
+  document.getElementById("emailModalStatus").textContent = "";
+}
+
+function closeEmailModal() {
+  document.getElementById("emailModal").style.display = "none";
+}
+
+async function saveEmailFromModal() {
+  const email = document.getElementById("emailInput").value.trim();
+  const status = document.getElementById("emailModalStatus");
+  if (!email) { status.textContent = "Введите email"; return; }
+  const user = getCurrentUser();
+  const password = localStorage.getItem("vp_last_password") || prompt("Введите пароль для подтверждения");
+  if (!password) return;
+  try {
+    const res = await fetch(`${API}/change-email`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
+      body: JSON.stringify({ new_email: email, password }),
+    });
+    const data = await res.json();
+    if (data.error) { status.textContent = data.error; return; }
+    localStorage.setItem("vp_user_email", email);
+    closeEmailModal();
+    checkEmailStatus();
+    status.textContent = "✅ Email сохранён";
+  } catch {
+    status.textContent = "Ошибка при сохранении email";
+  }
+}
+
 async function login() {
   const nick = document.getElementById("authNick").value.trim();
   const password = document.getElementById("authPassword").value.trim();
@@ -104,10 +158,13 @@ async function login() {
     const data = await res.json();
     if (data.error) return alert(data.error);
     localStorage.setItem("vp_token", data.token);
+    localStorage.setItem("vp_last_password", password);
     closeAuth();
     updateAuthButton();
     updateOnlineStatus();
     await loadUsers();
+    checkEmailStatus();
+    if (!getUserEmail()) showEmailModal();
   } catch (err) {
     alert("Ошибка при входе");
   }
@@ -129,10 +186,13 @@ async function register() {
     const data = await res.json();
     if (data.error) return alert(data.error);
     localStorage.setItem("vp_token", data.token);
+    localStorage.setItem("vp_last_password", password);
     closeAuth();
     updateAuthButton();
     updateOnlineStatus();
     await loadUsers();
+    checkEmailStatus();
+    showEmailModal();
   } catch (err) {
     alert("Ошибка при регистрации");
   }
@@ -214,6 +274,7 @@ async function loadData() {
     await refreshData();
     await loadUsers();
     await loadReplyCounts();
+    checkEmailStatus();
 
     function getTopicIdFromUrl() {
       const hash = window.location.hash;
@@ -236,6 +297,10 @@ async function loadData() {
     } else if (window.location.hash === "#admin") {
       document.body.classList.add("admin-mode");
       showAdminPanel();
+    } else if (window.location.hash === "#account") {
+      showAccountPage();
+    } else if (window.location.hash === "#history") {
+      showHistoryPage();
     } else {
       navigateToMain();
     }
@@ -435,20 +500,91 @@ async function loadUsersList(content) {
   } catch { content.innerHTML = "<p>Ошибка загрузки</p>"; }
 }
 
-// === ⛔ Баны (поиск по нику + история) ===
+// === ⛔ Баны (выдача + история) ===
 function showBanActions(content) {
+  const user = getCurrentUser();
+  const level = user ? getRoleLevel(user.role) : -1;
+  const maxDays = level >= 4 ? 365 : 1;
+  const today = new Date().toISOString().split("T")[0];
+
   content.innerHTML = `
     <h3>⛔ Баны</h3>
     <div class="admin-prompt">
       <label>Ник пользователя</label>
-      <input id="banSearchInput" class="admin-input" placeholder="Введите ник..." onkeydown="if(event.key==='Enter') loadBanHistory()">
-      <button class="admin-btn" onclick="loadBanHistory()">Показать историю банов</button>
+      <input id="banNickInput" class="admin-input" placeholder="Ник или ссылка на профиль..." autocomplete="off">
     </div>
-    <div id="banSearchResult" style="margin-bottom:24px;"></div>
-    <div style="border-top:1px solid #2a2a3e;padding-top:16px;">
-      <h4 style="color:#888;font-size:15px;font-weight:400;">📋 Все баны — ожидание эндпоинта от бэкенда</h4>
-      <p style="color:#555;font-size:14px;">Здесь будет список всех банов, когда бэкендер добавит GET /ban-history</p>
+    <div class="admin-prompt">
+      <label>Причина</label>
+      <input id="banReasonInput" class="admin-input" placeholder="Причина отстранения...">
+    </div>
+    <div class="admin-prompt">
+      <label>Срок (до даты)</label>
+      <input id="banDateInput" class="admin-input" type="date" min="${today}">
+      <div class="ban-date-hint">Максимум для вашей роли: ${maxDays} дн.</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+      <button class="admin-btn" onclick="administerBan(false)">⛔ Отстранить</button>
+      <button class="admin-btn admin-btn-danger" onclick="administerBan(true)">☠️ Хард бан</button>
+    </div>
+    <div id="banIssueStatus" class="ban-issue-status"></div>
+
+    <div style="border-top:1px solid #2a2a3e;margin-top:26px;padding-top:18px;">
+      <h4 style="color:#888;font-size:15px;font-weight:400;">📜 История банов по нику</h4>
+      <input id="banSearchInput" class="admin-input" placeholder="Введите ник..." onkeydown="if(event.key==='Enter') loadBanHistory()">
+      <button class="admin-btn" onclick="loadBanHistory()">Показать историю</button>
+      <div id="banSearchResult" style="margin-top:16px;"></div>
     </div>`;
+}
+
+async function administerBan(hardBan) {
+  const nick = normalizeRoleNick(document.getElementById("banNickInput")?.value);
+  const reason = document.getElementById("banReasonInput")?.value?.trim() || "";
+  const dateValue = document.getElementById("banDateInput")?.value;
+  const status = document.getElementById("banIssueStatus");
+  if (!status) return;
+  if (!nick) { status.textContent = "Введите ник"; return; }
+
+  const user = getCurrentUser();
+  const level = user ? getRoleLevel(user.role) : -1;
+  const isSupport = level < 4;
+  const maxDays = level >= 4 ? 365 : 1;
+
+  let until = null;
+  if (hardBan) {
+    if (!confirm("☠️ Хард-бан: доступ навсегда. Подтвердить?")) return;
+  } else {
+    if (!dateValue) { status.textContent = "Выберите дату окончания отстранения"; return; }
+    until = new Date(dateValue + "T23:59:59").toISOString();
+    const days = Math.ceil((new Date(until).getTime() - Date.now()) / 86400000);
+    if (days > maxDays) { status.textContent = `Срок больше допустимого (максимум ${maxDays} дн.)`; return; }
+    if (days < 1) { status.textContent = "Дата должна быть позже сегодняшней"; return; }
+  }
+
+  status.textContent = "⏳ Отправка...";
+  try {
+    const idRes = await fetch(`${API}/checkId/${encodeURIComponent(nick)}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("vp_token")}` },
+    });
+    if (!idRes.ok) { status.textContent = "Пользователь не найден"; return; }
+    const { id } = await idRes.json();
+
+    const res = await fetch(`${API}/${isSupport ? "support/" : ""}ban/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
+      body: JSON.stringify({ reason, hard_ban: hardBan, until: hardBan ? null : until }),
+    });
+    const data = await res.json();
+    if (data.error) { status.textContent = data.error; return; }
+    status.textContent = hardBan
+      ? "☠️ Хард-бан выдан. Пользователь заблокирован навсегда."
+      : `⛔ Отстранён до ${new Date(until).toLocaleDateString()}`;
+    setTimeout(() => { status.textContent = ""; }, 4000);
+  } catch {
+    status.textContent = "Ошибка при выдаче бана";
+  }
 }
 
 async function loadBanHistory() {
@@ -508,7 +644,7 @@ function showRoleChange(content) {
     <h3>🔄 Смена роли</h3>
     <div class="admin-prompt" style="position:relative;">
       <label>Ник пользователя</label>
-      <input id="roleChangeInput" class="admin-input" placeholder="Введите ник..." autocomplete="off" oninput="showRoleSuggestions()" onfocus="showRoleSuggestions()" onblur="setTimeout(hideRoleSuggestions,200)" onkeydown="roleSuggestionKeydown(event)">
+      <input id="roleChangeInput" class="admin-input" placeholder="Ник или ссылка на профиль..." autocomplete="off" oninput="showRoleSuggestions()" onfocus="showRoleSuggestions()" onblur="setTimeout(hideRoleSuggestions,200)" onkeydown="roleSuggestionKeydown(event)">
       <div id="roleSuggestions" class="admin-suggestions" style="display:none;"></div>
     </div>
     <div class="admin-prompt">
@@ -533,11 +669,20 @@ function showRoleChange(content) {
   }
 }
 
+function normalizeRoleNick(raw) {
+  const value = String(raw || "").trim();
+  const m = value.match(/[\/#]profile\/([^/?#\s]+)/i);
+  if (m) {
+    try { return decodeURIComponent(m[1]).trim(); } catch { return m[1].trim(); }
+  }
+  return value;
+}
+
 function showRoleSuggestions() {
   const input = document.getElementById("roleChangeInput");
   const container = document.getElementById("roleSuggestions");
   if (!input || !container) return;
-  const val = input.value.trim().toLowerCase();
+  const val = normalizeRoleNick(input.value).toLowerCase();
   if (!val) { container.style.display = "none"; return; }
   const nicks = Object.keys(nickRoleMap).filter(n => n.toLowerCase().includes(val));
   if (nicks.length === 0) { container.style.display = "none"; return; }
@@ -568,12 +713,22 @@ function roleSuggestionKeydown(e) {
   }
 }
 
+function isCurrentUserNick(nick) {
+  const me = getCurrentUser();
+  return me && me.nick && me.nick.toLowerCase() === String(nick).toLowerCase();
+}
+
 async function applyRoleChange() {
-  const nick = document.getElementById("roleChangeInput")?.value?.trim();
+  const nick = normalizeRoleNick(document.getElementById("roleChangeInput")?.value);
   const roleId = document.getElementById("roleSelect")?.value;
   if (!nick || !roleId) return;
   const result = document.getElementById("roleChangeResult");
   if (!result) return;
+
+  if (isCurrentUserNick(nick)) {
+    result.innerHTML = "<p class='admin-info' style='color:#c0392b;'>⚠️ Нельзя менять роль самому себе</p>";
+    return;
+  }
 
   const userData = nickRoleMap[nick];
   if (!userData?.id) {
@@ -633,7 +788,7 @@ async function showMainPage() {
       external: true,
       link: "https://discord.gg/Fn6UecrNNM",
     },
-    { name: "История ВП", category: "История" },
+    { name: "История ВП", category: "История", page: "history" },
   ];
 
   const topicCats = ["Общее", "Постройки"];
@@ -642,9 +797,10 @@ async function showMainPage() {
     <div class="category-block"><div class="category-header"><h3>Основной раздел</h3></div><div class="category-links">`;
 
   for (let cat of mainCategories) {
-    if (cat.external) {
-      leftHtml += `<a href="${cat.link}" target="_blank" class="category-link">
-        <span><i class="fab fa-discord"></i> ${cat.name}</span>
+    if (cat.external || cat.page) {
+      const href = cat.page ? null : cat.link;
+      leftHtml += `<a ${href ? `href="${href}" target="_blank"` : `onclick="${cat.page === 'history' ? "navigateToHistory()" : ""}"`} class="category-link ${cat.page ? "category-link-clickable" : ""}" ${href ? "" : 'style="cursor:pointer;"'}>
+        <span><i class="${cat.page ? "far fa-folder" : "fab fa-discord"}"></i> ${cat.name} <i class="fas fa-arrow-right" style="font-size:11px;opacity:0.6;margin-left:6px;"></i></span>
       </a>`;
       continue;
     }
@@ -661,10 +817,6 @@ async function showMainPage() {
       relatedTopics = topics.filter((t) => t.category === "Ивенты");
     else if (cat.category === "Предложения")
       relatedTopics = topics.filter((t) => t.category === "Предложения");
-    else if (cat.category === "История")
-      relatedTopics = topics.filter((t) =>
-        t.title.toLowerCase().includes("история"),
-      );
     else relatedTopics = [];
 
     let topicsCount = relatedTopics.length;
@@ -1056,6 +1208,17 @@ function searchProfile() {
   if (nick) navigateToProfile(nick);
 }
 
+function renderProfileError(message, emoji) {
+  document.getElementById("app").innerHTML = `
+    <div>
+      <div class="back-link" onclick="profileBack()">← назад</div>
+      <div style="text-align:center;padding:60px 20px;">
+        <div style="font-size:48px;margin-bottom:16px;">${emoji || "😕"}</div>
+        <h2>${message}</h2>
+      </div>
+    </div>`;
+}
+
 async function showProfile(nick) {
   const currentUser = getCurrentUser();
   const targetNick = nick || currentUser?.nick;
@@ -1064,28 +1227,24 @@ async function showProfile(nick) {
   let userData;
   try {
     const res = await fetch(`${API}/users/${encodeURIComponent(targetNick)}`);
+    if (res.status === 404) {
+      renderProfileError(
+        `Пользователь «${escapeHtml(targetNick)}» не найден`,
+        "😕",
+      );
+      return;
+    }
     if (!res.ok) {
-      document.getElementById("app").innerHTML = `
-        <div>
-          <div class="back-link" onclick="profileBack()">← назад</div>
-          <div style="text-align:center;padding:60px 20px;">
-            <div style="font-size:48px;margin-bottom:16px;">😕</div>
-            <h2>Пользователь «${escapeHtml(targetNick)}» не найден</h2>
-          </div>
-        </div>`;
+      renderProfileError("Не удалось загрузить профиль", "⚠️");
       return;
     }
     userData = await res.json();
     nickRoleMap[userData.nick] = { role: userData.role, id: userData.id };
   } catch {
-    document.getElementById("app").innerHTML = `
-      <div>
-        <div class="back-link" onclick="profileBack()">← назад</div>
-        <div style="text-align:center;padding:60px 20px;">
-          <div style="font-size:48px;margin-bottom:16px;">😕</div>
-          <h2>Пользователь «${escapeHtml(targetNick)}» не найден</h2>
-        </div>
-      </div>`;
+    renderProfileError(
+      "Сервер недоступен. Проверьте, запущен ли бэкенд на localhost:3001",
+      "🔌",
+    );
     return;
   }
 
@@ -1165,6 +1324,485 @@ async function showProfile(nick) {
         </div>
       </div>
     </div>`;
+}
+
+function navigateToAccount() {
+  history.pushState({ page: "account" }, "", "#account");
+  showAccountPage();
+}
+
+function navigateToHistory() {
+  history.pushState({ page: "history" }, "", "#history");
+  showHistoryPage();
+}
+
+// ===== ИСТОРИЯ ВП =====
+// Как добавлять контент:
+//   { type: "photo", src: "images/history/photo1.jpg", caption: "Подпись" } — фото
+//   (если src пустой "", будет рамка-заглушка с подписью)
+//   { type: "text", html: "<p>Текст...</p>" } — текстовый блок
+const HISTORY_DATA = {
+  title: "История ВП | Выживание с Подписчиками",
+  blocks: [
+    { type: "text", html: "<p><b>Введение.</b> Сюда вставляется вступительный абзац истории проекта...</p>" },
+    { type: "text", html: "<p><b>Текстовый блок 1.</b> Сюда вставляется первый абзац истории проекта...</p>" },
+    { type: "photo", src: "", caption: "Фото 1 — начало пути", imgLeft: true },
+    { type: "text", html: "<p><b>Текстовый блок 2.</b> Продолжение истории, которое обтекает фото 1...</p>" },
+    { type: "photo", src: "", caption: "Фото 2 — развитие проекта", imgLeft: false },
+    { type: "text", html: "<p><b>Текстовый блок 3.</b> Обтекает фото, расположенное слева или справа...</p>" },
+    { type: "photo", src: "", caption: "Фото 3 — наши дни", imgLeft: true },
+    { type: "text", html: "<p><b>Текстовый блок 4.</b> Сюда вставляется финальная часть...</p>" },
+  ],
+  links: [
+    { label: "Discord", url: "https://discord.gg/Fn6UecrNNM", icon: "fab fa-discord" },
+    { label: "YouTube", url: "#", icon: "fab fa-youtube" },
+    { label: "VK", url: "#", icon: "fab fa-vk" },
+  ],
+};
+
+function historyPhotoBlock(block) {
+  const { imgLeft } = block;
+  const pos = imgLeft ? "history-photo-left" : "history-photo-right";
+  if (block.src) {
+    return `
+    <figure class="history-photo ${pos}">
+      <img src="${escapeHtml(block.src)}" alt="${escapeHtml(block.caption || "")}" loading="lazy">
+      ${block.caption ? `<figcaption>${escapeHtml(block.caption)}</figcaption>` : ""}
+    </figure>`;
+  }
+  return `
+    <figure class="history-photo history-photo-placeholder ${pos}">
+      <div class="history-photo-frame">
+        <i class="fas fa-image"></i>
+        <span>${escapeHtml(block.caption || "Фото")}</span>
+        <small>положи сюда: images/history/...</small>
+      </div>
+      ${block.caption ? `<figcaption>${escapeHtml(block.caption)}</figcaption>` : ""}
+    </figure>`;
+}
+
+function historyBlockHtml(block) {
+  if (block.type === "photo") return historyPhotoBlock(block);
+  if (block.type === "text") return `<div class="history-text">${block.html}</div>`;
+  return "";
+}
+
+function showHistoryPage() {
+  stopHistoryGame();
+  const content = HISTORY_DATA.blocks.map(historyBlockHtml).join("");
+
+  const html = `
+    <div class="history-root">
+      <div class="history-bg">
+        <div class="history-layer history-layer-sky">
+          <div class="mc-stars"></div>
+          <div class="mc-sun"></div>
+          <div class="mc-moon"></div>
+          <div class="mc-clouds"></div>
+        </div>
+        <div class="history-layer history-layer-grass"></div>
+        <div class="history-layer history-layer-dirt"></div>
+        <div class="history-layer history-layer-stone"></div>
+        <div class="history-layer history-layer-ore"></div>
+        <div class="history-layer history-layer-bedrock"></div>
+      </div>
+      <div class="history-page">
+        <div class="history-skyzone">
+          <div class="back-link" onclick="navigateToMain()">← назад</div>
+          <div class="history-game-zone" id="historyGameZone"></div>
+        </div>
+        <div class="history-container">
+          <div class="history-header">
+            <span class="history-emoji">🏆</span>
+            <h1>${escapeHtml(HISTORY_DATA.title)}</h1>
+          </div>
+          ${content}
+          <div class="history-links">
+            <h3><i class="fas fa-link"></i> Ссылки</h3>
+            <ul>
+              ${HISTORY_DATA.links
+                .map(
+                  (l) => `
+                <li><a href="${escapeHtml(l.url)}"${l.url === "#" ? "" : ' target="_blank" rel="noopener"'} class="history-link">
+                  <i class="${escapeHtml(l.icon)}"></i> ${escapeHtml(l.label)}
+                </a></li>`,
+                )
+                .join("")}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <button class="history-sword-slot" id="historySwordSlot" onclick="toggleHistoryGame()" title="Мини-игра: взять меч / убрать меч">
+        <img src="images/minecraft/iron_sword.png" alt="Железный меч">
+      </button>
+      <img class="history-sword-cursor" id="historySwordCursor" src="images/minecraft/iron_sword.png" alt="">
+    </div>`;
+
+  document.getElementById("app").innerHTML = html;
+  document.body.classList.remove("admin-mode");
+}
+
+// ===== Мини-игра «Меч» =====
+const MC_MOBS = ["zombie", "skeleton", "creeper", "spider", "enderman"];
+const MC_MOB_HEIGHT = { zombie: 130, skeleton: 130, creeper: 110, spider: 70, enderman: 150 };
+const MC_SOUNDS = {
+  swing: "sounds/minecraft/swing.ogg",
+  hit: "sounds/minecraft/hit1.ogg",
+};
+// Настоящие звуки мобов из игры: ambient — случайные, hurt — при ударе, death — при смерти
+const MC_MOB_SOUNDS = {
+  zombie: {
+    ambient: ["say1", "say2", "say3"],
+    hurt: ["hurt1"],
+    death: ["death"],
+  },
+  skeleton: {
+    ambient: ["say1", "say2"],
+    hurt: ["hurt1"],
+    death: ["death"],
+  },
+  creeper: {
+    ambient: ["say1", "say2"],
+    hurt: ["say1"],
+    death: ["death"],
+  },
+  spider: {
+    ambient: ["say1", "say2"],
+    hurt: ["say1"],
+    death: ["death"],
+  },
+  enderman: {
+    folder: "endermen",
+    ambient: ["idle1", "idle2"],
+    hurt: ["hit1"],
+    death: ["death"],
+  },
+};
+let historyGameActive = false;
+let historyMobs = [];
+let historyGameRAF = null;
+let historyGameZone = null;
+
+function mcMobSoundPath(type, name) {
+  const folder = MC_MOB_SOUNDS[type]?.folder || type;
+  return "sounds/minecraft/mobs/" + folder + "/" + name + ".ogg";
+}
+
+function playMcSound(src, volume) {
+  if (!src) return;
+  try {
+    const a = new Audio(src);
+    a.volume = typeof volume === "number" ? volume : 0.6;
+    a.play().catch(() => {});
+  } catch {}
+}
+
+function playMcMobSound(type, kind) {
+  const set = MC_MOB_SOUNDS[type]?.[kind];
+  if (!set || !set.length) return;
+  const name = set[Math.floor(Math.random() * set.length)];
+  const vol = kind === "ambient" ? 0.25 : kind === "death" ? 0.6 : 0.5;
+  playMcSound(mcMobSoundPath(type, name), vol);
+}
+
+function moveHistorySword(e) {
+  const c = document.getElementById("historySwordCursor");
+  if (!c) return;
+  c.style.left = e.clientX + "px";
+  c.style.top = e.clientY + "px";
+}
+
+function toggleHistoryGame() {
+  if (historyGameActive) stopHistoryGame();
+  else startHistoryGame();
+}
+
+function startHistoryGame() {
+  historyGameZone = document.getElementById("historyGameZone");
+  if (!historyGameZone) return;
+  historyGameActive = true;
+  document.getElementById("historySwordSlot")?.classList.add("armed");
+  document.getElementById("historySwordCursor")?.classList.add("armed");
+  document.body.classList.add("mc-armed");
+  document.addEventListener("mousemove", moveHistorySword);
+  historyGameZone.addEventListener("click", onHistoryZoneClick);
+  historyMobs = [];
+  for (let i = 0; i < 4; i++) spawnHistoryMob();
+  historyGameRAF = requestAnimationFrame(updateHistoryMobs);
+}
+
+function stopHistoryGame() {
+  historyGameActive = false;
+  document.getElementById("historySwordSlot")?.classList.remove("armed");
+  document.getElementById("historySwordCursor")?.classList.remove("armed");
+  document.body.classList.remove("mc-armed");
+  document.removeEventListener("mousemove", moveHistorySword);
+  if (historyGameZone) historyGameZone.removeEventListener("click", onHistoryZoneClick);
+  if (historyGameRAF) cancelAnimationFrame(historyGameRAF);
+  historyGameRAF = null;
+  historyMobs.forEach((m) => m.el.remove());
+  historyMobs = [];
+  historyGameZone = null;
+}
+
+// Клик по зоне игры: попадание с запасом (хитбокс больше модели)
+function onHistoryZoneClick(e) {
+  if (!historyGameActive) return;
+  const zone = historyGameZone;
+  if (!zone) return;
+  const rect = zone.getBoundingClientRect();
+  const px = e.clientX - rect.left;
+  const py = e.clientY - rect.top;
+  const pad = 26;
+  let best = null;
+  let bestDist = Infinity;
+  historyMobs.forEach((m) => {
+    if (m.dead) return;
+    const w = m.w || 70;
+    const h = MC_MOB_HEIGHT[m.el.alt] || 70;
+    const left = m.x - pad;
+    const right = m.x + w + pad;
+    const top = zone.clientHeight - h - pad;
+    const bottom = zone.clientHeight + pad;
+    if (px >= left && px <= right && py >= top && py <= bottom) {
+      const cx = m.x + w / 2;
+      const cy = zone.clientHeight - h / 2;
+      const d = (px - cx) * (px - cx) + (py - cy) * (py - cy);
+      if (d < bestDist) {
+        bestDist = d;
+        best = m;
+      }
+    }
+  });
+  if (best) hitHistoryMob(best);
+}
+
+function spawnHistoryMob() {
+  if (!historyGameActive) return;
+  const zone = historyGameZone;
+  if (!zone || !zone.isConnected) return;
+  const type = MC_MOBS[Math.floor(Math.random() * MC_MOBS.length)];
+  const el = document.createElement("img");
+  el.src = "images/minecraft/mobs/" + type + ".png";
+  el.className = "mc-mob";
+  el.alt = type;
+  el.draggable = false;
+  el.style.height = (MC_MOB_HEIGHT[type] || 70) + "px";
+  const mob = {
+    el,
+    type,
+    x: 0,
+    w: 70,
+    dir: Math.random() < 0.5 ? 1 : -1,
+    speed: 0.4 + Math.random() * 0.9,
+    hp: 2 + Math.floor(Math.random() * 2),
+    dead: false,
+    nextSoundAt: performance.now() + 1500 + Math.random() * 6000,
+  };
+  el.addEventListener("load", () => {
+    mob.w = Math.max(20, el.getBoundingClientRect().width);
+    const maxX = Math.max(0, zone.clientWidth - mob.w);
+    if (mob.x > maxX) mob.x = maxX;
+  });
+  mob.x = Math.random() * Math.max(0, zone.clientWidth - 100);
+  el.style.transform = `translateX(${mob.x}px) ${mob.dir < 0 ? "scaleX(-1)" : ""}`;
+  zone.appendChild(el);
+  historyMobs.push(mob);
+}
+
+function updateHistoryMobs() {
+  if (!historyGameActive) return;
+  const zone = historyGameZone;
+  if (!zone || !zone.isConnected) {
+    stopHistoryGame();
+    return;
+  }
+  const now = performance.now();
+  historyMobs.forEach((m) => {
+    if (m.dead) return;
+    const maxX = Math.max(0, zone.clientWidth - (m.w || 70));
+    m.x += m.dir * m.speed;
+    if (m.x <= 0) { m.x = 0; m.dir = 1; }
+    if (m.x >= maxX) { m.x = maxX; m.dir = -1; }
+    m.el.style.transform = `translateX(${m.x}px) ${m.dir < 0 ? "scaleX(-1)" : ""}`;
+    if (now >= m.nextSoundAt) {
+      playMcMobSound(m.type, "ambient");
+      m.nextSoundAt = now + 5000 + Math.random() * 6000;
+    }
+  });
+  historyGameRAF = requestAnimationFrame(updateHistoryMobs);
+}
+
+function hitHistoryMob(mob) {
+  if (!historyGameActive || mob.dead) return;
+  playMcSound(MC_SOUNDS.swing, 0.35);
+  mob.hp--;
+  mob.el.classList.remove("mc-mob-hit");
+  void mob.el.offsetWidth;
+  mob.el.classList.add("mc-mob-hit");
+  setTimeout(() => mob.el.classList.remove("mc-mob-hit"), 180);
+  if (mob.hp <= 0) {
+    mob.dead = true;
+    playMcMobSound(mob.type, "death");
+    mob.el.classList.add("mc-mob-death");
+    setTimeout(() => {
+      mob.el.remove();
+      historyMobs = historyMobs.filter((m) => m !== mob);
+      if (historyGameActive) spawnHistoryMob();
+    }, 220);
+  } else {
+    playMcMobSound(mob.type, "hurt");
+    playMcSound(MC_SOUNDS.hit, 0.5);
+  }
+}
+
+// Слой камня с рудами рисуется готовой текстурой images/minecraft/ore_field.png (CSS).
+
+function showAccountPage() {
+  const user = getCurrentUser();
+  if (!user) { navigateToMain(); return; }
+  const regDate = user.created_at
+    ? new Date(user.created_at).toLocaleDateString()
+    : "—";
+  const email = getUserEmail();
+  const gameNick = localStorage.getItem("vp_game_nickname") || "";
+
+  document.getElementById("app").innerHTML = `
+    <div>
+      <div class="back-link" onclick="history.back()">← назад</div>
+      <div class="profile-container">
+        <h3 style="margin-bottom:20px;">🔧 Об аккаунте</h3>
+
+        <div class="account-section">
+          <h4>👤 Игровой никнейм</h4>
+          <div class="account-row">
+            <input id="gameNickInput" class="account-input" placeholder="Введите игровой ник..." value="${escapeHtml(gameNick)}">
+            <button class="account-btn" onclick="saveGameNickname()">💾</button>
+          </div>
+          <div id="gameNickStatus" class="account-status"></div>
+        </div>
+
+        <div class="account-section">
+          <h4>📧 Email</h4>
+          ${email ? `
+          <p class="account-email">${escapeHtml(email)}</p>
+          <button class="account-btn" onclick="showChangeEmailForm()">✏️ Сменить почту</button>
+          <div id="changeEmailForm" style="display:none;margin-top:10px;">
+            <input id="accountEmailNewInput" class="account-input" type="email" placeholder="Новая почта">
+            <input id="accountEmailPwdInput" class="account-input" type="password" placeholder="Пароль" style="max-width:300px;margin-top:8px;">
+            <div style="margin-top:8px;">
+              <button class="account-btn" onclick="saveAccountEmail()">💾</button>
+              <button class="account-btn" onclick="hideChangeEmailForm()">❌</button>
+            </div>
+            <div id="accountEmailStatus" class="account-status"></div>
+          </div>`
+          : `
+          <div class="account-row">
+            <input id="accountEmailInput" class="account-input" placeholder="email@example.com">
+            <button class="account-btn" onclick="saveAccountEmail()">💾</button>
+          </div>
+          <div id="accountEmailStatus" class="account-status"></div>
+          `}
+        </div>
+
+        <div class="account-section">
+          <h4>📅 Дата регистрации</h4>
+          <p class="account-email">${regDate}</p>
+        </div>
+
+        <div class="account-section">
+          <h4>🔑 Смена пароля</h4>
+          <input id="changePwdOld" class="account-input" type="password" placeholder="Текущий пароль" style="max-width:300px;margin-bottom:8px;">
+          <input id="changePwdNew" class="account-input" type="password" placeholder="Новый пароль" style="max-width:300px;margin-bottom:8px;">
+          <input id="changePwdConfirm" class="account-input" type="password" placeholder="Подтверждение" style="max-width:300px;margin-bottom:8px;">
+          <button class="account-btn" onclick="changePassword()">🔄 Сменить</button>
+          <div id="changePwdStatus" class="account-status"></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function saveGameNickname() {
+  const val = document.getElementById("gameNickInput")?.value?.trim();
+  if (!val) return;
+  localStorage.setItem("vp_game_nickname", val);
+  document.getElementById("gameNickStatus").textContent = "✅ Сохранено";
+  setTimeout(() => document.getElementById("gameNickStatus").textContent = "", 2000);
+}
+
+function showChangeEmailForm() {
+  const f = document.getElementById("changeEmailForm");
+  if (f) f.style.display = "block";
+  const inp = document.getElementById("accountEmailNewInput");
+  if (inp) inp.value = "";
+}
+
+function hideChangeEmailForm() {
+  const f = document.getElementById("changeEmailForm");
+  if (f) f.style.display = "none";
+}
+
+async function saveAccountEmail() {
+  const emailInput =
+    document.getElementById("accountEmailInput") ||
+    document.getElementById("accountEmailNewInput");
+  const email = emailInput?.value?.trim();
+  const status = document.getElementById("accountEmailStatus");
+  if (!email) { if (status) status.textContent = "Введите email"; return; }
+  const pwdInput = document.getElementById("accountEmailPwdInput");
+  const password =
+    (pwdInput && pwdInput.value) ||
+    localStorage.getItem("vp_last_password") ||
+    prompt("Введите пароль для подтверждения");
+  if (!password) return;
+  if (status) status.textContent = "⏳ Сохранение...";
+  try {
+    const res = await fetch(`${API}/change-email`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
+      body: JSON.stringify({ new_email: email, password }),
+    });
+    const data = await res.json();
+    if (data.error) { if (status) status.textContent = data.error; return; }
+    localStorage.setItem("vp_user_email", email);
+    checkEmailStatus();
+    navigateToAccount();
+  } catch {
+    if (status) status.textContent = "Ошибка при сохранении email";
+  }
+}
+
+async function changePassword() {
+  const oldPwd = document.getElementById("changePwdOld")?.value;
+  const newPwd1 = document.getElementById("changePwdNew")?.value;
+  const newPwd2 = document.getElementById("changePwdConfirm")?.value;
+  const status = document.getElementById("changePwdStatus");
+  if (!oldPwd || !newPwd1 || !newPwd2) { status.textContent = "Заполните все поля"; return; }
+  if (newPwd1 !== newPwd2) { status.textContent = "Новые пароли не совпадают"; return; }
+  status.textContent = "⏳ Отправка...";
+  try {
+    const res = await fetch(`${API}/change-password/request`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("vp_token")}`,
+      },
+      body: JSON.stringify({ old_password: oldPwd, new_password1: newPwd1, new_password2: newPwd2 }),
+    });
+    const data = await res.json();
+    if (data.error) { status.textContent = data.error; return; }
+    localStorage.setItem("vp_last_password", newPwd1);
+    status.textContent = "✅ Пароль изменён";
+    document.getElementById("changePwdOld").value = "";
+    document.getElementById("changePwdNew").value = "";
+    document.getElementById("changePwdConfirm").value = "";
+    setTimeout(() => status.textContent = "", 3000);
+  } catch {
+    status.textContent = "Ошибка при смене пароля";
+  }
 }
 
 function escapeHtml(str) {
@@ -1356,6 +1994,7 @@ async function unbanUser(nick) {
 async function changeRole(nick, roleId) {
   const userData = nickRoleMap[nick];
   if (!userData?.id) return alert("Пользователь не найден");
+  if (isCurrentUserNick(nick)) return alert("⚠️ Нельзя менять роль самому себе");
 
   try {
     const res = await fetch(`${API}/change-role/${userData.id}`, {
@@ -1418,3 +2057,13 @@ if (localStorage.getItem("vp_token")) {
 updateAuthButton();
 loadUsers();
 loadData();
+
+// История ВП — режим на весь экран (мир + мини-игра)
+const historyModeObserver = new MutationObserver(() => {
+  const app = document.getElementById("app");
+  if (!app) return;
+  const active = !!app.querySelector(".history-root");
+  document.body.classList.toggle("history-mode", active);
+  if (!active) stopHistoryGame();
+});
+historyModeObserver.observe(document.getElementById("app"), { childList: true });

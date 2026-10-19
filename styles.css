@@ -79,7 +79,7 @@ body.dark-theme #authModal button:hover { background: #4a5a4a; }
 }
 .header-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
 .logo { display: flex; align-items: center; gap: 12px; }
-.logo-img { height: 50px; width: auto; background: none; }
+.logo-img { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; background: none; }
 .logo h1 { font-size: 28px; font-weight: 700; color: #f1ffe8; margin: 0; }
 .logo p { font-size: 14px; color: #c7e2b9; margin-top: 4px; }
 .nav { display: flex; align-items: center; gap: 25px; flex-wrap: wrap; }
@@ -160,6 +160,14 @@ body.dark-theme .profile-search-suggestions .suggestion-item:hover { background:
   width: 100%;
   padding: 0 20px;
   margin: 0 auto;
+}
+body.history-mode .main-wrapper {
+  margin: 0;
+  display: block;
+}
+body.history-mode .content-box {
+  max-width: 100%;
+  padding: 0;
 }
 .flex-row {
   display: flex;
@@ -247,7 +255,7 @@ body.dark-theme .right h4 { color: #d0e6c0; border-left-color: #5a8a5a; }
 .user-online b { font-size: 18px; }
 
 footer {
-  text-align: left;
+  text-align: center;
   padding: 32px 0;
   background: #1f3b2c;
   border-top: 3px solid #b5dfa3;
@@ -259,7 +267,7 @@ footer {
 .footer-inner {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 0 20px 0 84px;
+  padding: 0 20px;
 }
 
 .thread-container { background: white; border-radius: 28px; padding: 32px; margin: 28px 0; border: 1px solid #e3efdd; }
@@ -452,6 +460,80 @@ body.dark-theme .user-menu-dropdown {
 body.dark-theme .user-menu-dropdown a { color: #e0e0e0; }
 body.dark-theme .user-menu-dropdown a:hover { background: #3a4a3a; }
 
+/* ===== Email banner ===== */
+.email-banner {
+  background: #fff3cd;
+  color: #856404;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid #ffc107;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+}
+.email-banner a { color: #2e7a45; font-weight:600; }
+body.dark-theme .email-banner {
+  background: #3a3a1a;
+  color: #ffd700;
+  border-color: #7a7a2a;
+}
+body.dark-theme .email-banner a { color: #52b788; }
+
+/* fix auth & email modal background for dark theme */
+body.dark-theme #authModal > div,
+body.dark-theme #emailModal > div {
+  background: #2a2f2a !important;
+  color: #e0e0e0;
+}
+body.dark-theme #authModal input,
+body.dark-theme #emailModal input {
+  background: #1a1e1c;
+  color: #e0e0e0;
+  border-color: #3a4a3a;
+}
+
+/* ===== Account tab ===== */
+.account-section { margin-bottom: 24px; }
+.account-section h4 { font-size: 15px; margin-bottom: 8px; color: #555; }
+body.dark-theme .account-section h4 { color: #aaa; }
+.account-row { display: flex; gap: 8px; align-items: center; }
+.account-input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100%;
+  max-width: 300px;
+  outline: none;
+  transition: border .15s;
+  background: #fff;
+  color: #333;
+}
+.account-input:focus { border-color: #2e7a45; }
+body.dark-theme .account-input {
+  background: #2a2f2a;
+  border-color: #3a4a3a;
+  color: #e0e0e0;
+}
+body.dark-theme .account-input:focus { border-color: #52b788; }
+.account-btn {
+  background: #2e7a45;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: .2s;
+  white-space: nowrap;
+}
+.account-btn:hover { background: #3a9a55; }
+.account-email { font-size: 14px; color: #555; padding: 4px 0; }
+body.dark-theme .account-email { color: #bbb; }
+.account-status { font-size: 13px; margin-top: 4px; color: #2e7a45; }
+body.dark-theme .account-status { color: #52b788; }
+
 @media (max-width: 900px) {
   .right { display: none; }
   .flex-row { justify-content: center; }
@@ -604,6 +686,372 @@ body.admin-mode .profile-search { display: none !important; }
   max-width: 350px;
 }
 .admin-info { color: #888; font-size: 14px; margin-bottom: 12px; }
+.ban-date-hint { color: #777; font-size: 13px; margin-top: 5px; }
+.ban-issue-status { color: #a5d6a5; font-size: 14px; margin-top: 10px; min-height: 18px; }
 .admin-checkbox { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
 .admin-checkbox input { width: 18px; height: 18px; cursor: pointer; }
 .admin-checkbox label { color: #e74c3c; font-size: 14px; cursor: pointer; }
+/* ===== Кликабельная категория ===== */
+.category-link-clickable { transition: background .15s; }
+.category-link-clickable:hover { background: #f9fef6; }
+body.dark-theme .category-link-clickable:hover { background: #2f3a2f; }
+
+/* ===== Страница «История ВП» ===== */
+.history-root {
+  position: relative;
+  min-height: 100vh;
+  display: flow-root;
+}
+.history-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: none;
+}
+.history-layer {
+  background-repeat: repeat;
+  image-rendering: pixelated;
+}
+/* Небо (верх мира) — солнце/луна/облака + мини-зона игры */
+.history-layer-sky {
+  position: relative;
+  flex: 0 0 40vh;
+  overflow: hidden;
+  background: #8cb8ff;
+  transition: background 0.4s;
+}
+/* Трава */
+.history-layer-grass {
+  flex: 0 0 4vh;
+  background-image: url("images/minecraft/grass_block_side.png");
+  background-size: 64px 64px;
+}
+/* Земля */
+.history-layer-dirt {
+  flex: 9 1 0;
+  background-image: url("images/minecraft/dirt.png");
+  background-size: 64px 64px;
+}
+/* Чистый камень */
+.history-layer-stone {
+  flex: 15 1 0;
+  background-image: url("images/minecraft/stone.png");
+  background-size: 64px 64px;
+}
+/* Камень с рудами — готовая картинка ore_field.png */
+.history-layer-ore {
+  flex: 22 1 0;
+  background-image: url("images/minecraft/ore_field.png");
+  background-size: 4096px 4096px;
+}
+/* Бедрок */
+.history-layer-bedrock {
+  flex: 0 0 12vh;
+  min-height: 160px;
+  background-image: url("images/minecraft/bedrock.png");
+  background-size: 64px 64px;
+}
+
+/* --- Небо: солнце, луна, облака, звёзды --- */
+.mc-sun {
+  position: absolute;
+  top: 12%;
+  left: 10%;
+  width: 104px;
+  height: 104px;
+  background: url("images/minecraft/sky/sun.png") center/contain no-repeat;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+}
+.mc-moon {
+  position: absolute;
+  top: 12%;
+  right: 10%;
+  width: 84px;
+  height: 84px;
+  background: url("images/minecraft/sky/moon.png") 0 0 / 400% 200% no-repeat;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  display: none;
+}
+.mc-stars {
+  position: absolute;
+  inset: 0;
+  display: none;
+  background-image:
+    linear-gradient(#fff, #fff), linear-gradient(#fff, #fff),
+    linear-gradient(#fff, #fff), linear-gradient(#fff, #fff),
+    linear-gradient(#fff, #fff), linear-gradient(#fff, #fff),
+    linear-gradient(#fff, #fff), linear-gradient(#fff, #fff);
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+  background-position:
+    15% 20%, 40% 12%, 70% 25%, 85% 15%,
+    55% 40%, 25% 45%, 90% 50%, 10% 60%;
+  opacity: 0.9;
+}
+.mc-clouds {
+  position: absolute;
+  inset: 0;
+  background: url("images/minecraft/sky/clouds.png") repeat;
+  background-size: 320px 320px;
+  image-rendering: pixelated;
+  opacity: 0.75;
+  animation: mc-cloud-drift 90s linear infinite;
+}
+@keyframes mc-cloud-drift {
+  from { background-position: 0 0; }
+  to { background-position: -640px 0; }
+}
+body.dark-theme .history-layer-sky {
+  background: #0b0b2e;
+}
+body.dark-theme .mc-sun { display: none; }
+body.dark-theme .mc-clouds { opacity: 0.14; }
+body.dark-theme .mc-stars { display: block; }
+body.dark-theme .mc-moon { display: block; }
+
+/* --- Слот-меч: реальная ячейка хотбара, по центру справа --- */
+.history-sword-slot {
+  position: fixed;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  width: 72px;
+  height: 72px;
+  padding: 8px;
+  border: none;
+  border-radius: 0;
+  box-sizing: border-box;
+  background: url("images/minecraft/hotbar_slot.png") center/100% 100% no-repeat;
+  image-rendering: pixelated;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s;
+}
+.history-sword-slot:hover { transform: translateY(-50%) scale(1.08); }
+.history-sword-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+.history-sword-slot.armed {
+  background-image: url("images/minecraft/sky/hotbar_selection.png"), url("images/minecraft/hotbar_slot.png");
+  background-size: 100% 100%, 100% 100%;
+}
+.history-sword-slot.armed img { opacity: 0; }
+
+/* --- Меч следует за курсором --- */
+.history-sword-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+  width: 60px;
+  height: 60px;
+  transform: translate(-6px, -6px);
+  pointer-events: none;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.5));
+  display: none;
+}
+.history-sword-cursor.armed { display: block; }
+body.mc-armed,
+body.mc-armed .history-game-zone,
+body.mc-armed .mc-mob { cursor: none; }
+body.mc-armed .history-game-zone { pointer-events: auto; }
+body.mc-armed .history-sword-slot { cursor: pointer; }
+
+/* --- Зона игры над травой --- */
+.history-skyzone {
+  position: relative;
+  height: 40vh;
+}
+.history-skyzone .back-link {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 3;
+}
+.history-game-zone {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.mc-mob {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 64px;
+  width: auto;
+  cursor: crosshair;
+  pointer-events: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.35));
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.mc-mob.mc-mob-hit {
+  animation: mc-mob-shake 0.18s linear;
+}
+@keyframes mc-mob-shake {
+  0%, 100% { filter: brightness(1) drop-shadow(0 4px 4px rgba(0,0,0,.35)); }
+  50% { filter: brightness(2.2) sepia(0.6) drop-shadow(0 0 6px #f66); }
+}
+.mc-mob-death {
+  animation: mc-mob-death 0.22s ease-in forwards;
+}
+@keyframes mc-mob-death {
+  to { opacity: 0; transform: translateY(6px) scale(0.6); }
+}
+
+.history-page {
+  position: relative;
+  z-index: 1;
+}
+.history-page .back-link {
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 6px 14px;
+  border-radius: 10px;
+}
+.history-page .back-link:hover { background: rgba(0, 0, 0, 0.55); }
+.history-container {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #e0ecda;
+  border-radius: 28px;
+  padding: 40px;
+  max-width: 900px;
+  margin: 20px auto 60px;
+}
+.history-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #eef6ea;
+}
+.history-emoji { font-size: 42px; }
+.history-header h1 {
+  font-size: 30px;
+  font-weight: 800;
+  color: #1e582c;
+  line-height: 1.25;
+}
+.history-photo {
+  width: 45%;
+  margin: 0;
+}
+.history-photo-left { float: left; margin: 8px 26px 18px 0; }
+.history-photo-right { float: right; margin: 8px 0 18px 26px; }
+.history-photo img {
+  width: 100%;
+  border-radius: 16px;
+  display: block;
+  border: 1px solid #e0ecda;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+.history-photo figcaption {
+  text-align: center;
+  font-size: 14px;
+  color: #7baa6b;
+  margin-top: 10px;
+}
+.history-photo-frame {
+  border: 2px dashed #b8d4ae;
+  border-radius: 16px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #7baa6b;
+  background: #f6fbf3;
+  padding: 24px;
+  text-align: center;
+}
+.history-photo-frame i { font-size: 44px; opacity: .7; }
+.history-photo-frame span { font-size: 17px; font-weight: 600; }
+.history-photo-frame small { font-size: 13px; opacity: .75; }
+.history-text {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #2a3a2c;
+}
+.history-text p { margin-bottom: 14px; }
+.history-text p:last-child { margin-bottom: 0; }
+.history-links {
+  clear: both;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 2px solid #eef6ea;
+  text-align: center;
+}
+.history-links h3 {
+  font-size: 20px;
+  color: #1e582c;
+  margin-bottom: 16px;
+}
+.history-links ul { list-style: none; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.history-links li { margin: 0; }
+.history-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #2e6b3e;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 1px solid #d8e8d0;
+  border-radius: 12px;
+  background: #f6fbf3;
+  transition: .15s;
+}
+.history-link:hover { background: #e8f4e2; border-color: #7dbd68; }
+.history-link i { font-size: 18px; }
+
+/* Мобильная версия — фотки/текст в столбик */
+@media (max-width: 640px) {
+  .history-photo { width: 100%; float: none; margin: 18px 0; }
+  .history-container { padding: 24px; }
+}
+
+/* Тёмная тема */
+body.dark-theme .history-container { background: rgba(42, 47, 42, 0.94); border-color: #3a4a3a; }
+body.dark-theme .history-header { border-bottom-color: #3a4a3a; }
+body.dark-theme .history-header h1 { color: #d0e6c0; }
+body.dark-theme .history-photo img { border-color: #3a4a3a; }
+body.dark-theme .history-photo figcaption { color: #a0c090; }
+body.dark-theme .history-photo-frame {
+  border-color: #4a6a4a;
+  background: #222822;
+  color: #a0c090;
+}
+body.dark-theme .history-text { color: #d5dcd5; }
+body.dark-theme .history-links { border-top-color: #3a4a3a; }
+body.dark-theme .history-links h3 { color: #d0e6c0; }
+body.dark-theme .history-link {
+  background: #222822;
+  border-color: #4a6a4a;
+  color: #b8d8ae;
+}
+body.dark-theme .history-link:hover { background: #2f3a2f; border-color: #5a8a5a; }
